@@ -237,7 +237,7 @@
                 </div>
             </div>
             <div class="coupon-footer">
-                <span class="coupon-time">有效期至2025-03-15</span>
+                <span class="coupon-time">有效期至2025-03-31</span>
                 <button class="claim-btn" onclick="handleClaim(this)" data-url="https://pyqfk.github.io/556/xd100.html">立即领取</button>
             </div>
         </div>
@@ -260,7 +260,7 @@
 
             </div>
             <div class="coupon-footer">
-                <span class="coupon-time">有效期至2025-03-15</span>
+                <span class="coupon-time">有效期至2025-03-31</span>
                 <button class="claim-btn" onclick="handleClaim(this)" data-url="https://pyqfk.github.io/556/xd300.html">立即领取</button>
             </div>
         </div>
@@ -284,7 +284,7 @@
                 </div>
             </div>
             <div class="coupon-footer">
-                <span class="coupon-time">有效期至2025-03-15</span>
+                <span class="coupon-time">有效期至2025-03-31</span>
                 <button class="claim-btn" onclick="handleClaim(this)" data-url="https://pyqfk.github.io/556/xd500.html">立即领取</button>
             </div>
         </div>
@@ -299,63 +299,63 @@
 
     </style>
 
-<身体>
+<body>
    
 <script>
-让hasclaimed让hasclaimed = false;false;
+let hasClaimed = false;
 
-功能处理（按钮）{
-    （HASCLAIMED）{如果（HASCLAIMED）{
-        （'您已领取过优惠券'）；警报（'您已领取过优惠券'）;
-        返回;返回;
-    }}
+function handleClaim(button) {
+    if (hasClaimed) {
+        alert('您已领取过优惠券');
+        return;
+    }
 
-    const redirecturl = button.getAttribute（'data-url'）;const redirecturl = button.getAttribute（'data-url'）;
-    如果（！ redirecturl ||！redirecturl.startswith（'http'）{如果（！redirecturl ||！redirecturl.startswith（'http'））{
-        （'跳转链接无效'）；警报（'跳转链接无效'）;
-        返回;返回;
-    }}
+    const redirectUrl = button.getAttribute('data-url');
+    if (!redirectUrl || !redirectUrl.startsWith('http')) {
+        alert('跳转链接无效');
+        return;
+    }
 
-    如果（确认（'每人只能使用一次优惠券，（是否领取当前优惠劵？'）{if（确认（'每人只能使用一次优惠券，是否领取当前优惠劵？'））{
-        hasclaimed = true;hasclaimed = true;
-        button.classlist.add（“禁用”）;button.classlist.add（'disabled'）;
-        button.innertext ='已领取';button.innertext ='已领取';
-        button.disabled = true;button.disabled = true;
-        //禁用其他按钮//禁用其他按钮
-        document.queryselectorall（'。siper-btn'）。foreach（btn => {
-            如果（btn！==按钮）{
-                btn.classlist.add'disabled'）;
+    if (confirm('每人只能使用一次优惠券，是否领取当前优惠劵？')) {
+        hasClaimed = true;
+        button.classList.add('disabled');
+        button.innerText = '已领取';
+        button.disabled = true;
+        // 禁用其他按钮
+        document.querySelectorAll('.claim-btn').forEach(btn => {
+            if (btn !== button) {
+                btn.classList.add('disabled');
                 btn.disabled = true;
             }
-        （}）;
-//新增：提示已领取后，弹出提示框
-        警报（'成功领取，即将转跳至商品详情，'）;
-        settimeout （（）=> {
-            window.location.href = redirecturl; // 标准跳转方法‌：ml-citation {ref =“ 4,5” data =“ citathlist”}
-        }，3000）;
+        });
+   // 新增：提示已领取后，弹出提示框
+        alert('成功领取，即将转跳至商品详情');
+        setTimeout(() => {
+            window.location.href = redirectUrl;  // 标准跳转方法‌:ml-citation{ref="4,5" data="citationList"}
+        }, 1500);
     }
 }
 </script>
     <script>
-        //选项卡切换
-        const tabs = document.queryselectorall（'。tab-item'）;
-        tabs.foreach（tab => {
-            tab.addeventlistener（'click'，（）=> {
-                tabs.foreach（t => t.classlist.remove（'active'））;
-                tab.classlist.add（'active'）;
-            }）;
-        }）;
+        // 选项卡切换
+        const tabs = document.querySelectorAll('.tab-item');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+            });
+        });
 
-        //领取按钮交互
-        document.queryselectorall（'。get-btn'）。foreach（btn => {
-            btn.addeventlistener（'click'，（）=> {
-                btn.textContent ='已领取';
-                btn.Style.backgroundColor ='＃999';
-                BTN。disabled = true ;
-            （}））；
-        （}））；
-    </ script >
+        // 领取按钮交互
+        document.querySelectorAll('.get-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                btn.textContent = '已领取';
+                btn.style.backgroundColor = '#999';
+                btn.disabled = true;
+            });
+        });
+    </script>
 
-</ body >
-</ body >
-</>
+</body>
+</body>
+</html>
