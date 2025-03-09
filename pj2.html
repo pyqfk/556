@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>商品评价列表</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #f8f8f8;
+            font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+        }
+        .container {
+            padding: 12px 15px 80px;
+        }
+        .comment-item {
+            background: #fff;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        .nickname {
+            font-size: 14px;
+            color: #333;
+            font-weight: 500;
+        }
+        .content {
+            font-size: 15px;
+            color: #444;
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+        .image-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .comment-img {
+            width: calc(50% - 8px);
+            border-radius: 8px;
+            aspect-ratio: 1/1;
+            object-fit: cover;
+            cursor: pointer;
+        }
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+        }
+        .enlarged-img {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 8px;
+        }
+        .pagination {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            background: #fff;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            box-shadow: 0 -2px 8px rgba(0,0,0,0.05);
+        }
+        .page-btn {
+            width: 45%;
+            height: 44px;
+            border: none;
+            border-radius: 22px;
+            background: #ff9955;
+            color: #fff;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+ /* 悬浮式返回按钮样式调整 */
+    .back-button {
+        position: fixed;
+        top: 20px;
+        right: 20px;  /* 将按钮定位到页面右上角 */
+        z-index: 1000;
+        background-color: #ff3366;
+        color: white;
+        padding: 5px 5px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        /* 添加以下样式以实现居中（相对于页面宽度）的效果，但此处直接定位到右上角，所以不需要额外居中样式 */
+        /* 若需水平居中（不推荐，因为通常返回按钮放在角落），可移除right属性，并添加以下样式：
+        left: 50%;
+        transform: translateX(-50%);
+        但请注意，这将使按钮相对于整个页面宽度居中，而非右上角。*/
+    }
+    </style>
+</head>
+<body>
+    <!-- 悬浮式返回按钮 -->
+    <button class="back-button" onclick="window.history.back()">返回下单</button>
+
+    <div class="container">
+   
+        <div class="comment-item">
+<p>商品评价列表<p>
+        </div>
+
+
+
+
+  <!-- 原始评论项（作为模板） -->
+        <!-- 新增的19个评论项 -->
+        <!-- 评论项 1 -->
+        <div class="comment-item">
+            <div class="user-info">
+                <img src="https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_4932ab44e054cab03bcc7eb71e3a3989.jpeg?from=2956013662" class="avatar" alt="用户头像">
+                <span class="nickname">一*烟火一半清欢</span>
+            </div>
+            <p class="content">付款后马上到账，安全方便快捷，五星好评！</p>
+            <div class="image-grid">
+                <img src="https://jypjtp.fwh.bcebos.com/cztu/28.jpg
+" class="comment-img" onclick="showImage(this.src)">
+            </div>
+        </div>
+        <!-- 新增的19个评论项 -->
+        <!-- 评论项 1 -->
+        <div class="comment-item">
+            <div class="user-info">
+                <img src="https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_1bbc5c33133972a17a3ef302188f239b.jpeg?from=2956013662" class="avatar" alt="用户头像">
+                <span class="nickname">橘*🍊🍊🍊</span>
+            </div>
+            <p class="content">充值快速秒到账 服务态度超级超级好</p>
+            <div class="image-grid">
+                <img src="https://jypjtp.fwh.bcebos.com/cztu/29.jpg
+" class="comment-img" onclick="showImage(this.src)">
+            </div>
+        </div>
+        <!-- 新增的19个评论项 -->
+        <!-- 评论项 1 -->
+        <div class="comment-item">
+            <div class="user-info">
+                <img src="https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-i-0813_oAf1haAoIPApeYAJAj4uB7LAVBPAxEeVA42sYH.jpeg?from=2956013662" class="avatar" alt="用户头像">
+                <span class="nickname">J*e</span>
+            </div>
+            <p class="content">每次充抖币都用这家，方便快捷，到账秒快，会继续使用的</p>
+            <div class="image-grid">
+                <img src="https://jypjtp.fwh.bcebos.com/cztu/3.webp
+" class="comment-img" onclick="showImage(this.src)">
+            </div>
+        </div>
+        <!-- 新增的19个评论项 -->
+        <!-- 评论项 1 -->
+        <div class="comment-item">
+            <div class="user-info">
+                <img src="https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/mosaic-legacy_2de6900043ceec0869cd8.jpeg?from=2956013662" class="avatar" alt="用户头像">
+                <span class="nickname">-小*🐷😂</span>
+            </div>
+            <p class="content">到账速度很快 充很多次了很满意～</p>
+            <div class="image-grid">
+                <img src="https://jypjtp.fwh.bcebos.com/cztu/30.webp
+" class="comment-img" onclick="showImage(this.src)">
+            </div>
+        </div>
+        <!-- 新增的19个评论项 -->
+        <!-- 评论项 1 -->
+        <div class="comment-item">
+            <div class="user-info">
+                <img src="https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_aee9a87942dbc9a5edca5b4cef3c7526.jpeg?from=2956013662" class="avatar" alt="用户头像">
+                <span class="nickname">大*大贵</span>
+            </div>
+            <p class="content">超级超级快！也非常不错，的确物有所值</p>
+            <div class="image-grid">
+                <img src="https://jypjtp.fwh.bcebos.com/cztu/31.jpg
+" class="comment-img" onclick="showImage(this.src)">
+            </div>
+        </div>
+        <!-- 新增的19个评论项 -->
+        <!-- 评论项 1 -->
+        <div class="comment-item">
+            <div class="user-info">
+                <img src="https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_7a372ff0133e12e7ecd8a66f41c8ea82.jpeg?from=2956013662" class="avatar" alt="用户头像">
+                <span class="nickname">不*香烟（万宝路版）</span>
+            </div>
+            <p class="content">很快，买过 N 次了，都好快😂😂</p>
+            <div class="image-grid">
+                <img src="https://jypjtp.fwh.bcebos.com/cztu/32.jpg
+" class="comment-img" onclick="showImage(this.src)">
+            </div>
+        </div>
+        <!-- 新增的19个评论项 -->
+        <!-- 评论项 1 -->
+        <div class="comment-item">
+            <div class="user-info">
+                <img src="https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_64ef29d46deefdb7a89a71fc1b602513.jpeg?from=2956013662" class="avatar" alt="用户头像">
+                <span class="nickname">ℒᎭℯོ85🦋婉*🌊🔥</span>
+            </div>
+            <p class="content">很好，非常好，我很喜欢，我太喜欢了</p>
+            <div class="image-grid">
+                <img src="https://jypjtp.fwh.bcebos.com/cztu/33.jpg
+" class="comment-img" onclick="showImage(this.src)">
+            </div>
+        </div>
+        <!-- 新增的19个评论项 -->
+        <!-- 评论项 1 -->
+        <div class="comment-item">
+            <div class="user-info">
+                <img src="https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_10bfa943d6c4e2abfde3b3f30b7e2749.jpeg?from=2956013662" class="avatar" alt="用户头像">
+                <span class="nickname">阿*爱豆Vlogging</span>
+            </div>
+            <p class="content">老客户了，这里充抖币便宜又实惠👍👍👍👍👍👍</p>
+            <div class="image-grid">
+                <img src="https://jypjtp.fwh.bcebos.com/cztu/34.jpg
+" class="comment-img" onclick="showImage(this.src)">
+            </div>
+        </div>
+        <!-- 新增的19个评论项 -->
+        <!-- 评论项 1 -->
+        <div class="comment-item">
+            <div class="user-info">
+                <img src="https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_0ed6bd09ad28e4c48b56ef9d673b97cd.jpeg?from=2956013662" class="avatar" alt="用户头像">
+                <span class="nickname">🌈郭*小🌟</span>
+            </div>
+            <p class="content">速度快，一下到帐</p>
+            <div class="image-grid">
+                <img src="https://jypjtp.fwh.bcebos.com/cztu/35.jpg
+" class="comment-img" onclick="showImage(this.src)">
+            </div>
+        </div>
+        <!-- 新增的19个评论项 -->
+        <!-- 评论项 1 -->
+        <div class="comment-item">
+            <div class="user-info">
+                <img src="https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_13dbee1b76db295bc5a0c573742fade5.jpeg?from=2956013662" class="avatar" alt="用户头像">
+                <span class="nickname">F*eedomsnow</span>
+            </div>
+            <p class="content">好，到账特别快！！</p>
+            <div class="image-grid">
+                <img src="https://jypjtp.fwh.bcebos.com/cztu/36.jpg
+" class="comment-img" onclick="showImage(this.src)">
+            </div>
+        </div>
+        <!-- 新增的19个评论项 -->
+        <!-- 评论项 1 -->
+        <div class="comment-item">
+            <div class="user-info">
+                <img src="https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-i-0813c001_o4EA0n4ATCOA2g9CfhIAAFEAj6DCbNAUHf6VNC.jpeg?from=2956013662" class="avatar" alt="用户头像">
+                <span class="nickname">K*OP</span>
+            </div>
+            <p class="content">速度超级超级快，基本上买完1分钟之内就到账了，一直在这买的</p>
+            <div class="image-grid">
+                <img src="https://jypjtp.fwh.bcebos.com/cztu/37.jpg
+" class="comment-img" onclick="showImage(this.src)">
+            </div>
+        </div>
+        <!-- 新增的19个评论项 -->
+        <!-- 评论项 1 -->
+        <div class="comment-item">
+            <div class="user-info">
+                <img src="https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-i-0813_oYCi31OgEO6ANllClXmBfAE9sEAiAAegAT4nId.jpeg?from=2956013662" class="avatar" alt="用户头像">
+                <span class="nickname">G*卓敏</span>
+            </div>
+            <p class="content">好，秒到，还会继续光顾的，加油</p>
+            <div class="image-grid">
+                <img src="https://jypjtp.fwh.bcebos.com/cztu/38.jpg
+" class="comment-img" onclick="showImage(this.src)">
+            </div>
+        </div>
+        <!-- 新增的19个评论项 -->
+        <!-- 评论项 1 -->
+        <div class="comment-item">
+            <div class="user-info">
+                <img src="https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_9ca7bfb2505492f3fd966e84be9258a0.jpeg?from=2956013662" class="avatar" alt="用户头像">
+                <span class="nickname">爱*蛋挞_(考试全通过版）</span>
+            </div>
+            <p class="content">链接真实有效，秒拍秒到zhang，效率杠杠</p>
+            <div class="image-grid">
+                <img src="https://jypjtp.fwh.bcebos.com/cztu/39.jpg
+" class="comment-img" onclick="showImage(this.src)">
+            </div>
+        </div>
+        <!-- 新增的19个评论项 -->
+        <!-- 评论项 1 -->
+        <div class="comment-item">
+            <div class="user-info">
+                <img src="https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/mosaic-legacy_3158a00038ac94d63ec27.jpeg?from=2956013662" class="avatar" alt="用户头像">
+                <span class="nickname">种*家的甘木仁</span>
+            </div>
+            <p class="content">到账快到账准价格实惠嘎嘎以嘎斯了哈哈哈</p>
+            <div class="image-grid">
+                <img src="https://jypjtp.fwh.bcebos.com/cztu/4.jpg
+" class="comment-img" onclick="showImage(this.src)">
+            </div>
+        </div>
+        <!-- 新增的19个评论项 -->
+        <!-- 评论项 1 -->
+        <div class="comment-item">
+            <div class="user-info">
+                <img src="https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_55eb3d294fab61c20addd13004a47368.jpeg?from=2956013662" class="avatar" alt="用户头像">
+                <span class="nickname">H*llyOr</span>
+            </div>
+            <p class="content">此用户没有填写评价。</p>
+            <div class="image-grid">
+                <img src="https://jypjtp.fwh.bcebos.com/cztu/40.jpg
+" class="comment-img" onclick="showImage(this.src)">
+            </div>
+        </div>
+        <!-- 新增的19个评论项 -->
+        <!-- 评论项 1 -->
+        <div class="comment-item">
+            <div class="user-info">
+                <img src="https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-i-0813_oY6aAyREowE9sAHmAYAI9huFYfCHwBADADfCgV.jpeg?from=2956013662" class="avatar" alt="用户头像">
+                <span class="nickname">A*ron_Chan</span>
+            </div>
+            <p class="content">非常满意 一直在他家充值 基本都是秒到 下次还会回购</p>
+            <div class="image-grid">
+                <img src="https://jypjtp.fwh.bcebos.com/cztu/41.jpg
+" class="comment-img" onclick="showImage(this.src)">
+            </div>
+        </div>
+        <!-- 新增的19个评论项 -->
+        <!-- 评论项 1 -->
+        <div class="comment-item">
+            <div class="user-info">
+                <img src="https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_34096d2376a3be12dc9f99f2994532e4.jpeg?from=2956013662" class="avatar" alt="用户头像">
+                <span class="nickname">中*市Ng•海鲜私厨</span>
+            </div>
+            <p class="content">充值到账很快，每次都选择他家充值价格特别合适</p>
+            <div class="image-grid">
+                <img src="https://jypjtp.fwh.bcebos.com/cztu/42.jpg
+" class="comment-img" onclick="showImage(this.src)">
+            </div>
+        </div>
+        <!-- 新增的19个评论项 -->
+        <!-- 评论项 1 -->
+        <div class="comment-item">
+            <div class="user-info">
+                <img src="https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_53824054c65977571e4f3535134ba5df.jpeg?from=2956013662" class="avatar" alt="用户头像">
+                <span class="nickname">一*是kiki</span>
+            </div>
+            <p class="content">产品都不错，性价比高，赞赞赞👏👏👏</p>
+            <div class="image-grid">
+                <img src="https://jypjtp.fwh.bcebos.com/cztu/43.jpg
+" class="comment-img" onclick="showImage(this.src)">
+            </div>
+        </div>
+        <!-- 新增的19个评论项 -->
+        <!-- 评论项 1 -->
+        <div class="comment-item">
+            <div class="user-info">
+                <img src="https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-i-0813c001_oIA0UVdfDICknNsJAQFADD9HxCfZnAAEEug9Aj.jpeg?from=2956013662" class="avatar" alt="用户头像">
+                <span class="nickname">醒*吗老张</span>
+            </div>
+            <p class="content">真的快，我没仔细看，填的手机号，但是10秒内也到了👍🏻</p>
+            <div class="image-grid">
+                <img src="https://jypjtp.fwh.bcebos.com/cztu/44.jpg
+" class="comment-img" onclick="showImage(this.src)">
+            </div>
+        </div>
+        <!-- 新增的19个评论项 -->
+        <!-- 评论项 1 -->
+        <div class="comment-item">
+            <div class="user-info">
+                <img src="https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_554a7f83e356a6fae32a1ddb03d76f7d.jpeg?from=2956013662" class="avatar" alt="用户头像">
+                <span class="nickname">拾*与你</span>
+            </div>
+            <p class="content">到账很快然后服务态度巨好大家放心拍</p>
+            <div class="image-grid">
+                <img src="https://jypjtp.fwh.bcebos.com/cztu/45.jpg
+" class="comment-img" onclick="showImage(this.src)">
+            </div>
+        </div>
+        <!-- 图片放大层 -->
+        <div class="overlay" onclick="hideImage()">
+            <img src="" class="enlarged-img" id="enlargedImg">
+        </div>
+
+        <!-- 分页按钮 -->
+        <div class="pagination">
+            <button class="page-btn" onclick="nextPage('https://pyqfk.github.io/556/pj3.html')">下一页</button>
+        </div>
+    </div>
+
+    <script>
+        function showImage(src) {
+            document.getElementById('enlargedImg').src = src;
+            document.querySelector('.overlay').style.display = 'flex';
+        }
+
+        function hideImage() {
+            document.querySelector('.overlay').style.display = 'none';
+        }
+
+        function prevPage() {
+            alert('上一页功能');
+        }
+
+        function nextPage(url) {
+            if (url) {
+                window.location.href = url;
+            } else {
+                alert('下一页功能（无指定网址）');
+            }
+        }
+    </script>
+</body>
+</html>
