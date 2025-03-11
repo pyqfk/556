@@ -231,15 +231,26 @@
     <!-- 返回按钮 -->
     <div class="back-btn"onclick="window.open('https://pyqfk.github.io/556/dianpu.html', '_blank')">‹</div>
 
-    <!-- 商品主图区 -->
+<!-- 商品主图区 -->
     <div class="product-banner">
         <img src="https://jypjtp.fwh.bcebos.com/shangpin/xd9800.jpg" class="product-image">
         <div class="product-info">
-            <div class="price"><p style="color: #FF0000;">¥100</p>
-</div>
+            <!-- 价格和销量容器，使用flex布局 -->
+            <div class="price-and-sales-container" style="display: flex; justify-content: space-between; align-items: center;">
+                <!-- 价格信息 -->
+                <div class="price" style="">
+                    <p style="color: #FF0000;">¥100</p>
+                </div>
+                <!-- 销量信息，放置在右边 -->
+                <div class="sales" style="background-color: #FFFFFF; padding: 2px 10px; border-radius: 5px; color: #FF0000; font-size: 14px; display: inline-block;">
+                    已售 5.7万
+                </div>
+            </div>
             <div><p style="color: #000000;">【抖音钻石】9800钻石 直播间钻石 自动充值</p></div>
         </div>
+
     </div>
+
 
     <!-- 活动优惠 -->
     <div class="coupon-box">
