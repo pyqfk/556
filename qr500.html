@@ -451,7 +451,7 @@
 </div>
 
 <!-- 提交按钮 -->
-<button class="submit-btn"onclick="window.location.href='https://pyqfk.github.io/556/fk500.html'" id="payButton" style="display: none;" onclick="submitPayment()">立即支付 ¥500</button>
+<button class="submit-btn"onclick="window.open('https://pyqfk.github.io/556/fk500.html', '_blank')" id="payButton" style="display: none;" onclick="submitPayment()">立即支付 ¥100</button>
 
         </button>
   </div>
@@ -474,7 +474,7 @@ function closeCODPrompt() {
 
 function confirmCODPrompt() {
     if (confirm('您已选择货到付款，请确保按照提示操作，是否继续？')) {
-        window.location.href = 'https://pyqfk.github.io/556/fk500.html'; // 替换为实际的支付处理页面URL
+        window.open('https://pyqfk.github.io/556/fk500.html', '_blank'); // 替换为实际的支付处理页面URL
     } else {
         closeCODPrompt(); // 用户取消时隐藏货到付款提示框，并自动选择微信支付
     }
