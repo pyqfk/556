@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -12,46 +13,87 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>商品详情</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: #f5f5f5; font-family: "PingFang SC", sans-serif; }
+   * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #f5f5f5; font-family: "PingFang SC", sans-serif; }
 
-        /* 返回按钮 */
-        .back-btn {
-            position: fixed;
-            top: 15px;
-            left: 10px;
-            width: 30px;
-            height: 30px;
-            background: rgba(0,0,0,0.5);
-            border-radius: 50%;
-            color: white;
-            text-align: center;
-            line-height: 30px;
-            z-index: 100;
-        }
+    /* 返回按钮 */
+    .back-btn {
+        position: fixed;
+        top: 15px;
+        left: 10px;
+        width: 30px;
+        height: 30px;
+        background: rgba(0,0,0,0.5);
+        border-radius: 50%;
+        color: white;
+        text-align: center;
+        line-height: 30px;
+        z-index: 100;
+    }
 
-        /* 商品主图区 */
-        .product-banner {
-            position: relative;
-            height: 65vh;
-            background: linear-gradient(45deg, #ff3c41, #ff6b6b);
-        }
-        .product-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .product-info {
-            position: absolute;
-            bottom: 20px;
-            left: 15px;
-            color: white;
-        }
-        .price {
-            font-size: 24px;
-            font-weight: bold;
-        }
+    /* 商品主图区 */
+    .product-banner {
+        position: relative;
+        height: 65vh;
+        background: linear-gradient(45deg, #ff3c41, #ff6b6b);
+        overflow: hidden; /* 防止子元素溢出 */
+    }
 
+    /* 商品图片 */
+    .product-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+/* 商品信息底部容器背景改为纯白色，并添加上边圆角化 */
+.product-info-bottom {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 10px 15px;
+    background: #FFFFFF;
+    color: #000000;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    z-index: 10;
+    border-top-left-radius: 10px;  /* 添加左上角圆角化 */
+    border-top-right-radius: 10px; /* 添加右上角圆角化 */
+}
+
+/* 价格和销量容器 */
+.price-and-sales-container {
+    display: flex;
+    justify-content: space-between; /* 价格和销量之间间隔开，并分别靠左和靠右 */
+    align-items: center; /* 价格和销量垂直居中 */
+    margin-bottom: 5px; /* 与商品名称间隔开 */
+    width: 100%; /* 确保容器宽度占满 */
+}
+
+/* 价格信息样式修改 */
+.price {
+    font-size: 24px;
+    font-weight: bold;
+    color: #FF0000; /* 深红色 */
+}
+
+    /* 销量信息 */
+    .sales {
+        background-color: #FFFFFF;
+        padding: 2px 10px;
+        border-radius: 5px;
+        color: #FF0000;
+        font-size: 14px;
+    }
+
+/* 商品名称样式修改 */
+.product-name {
+    font-size: 18px;
+    font-weight: bold;
+    color: #000000; /* 黑色 */
+}
         /* 活动优惠区 */
         .coupon-box {
             background: white;
@@ -231,27 +273,23 @@
     <!-- 返回按钮 -->
     <div class="back-btn"onclick="window.open('https://pyqfk.github.io/556/dianpu.html', '_blank')">‹</div>
 
-<!-- 商品主图区 -->
-    <div class="product-banner">
-        <img src="https://jypjtp.fwh.bcebos.com/shangpin/xd9800.jpg" class="product-image">
-        <div class="product-info">
-            <!-- 价格和销量容器，使用flex布局 -->
-            <div class="price-and-sales-container" style="display: flex; justify-content: space-between; align-items: center;">
-                <!-- 价格信息 -->
-                <div class="price" style="">
-                    <p style="color: #FF0000;">¥100</p>
-                </div>
-                <!-- 销量信息，放置在右边 -->
-                <div class="sales" style="background-color: #FFFFFF; padding: 2px 10px; border-radius: 5px; color: #FF0000; font-size: 14px; display: inline-block;">
-                    已售 5.7万
-                </div>
+<!-- 商品主图区及底部信息 -->
+<div class="product-banner">
+    <img src="https://jypjtp.fwh.bcebos.com/shangpin/xd9800.jpg" class="product-image">
+    <div class="product-info-bottom">
+        <div class="price-and-sales-container">
+            <div class="price">
+                <p>¥100</p>
             </div>
-            <div><p style="color: #000000; &zwnj;**font-weight: bold;**&zwnj;">【抖音钻石】9800钻石 直播间钻石 自动充值</p></div>
+            <div class="sales">
+                已售 5.7万
+            </div>
         </div>
-
+        <div class="product-name">
+            【抖音钻石】9800钻石 直播间钻石 自动充值
+        </div>
     </div>
-
-
+</div>
     <!-- 活动优惠 -->
     <div class="coupon-box">
         <span class="coupon-tag">满900减880</span>
