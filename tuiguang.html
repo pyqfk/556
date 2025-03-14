@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>推广任务中心</title>
+    <style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Microsoft YaHei', 'Segoe UI', sans-serif;
+    }
+
+    body {
+        background: #f8f9fa;
+        line-height: 1.6;
+        padding: 20px 15px 150px;
+        color: #2d3436;
+    }
+
+    .product-detail {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        margin-bottom: 25px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+    }
+
+    h1 {
+        color: #2c3e50;
+        font-size: 26px;
+        margin-bottom: 20px;
+        padding-left: 35px;
+        position: relative;
+    }
+
+    h1:before {
+        content: "🚀";
+        position: absolute;
+        left: 0;
+        top: -2px;
+        font-size: 28px;
+    }
+
+    .scan-count {
+        background: #f0f5ff;
+        border: 2px solid #70a1ff;
+        border-radius: 10px;
+        padding: 15px 20px;
+        margin: 20px 0;
+        text-align: center;
+        font-size: 18px;
+        color: #2d3436;
+        box-shadow: 0 3px 10px rgba(112, 161, 255, 0.1);
+    }
+
+    .scan-count span {
+        color: #ff6b6b;
+        font-weight: bold;
+        font-size: 24px;
+        margin-left: 5px;
+    }
+
+    .propmt-info {
+        background: #fff8f3;
+        border-left: 4px solid #ff9f43;
+        padding: 20px;
+        margin: 25px 0;
+        border-radius: 8px;
+        font-size: 14px;
+        position: relative;
+    }
+
+    .tutorial-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        padding: 12px;
+        background: #70a1ff;
+        color: white;
+        border: none;
+        border-radius: 25px;
+        margin: 15px 0;
+        font-size: 16px;
+        gap: 8px;
+        transition: all 0.3s;
+    }
+
+    .tutorial-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(112, 161, 255, 0.4);
+    }
+
+    .tutorial-content {
+        display: none;
+        padding-top: 15px;
+    }
+
+    .tutorial-img {
+        max-width: 250px;
+        width: 100%;
+        margin: 15px 0;
+        border-radius: 10px;
+        cursor: zoom-in;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.9);
+        z-index: 999;
+        padding: 20px;
+    }
+
+    .modal img {
+        width: 100%;
+        max-width: 600px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .close-btn {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        color: white;
+        font-size: 30px;
+        cursor: pointer;
+    }
+
+    #biao1 {
+        width: 100%;
+        max-width: 500px;
+        border: 2px solid #70a1ff;
+        border-radius: 8px;
+        padding: 12px;
+        margin: 15px 0;
+        resize: vertical;
+        font-size: 14px;
+    }
+
+    input[type="button"] {
+        background: linear-gradient(135deg, #70a1ff, #5352ed);
+        color: white !important;
+        border: none !important;
+        padding: 12px 35px !important;
+        border-radius: 50px !important;
+        font-size: 16px !important;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    input[type="button"]:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(112, 161, 255, 0.4);
+    }
+
+    .poster-container {
+        position: relative;
+        margin: 20px 0;
+    }
+
+    .save-btn {
+        display: block;
+        width: 100%;
+        max-width: 200px;
+        margin: 10px auto;
+        padding: 12px;
+        background: #00cec9;
+        color: white;
+        border-radius: 25px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    .save-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 206, 201, 0.4);
+    }
+
+    img {
+        max-width: 300px;
+        width: 100%;
+        border: 3px solid #fff;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        transition: transform 0.3s;
+        margin: 10px 0;
+        cursor: zoom-in;
+    }
+
+    .fui-btn-fixed-bottom {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: white;
+        padding: 15px;
+        box-shadow: 0 -5px 20px rgba(0,0,0,0.08);
+        z-index: 100;
+    }
+
+    .btn-groups-goods {
+        display: flex;
+        gap: 10px;
+        padding: 0 10px;
+        justify-content: space-between;
+    }
+
+    .btn-groups-goods > div {
+        flex: 1;
+        min-width: 140px;
+        max-width: 49%;
+    }
+
+    .btn-section a, 
+    .icon-item a {
+        display: block !important;
+        padding: 12px 8px !important;
+        border-radius: 25px !important;
+        text-align: center !important;
+        text-decoration: none !important;
+        font-weight: 600 !important;
+        font-size: 14px;
+        line-height: 1.3;
+        white-space: normal;
+        word-break: keep-all;
+        height: auto;
+    }
+
+    .icon-item a {
+        background: linear-gradient(135deg, #00cec9, #0984e3) !important;
+        color: white !important;
+    }
+
+    .btn-section a {
+        background: linear-gradient(135deg, #ff6b6b, #ff4757) !important;
+        color: white !important;
+    }
+
+    footer {
+        text-align: center;
+        padding: 30px 0;
+        color: #666;
+        margin-top: 50px;
+        font-size: 14px;
+    }
+
+    @media (max-width: 768px) {
+        body {
+            padding: 10px;
+        }
+        h1 {
+            font-size: 22px;
+        }
+        .product-detail {
+            padding: 20px;
+        }
+        .btn-groups-goods > div {
+            min-width: 120px;
+        }
+        .btn-section a, 
+        .icon-item a {
+            font-size: 13px !important;
+            padding: 10px 6px !important;
+            line-height: 1.4;
+        }
+        .modal img {
+            max-width: 90%;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .btn-section a {
+            font-size: 12px !important;
+        }
+    }
+    </style>
+</head>
+<body>
+
+<div class="product-detail">
+    <div class="part1">
+        <h1>推广福利</h1>
+        <div class="scan-count">
+            当前已邀请扫码数：<span>7</span>
+        </div>
+        
+        <div class="task-list">
+            <p>✅ 任务1：保存专属图片海报二维码，分享到5个人数100人以上不同的抖音群聊，【分享的群越多完成的越快】，即可免费充值9800钻石</p>
+            <p>✅ 任务2：只需有10人以上扫描你推广的专属图片海报二维码，即可免费充值9800钻石</p>
+        </div>
+    </div>
+</div>
+
+<div class="product-detail">
+    <div class="propmt-info">
+        <span>推广说明</span><br />
+        <font color="#FF0000">1.怎么样才算推广成功？</font><br>
+        将图片海报二维码或推广文本链接发送到群里，必须是5个不同的群，群人数100人以上否则不算，只要有人扫描，就计入邀请人数内，同一ip地址扫码不计入内<br>
+        <font color="#FF0000">2.怎么知道有没有人扫描？</font><br>
+        把图片海报二维码发送出去后，刷新当前页面就可以看到有多少人扫描二维码。当邀请人数达标，点击下方的已完成任务，免费充值9800钻石<br>
+        <font color="#FF0000">3.怎么快速完成推广任务</font><br>
+        打开抖音APP，点开你的关注列表，加入你关注博主的粉丝群，加一些没有进群门槛的粉丝群，一般审批很快。进群就把自己专属的二维码图片或文本推广链接发出去，多加一些粉丝群轻松完成
+        
+        <button class="tutorial-btn" onclick="toggleTutorial()">
+            <span class="arrow">▼</span>
+            <span class="btn-text">展开加群教程</span>
+        </button>
+        
+        <div class="tutorial-content" id="tutorialContent">
+            <font color="#FF0000">加群步骤说明：</font><br>
+            1. 打开抖音APP，点击底部"我"进入个人主页<br>
+            2. 点击"关注"查看已关注博主列表<br>
+            3. 选择有粉丝群的博主，点击"加入粉丝群"<br>
+            4. 只有“加入”字样是可以直接进群的<br>
+            5. 多加一些群，审核速度快一些，进群快一些<br>
+            6. 将保存的推广图片海报或文本链接发送到群内<br>
+            <img src="https://p9-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/0d1f6724a6cd4670913c95e6e657d55d.jpg~tplv-a9rns2rl98-24:720:720.image?rk3s=1fb89129&x-expires=1742514728&x-signature=useOcq6v1JWMfANggWViVlvkpFE%3D"
+                 alt="加群教程图示"
+                 onclick="showModal(this.src)">
+        </div>
+    </div>
+
+    <script>
+    // 复制功能
+    function copyUrl2(){
+        var Url2=document.getElementById("biao1");
+        alert("复制成功，请发送到5个100人以上的QQ群，随便添加几个群发送，多发送完成的就越快");
+        Url2.select();
+        document.execCommand("Copy");
+    }
+
+    // 教程切换
+    function toggleTutorial() {
+        var content = document.getElementById("tutorialContent");
+        var arrow = document.querySelector(".arrow");
+        var btnText = document.querySelector(".btn-text");
+        
+        if (content.style.display === 'none' || !content.style.display) {
+            content.style.display = 'block';
+            arrow.innerHTML = '▲';
+            btnText.textContent = '收起加群教程';
+        } else {
+            content.style.display = 'none';
+            arrow.innerHTML = '▼';
+            btnText.textContent = '展开加群教程';
+        }
+    }
+
+    // 图片放大功能
+    function showModal(imgSrc) {
+        document.getElementById("modalImg").src = imgSrc;
+        document.getElementById("imgModal").style.display = "block";
+    }
+
+    // 关闭弹窗
+    function closeModal() {
+        document.getElementById("imgModal").style.display = "none";
+    }
+
+    // 点击背景关闭
+    window.onclick = function(event) {
+        var modal = document.getElementById("imgModal");
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+
+    // 保存图片功能
+    function savePoster() {
+        var imageUrl = document.getElementById("posterImg").src;
+        var link = document.createElement('a');
+        link.download = '推广海报.png';
+        link.href = imageUrl;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+    // 任务完成提示
+    function taskComplete() {
+        alert("您已成功邀请7人扫码，还差3人即可免费入群，请再接再厉哦");
+    }
+    </script>
+
+    <center>
+        <textarea cols="20" rows="5" id="biao1">https://ncstatic.clewm.net/rsrc/2023/1225/04/0d87a718d48645da39b0d5062a6c51ed.png?x-oss-process=image/resize,w_750/format,gif/sharpen,100/quality,Q_80/interlace,1/auto-orient,1点击地址观看，若提示禁止访问，请复制链接到浏览器打开</textarea><br>
+        <input type="button" onClick="copyUrl2()" value="复制文本链接推广" />
+    </center>
+
+    <center>
+        <p style="color:#ff4757; margin:15px 0;">海报图片推广扫码率更高哦！</p>
+        <h3>↓专属图片海报↓</h3>
+        <p>保存图片海报到手机或者点击放大截图保存</p>
+        
+        <div class="poster-container">
+            <img id="posterImg" 
+                 src="https://ncstatic.clewm.net/rsrc/2023/1225/04/0d87a718d48645da39b0d5062a6c51ed.png" 
+                 alt="推广海报"
+                 onclick="showModal(this.src)">
+            <div class="save-btn" onclick="savePoster()">保存海报到手机</div>
+        </div>
+    </center>
+</div>
+
+<!-- 图片放大模态框 -->
+<div id="imgModal" class="modal">
+    <span class="close-btn" onclick="closeModal()">&times;</span>
+    <img id="modalImg" class="modal-content">
+</div>
+
+<div class="fui-btn-fixed-bottom">
+    <div class="btn-groups-goods">
+        <div class="icon-item">
+            <a href="https://te78.github.io/kefu/1.html">
+                在线客服
+            </a>
+        </div>
+        <div class="btn-section">
+            <a href="javascript:void(0)" onclick="taskComplete()">
+                已完成任务<br><span style="font-size:0.9em">免费充值9800钻石</span>
+            </a>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <div class="version">
+        <p>在线客服: <a href="https://pyqfk
