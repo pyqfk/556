@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -41,7 +42,70 @@
         line-height: 30px;
         z-index: 100;
     }
+    .notification-box {
+        position: absolute;
+        top: 60px;
+        left: 10px;
+        z-index: 20;
+        width: 180px;
+        height: 50px;
+        overflow: hidden;
+        border-radius: 8px;
+        background: rgba(255,255,255,0.96);
+        box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+    }
 
+    .notification-item {
+        padding: 8px 12px;
+        display: flex;
+        align-items: center;
+        position: absolute;
+        width: 100%;
+        animation: bounce 0.8s ease-out;
+    }
+
+    @keyframes bounce {
+        0% { transform: translateY(100%); opacity: 0; }
+        60% { transform: translateY(-10%); }
+        100% { transform: translateY(0); opacity: 1; }
+    }
+
+    .user-avatar {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        margin-right: 10px;
+        border: 2px solid #fff;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .notification-text {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .username {
+        color: #999;
+        font-weight: 500;
+        font-size: 13px;
+        margin-bottom: 2px;
+    }
+
+    .action-info {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .action {
+        color: #000;
+        font-size: 12px;
+    }
+
+    .time {
+        color: #999;
+        font-size: 11px;
+    }
     /* 商品主图区 */
     .product-banner {
         position: relative;
@@ -293,6 +357,595 @@
     </style>
 </head>
 <body>
+  <div class="notification-box" id="notificationBox"></div>
+
+<script>
+// 生成随机时间函数（1-60分钟）
+function getRandomTime() {
+    return `${Math.floor(Math.random() * 59) + 1}分钟前`;
+}
+
+// 静态用户数据
+const staticUsers = [
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_cfcb068e25cab5d4fb5f90c8bac40f0d.jpeg?from=2956013662',
+        name: '🌈苏小**',
+        action: '充值成功'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_d21562843c8c628417bcd4712fc7b137.jpeg?from=2956013662',
+        name: '猪仔二**',
+        action: '正在浏览'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_58f62e508f9939821320805137e484a9.jpeg?from=2956013662',
+        name: '掌管幸运的**',
+        action: '充值成功'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_4723a291e3d55321baf5d69b4a888dca.jpeg?from=2956013662',
+        name: '御姐**',
+        action: '正在浏览'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_a8c240b31eb628f1bdfc41cae68373b8.jpeg?from=2956013662',
+        name: '晨晨宝**',
+        action: '充值成功'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_a9ed69b888f5339508a4a4eef5b8d174.jpeg?from=2956013662',
+        name: '🧸ྀིs**',
+        action: '正在浏览'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-i-0813_o0zmAhDATIS3JfGAXDOtCJ4ZTaAHCegi6yESAA.jpeg?from=2956013662',
+        name: '168…**',
+        action: '充值成功'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_92a5294fdf9a0f82525adf5a3adb3bdf.jpeg?from=2956013662',
+        name: '哈**',
+        action: '正在浏览'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_50d5304d3dba73d75cc11282db87dade.jpeg?from=2956013662',
+        name: 'ʚ CC໊ ɞ**',
+        action: '充值成功'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_11e4ec7c4bf0d8196296c8b149d656d0.jpeg?from=2956013662',
+        name: 'ღ.ČᎥΝÐ**',
+        action: '正在浏览'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_69ef5ddd11f617a620b8751abd0cea94.jpeg?from=2956013662',
+        name: '胖**',
+        action: '充值成功'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/mosaic-legacy_2f1cc000434b645ba23a0.jpeg?from=2956013662',
+        name: '浪荡**',
+        action: '正在浏览'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-i-0813c001_b7cacf55cf8f46a3a7d01fc97341e499.jpeg?from=2956013662',
+        name: '深夜e**',
+        action: '充值成功'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_aa569a91f07e9dca84ea3eac727b04ee.jpeg?from=2956013662',
+        name: '-**',
+        action: '正在浏览'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_52b21894fbb9085581deb3d215644fee.jpeg?from=2956013662',
+        name: '采妮大姐**',
+        action: '充值成功'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-i-0813_84f3abfc55594a6789e3da0655148979.jpeg?from=2956013662',
+        name: 'san**',
+        action: '正在浏览'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_4cac60e7a840c6a77305a31ea7c128cd.jpeg?from=2956013662',
+        name: '童**',
+        action: '充值成功'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_ac823ee478201b697b9b5391746c1ae2.jpeg?from=2956013662',
+        name: '江-佩**',
+        action: '正在浏览'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_c16991c7323e369d86cc4061afd10f25.jpeg?from=2956013662',
+        name: '美美盈**',
+        action: '充值成功'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_0b88795d3212a17a6777d53f82b46001.jpeg?from=2956013662',
+        name: 'ᴋɪᴋɪ**',
+        action: '正在浏览'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_cbbd690bde9a53a9b3c5a65dd2427abc.jpeg?from=2956013662',
+        name: '八筒**',
+        action: '充值成功'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/douyin-user-image-file_8d2deb510442db9fa7b069a796a2963c.jpeg?from=2956013662',
+        name: 'Yuki宝**',
+        action: '正在浏览'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_f8ea7d5368f5b205d1cf91e9bb32049d.jpeg?from=2956013662',
+        name: 'SIMONA**',
+        action: '充值成功'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_c6c3ce7b2ed5fa451f9951766e0eb6fd.jpeg?from=2956013662',
+        name: 'writing**',
+        action: '正在浏览'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-i-0813c001_o0wAiAAi7EA8DeAg09A4BIIjObZ3BfSCNGiz6E.jpeg?from=2956013662',
+        name: 'tim**',
+        action: '充值成功'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_3603dbf706588d8cba1e9459aed89001.jpeg?from=2956013662',
+        name: '抖音♪**',
+        action: '正在浏览'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/mosaic-legacy_49ef002d24786467e4ac.jpeg?from=2956013662',
+        name: 'yy**',
+        action: '充值成功'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-i-0813_000bb3e15f2e452c9d7ef1af2e1e456e.jpeg?from=2956013662',
+        name: 'NUKAS努**',
+        action: '正在浏览'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_e4169ecd2e6408d8c8e4fcfee94e01a2.jpeg?from=2956013662',
+        name: 'Can’t let**',
+        action: '充值成功'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_5da951aafcc0dccaf54e8e809b97d188.jpeg?from=2956013662',
+        name: '🌈XX宝**',
+        action: '正在浏览'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_2db7136b65fd4a287dd37e9985e900f3.jpeg?from=2956013662',
+        name: '¿¿¿¿¿¿**',
+        action: '充值成功'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-i-0813c000-ce_oUISFAAtnAE6DkfvE8FEwhDVALA94XAIELf8e0.jpeg?from=2956013662',
+        name: '憶.**',
+        action: '正在浏览'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/mosaic-legacy_310dd000105c423f3708e.jpeg?from=2956013662',
+        name: '宋家🏠四**',
+        action: '充值成功'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_e1269b6cf3e61550a5020d0a28789ad2.jpeg?from=2956013662',
+        name: '鞋子控**',
+        action: '正在浏览'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_466ec3e6fd032613ee8cf0ad4b35097a.jpeg?from=2956013662',
+        name: 'abc.**',
+        action: '充值成功'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_91f49d462fca2858f2e0c8422481ca79.jpeg?from=2956013662',
+        name: '被折磨**',
+        action: '正在浏览'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_b24b1c98c03926373b4e6b56b7d15f0c.jpeg?from=2956013662',
+        name: '做梦也没**',
+        action: '充值成功'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_470086f48cf2e5b54042653dcba69841.jpeg?from=2956013662',
+        name: '🍀叶妈**',
+        action: '正在浏览'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_27d49bc4d7911817c040fb5c0cd3c58c.jpeg?from=2956013662',
+        name: '大**',
+        action: '充值成功'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_20ed52638edb8a2cd4d9a44557f179e7.jpeg?from=2956013662',
+        name: 'ᴊᴀᴄᴋs**',
+        action: '正在浏览'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-i-0813_oQVyIDgiZPgPABIAA6CuYAIMt1uAEw1LAQik3.jpeg?from=2956013662',
+        name: 'lP·广东千**',
+        action: '充值成功'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-i-0813_61c9628ea35741e3b936515c1062a093.jpeg?from=2956013662',
+        name: 'Maggic.H**',
+        action: '正在浏览'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_57fac5a9ce5af092b5c214148a864c3d.jpeg?from=2956013662',
+        name: 'Sunny**',
+        action: '充值成功'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_c6130966cc82a3fe93e46774983c5cff.jpeg?from=2956013662',
+        name: '无可**',
+        action: '正在浏览'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_aacf5578d40906a65b1d9148c02fa553.jpeg?from=2956013662',
+        name: '徐贤**',
+        action: '充值成功'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-i-0813_a10a552ff43c4e28abde4a7192ecf69b.jpeg?from=2956013662',
+        name: 'JY**',
+        action: '正在浏览'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_d5a5f32847b013c3c9b0b4559a7f4c78.jpeg?from=2956013662',
+        name: 'Nic**',
+        action: '充值成功'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/mosaic-legacy_2ce3a00039f4ceeb1b3f5.jpeg?from=2956013662',
+        name: '蹦圣**',
+        action: '正在浏览'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_3300863381fc97f9a13d81290bab6592.jpeg?from=2956013662',
+        name: 'JiaoL**',
+        action: '充值成功'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_70d6f9dfd3b9eb3bafb8d4d0f66aabe9.jpeg?from=2956013662',
+        name: 'San san **',
+        action: '正在浏览'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_f3fcea74aa6816ec22095dee27e22b05.jpeg?from=2956013662',
+        name: '🌈🌈哈**',
+        action: '充值成功'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-i-0813_a33fd1603608442fb2aeb6dcae3c4354.jpeg?from=2956013662',
+        name: 'che**',
+        action: '正在浏览'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/mosaic-legacy_49f0003ab808138c5744.jpeg?from=2956013662',
+        name: '大**',
+        action: '充值成功'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-i-0813c001_oIBPYLoEgAZiAgBmguDbXXyqBIqA5PxiAAIvp.jpeg?from=2956013662',
+        name: '俗**',
+        action: '正在浏览'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_f613628485f7d2a5b09815bce0cc0ab7.jpeg?from=2956013662',
+        name: '知予**',
+        action: '充值成功'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_3e828feb8b70142adb4472a8c324b7dd.jpeg?from=2956013662',
+        name: '打**',
+        action: '正在浏览'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_000598168a836706ec57fdac3d4f896c.jpeg?from=2956013662',
+        name: 'T-Mac**',
+        action: '充值成功'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-i-0813c001_osBwiHAFEhyBEhAAH8zAwzWCGIOEDBAtgA3fAe.jpeg?from=2956013662',
+        name: '夜**',
+        action: '正在浏览'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/mosaic-legacy_5fd9001d85857001f343.jpeg?from=2956013662',
+        name: '小**',
+        action: '充值成功'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-i-0813_142d25d945ef46fc994a1476533a996e.jpeg?from=2956013662',
+        name: '天空下**',
+        action: '正在浏览'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_dca08b2529d209afbcd7bc51d2f1a1f7.jpeg?from=2956013662',
+        name: '章鱼哥的**',
+        action: '充值成功'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_97646c8eb484c60a46e5c33789df1d9d.jpeg?from=2956013662',
+        name: 'Ivan吃喝**',
+        action: '正在浏览'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_3531b887b27d22cae7804b385c3fc245.jpeg?from=2956013662',
+        name: '@修**',
+        action: '充值成功'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_1c27f86fce9d17b96ea4602d90945ce3.jpeg?from=2956013662',
+        name: '哥哥**',
+        action: '正在浏览'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/mosaic-legacy_317270004f95d410f3c07.jpeg?from=2956013662',
+        name: '!è_**_',
+        action: '充值成功'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-i-0813c001_okwBiDKnADAERCtebAK7BAAPInTQQUQfeG0B1E.jpeg?from=2956013662',
+        name: 'M**',
+        action: '正在浏览'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_151ce624ff8b2d5ebd3ef71fd4dab9c2.jpeg?from=2956013662',
+        name: '众所周知**',
+        action: '充值成功'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/mosaic-legacy_2e7360004a602703960e6.jpeg?from=2956013662',
+        name: '廖晨**',
+        action: '正在浏览'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-i-0813_a300f4b883d94b2d8d2a0a0772257c91.jpeg?from=2956013662',
+        name: '摽**',
+        action: '充值成功'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/mosaic-legacy_2f82b000482bbb17a1468.jpeg?from=2956013662',
+        name: '前程四紧的**',
+        action: '正在浏览'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-i-0813c001_oMbdCDGhILAKQeEaUAIEAUBABOVWe7ipNfqFAI.jpeg?from=2956013662',
+        name: 'W先生**',
+        action: '充值成功'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-i-0813_fce11c0043c9404fa5d1355846c17ca6.jpeg?from=2956013662',
+        name: '幸福在**',
+        action: '正在浏览'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-i-0813_oIneAklEGXEkpAVnAdAI9aQFxfCjicADADzCgM.jpeg?from=2956013662',
+        name: '老黑说**',
+        action: '充值成功'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/mosaic-legacy_2eb5c0002ad0bc731760a.jpeg?from=2956013662',
+        name: '啊啊阿准**',
+        action: '正在浏览'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/mosaic-legacy_3149d000267cccd35e770.jpeg?from=2956013662',
+        name: '7X7**',
+        action: '充值成功'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-i-0813_3b2d2ead28c541359e2bc6cb95f90976.jpeg?from=2956013662',
+        name: '自**',
+        action: '正在浏览'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/8e51002baabb8a01b884.jpeg?from=2956013662',
+        name: '岁月都在**',
+        action: '充值成功'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_9f113e5bfb40ec9ddcae15b5fc303e7a.jpeg?from=2956013662',
+        name: '花美阁海上**',
+        action: '正在浏览'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-i-0813c001_f31498b4cb004c8784510053ae6e8abc.jpeg?from=2956013662',
+        name: '言**',
+        action: '充值成功'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-i-0813_oYqDalACbACeAHn8AX8cSaQgie9ijTEAMDDIAk.jpeg?from=2956013662',
+        name: '大路**',
+        action: '正在浏览'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_567d7cba932a3de727047b696c2782b6.jpeg?from=2956013662',
+        name: '东升小**',
+        action: '充值成功'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_92324e1ee80d876234a32d4fb1573129.jpeg?from=2956013662',
+        name: '大双**',
+        action: '正在浏览'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/mosaic-legacy_31a3300002930923dfc2c.jpeg?from=2956013662',
+        name: '小**',
+        action: '充值成功'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-i-0813_4149b0483733489d814d57a93beb884e.jpeg?from=2956013662',
+        name: '潜**',
+        action: '正在浏览'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-i-0813_d29384b28a2b41349da1cba7f05012c4.jpeg?from=2956013662',
+        name: '熊猫**',
+        action: '充值成功'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_63c91074e52d1987f06aaff2ba37fec1.jpeg?from=2956013662',
+        name: '无敌小**',
+        action: '正在浏览'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-i-0813_owENe4w7uEYEBAWBENQACDDeFMfAAEMADIB5AD.jpeg?from=2956013662',
+        name: '明**',
+        action: '充值成功'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_fc06963b1c3c5d44182e632c674ccd95.jpeg?from=2956013662',
+        name: 'Dan**',
+        action: '正在浏览'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-i-0813c001_og7AOfvdA5rB3MEN7p3EBkfDWIIiEALZACAMeG.jpeg?from=2956013662',
+        name: '瘦瘦的肉**',
+        action: '充值成功'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-i-0813c000-ce_oAnWOGVnEhGoDi5BAMFPuAIiA4Z9qmIiphvAA.jpeg?from=2956013662',
+        name: '咔咔**',
+        action: '正在浏览'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_d6ccbd545172f41d6b4afe8e2a7253e0.jpeg?from=2956013662',
+        name: '💋古**',
+        action: '充值成功'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_0c9e4e916fffcd5c775ce052b209014d.jpeg?from=2956013662',
+        name: '心想事成**',
+        action: '正在浏览'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-i-0813c001_oQ58zi5AiIDEgx6MXSfOCAyAeAPXzBCaAAN2CI.jpeg?from=2956013662',
+        name: '世**',
+        action: '充值成功'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-i-0813_owyCA18NC24yfAABEcnJeTlzghIACgAGTIWsIA.jpeg?from=2956013662',
+        name: 'L._.**',
+        action: '正在浏览'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_dfee6643bcae5ebf813475fa1ad13cad.jpeg?from=2956013662',
+        name: '🌈Y**',
+        action: '充值成功'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-i-0813c001_o8EATz3AxCdA7gedzNIABiiAksBZgqAmmfBMhN.jpeg?from=2956013662',
+        name: '我爱静子**',
+        action: '正在浏览'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-i-0813c000-ce_owbfs2koeQwAHAm9bTfLfLyIgPGAr0Ap9AeALN.jpeg?from=2956013662',
+        name: '摆烂小**',
+        action: '充值成功'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-i-0813c000-ce_owbfs2koeQwAHAm9bTfLfLyIgPGAr0Ap9AeALN.jpeg?from=2956013662',
+        name: '顺你火机能**',
+        action: '正在浏览'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_3f4411ea0ac5e86931541f7cfb89fb44.jpeg?from=2956013662',
+        name: '沐**',
+        action: '充值成功'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_56a005bac05ae8d8dd245bde27a24433.jpeg?from=2956013662',
+        name: '不会讨厌**',
+        action: '正在浏览'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_3e466e1002f34d8455641455a42e1180.jpeg?from=2956013662',
+        name: '下一**',
+        action: '充值成功'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-i-0813c000-ce_o4HhAFUAEQEIwekt4nf6WAdA9ACqnDevEAZTE1.jpeg?from=2956013662',
+        name: '蛋挞**',
+        action: '正在浏览'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-i-0813_owANeflaAso9zzGOI30AmnANCChArl5CgACvE7.jpeg?from=2956013662',
+        name: '乔**',
+        action: '充值成功'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-i-0813c001_oEmHYACnlCIt0Ff8DAARyAI9AAoSb6ygK9QfH8.jpeg?from=2956013662',
+        name: '掏心**',
+        action: '正在浏览'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-i-0813_b0e2168a16f441089738e90b1eeba044.jpeg?from=2956013662',
+        name: 'Fa**',
+        action: '充值成功'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-i-0813_o4iciA3zxARXAiTAi2uECejCNdIfIqOAAkJgEB.jpeg?from=2956013662',
+        name: '夏**',
+        action: '正在浏览'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-i-0813_ocnoCkYrIA65CafAE9Aj9AA4A9Fj1Nf6ogQD4E.jpeg?from=2956013662',
+        name: '听隽（**',
+        action: '充值成功'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_74e9619b51a57e6c09ca7022a477f4dd.jpeg?from=2956013662',
+        name: 'J**.',
+        action: '正在浏览'
+    },
+    {
+        avatar: 'https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-i-0813c000-ce_oo9DkEgeA3AIuAund6eFErWzEEzfaADPvwDqAs.jpeg?from=2956013662',
+        name: '熬佳**、',
+        action: '正在浏览'
+    }
+];
+
+function showRandomUsers() {
+    const box = document.getElementById('notificationBox');
+    let currentIndex = -1;
+    const shuffledUsers = [...staticUsers].sort(() => Math.random() - 0.5);
+
+    function showNext() {
+        currentIndex = (currentIndex + 1) % shuffledUsers.length;
+        const user = shuffledUsers[currentIndex];
+        
+        const item = document.createElement('div');
+        item.className = 'notification-item';
+        item.innerHTML = `
+            <img src="${user.avatar}" class="user-avatar">
+            <div class="notification-text">
+                <span class="username">${user.name}</span>
+                <div class="action-info">
+                    <span class="action">${user.action}</span>
+                    <span class="time">${getRandomTime()}</span>
+                </div>
+            </div>
+        `;
+
+        box.innerHTML = '';
+        box.appendChild(item);
+        setTimeout(showNext, 3000+ Math.random() * 100);
+    }
+
+    showNext();
+}
+
+window.addEventListener('DOMContentLoaded', showRandomUsers);
+</script>
     <!-- 返回按钮 -->
 
  <div class="back-btn" onclick="window.open('https://pyqfk.github.io/556/dianpu.html', '_blank')">‹</div>
