@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>推广任务中心</title>
+    <title>推广中心</title>
     <style>
     * {
         margin: 0;
@@ -256,6 +256,39 @@
         font-size: 14px;
     }
 
+    /* 新增保存提示样式 */
+    #saveTip {
+        display: none;
+        position: absolute;
+        bottom: 70px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(255,255,255,0.95);
+        padding: 15px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        width: 90%;
+        max-width: 280px;
+        z-index: 100;
+    }
+
+    #saveTip p {
+        margin: 8px 0;
+        color: #2d3436;
+        font-size: 14px;
+    }
+
+    #saveTip button {
+        margin-top: 12px;
+        width: 100%;
+        padding: 8px;
+        background: #70a1ff;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+    }
+
     @media (max-width: 768px) {
         body {
             padding: 10px;
@@ -278,6 +311,15 @@
         .modal img {
             max-width: 90%;
         }
+        /* 移动端长按提示 */
+        .poster-container::after {
+            content: "长按图片保存到相册";
+            display: block;
+            color: #666;
+            font-size: 14px;
+            text-align: center;
+            margin-top: 8px;
+        }
     }
 
     @media (max-width: 480px) {
@@ -285,6 +327,55 @@
             font-size: 12px !important;
         }
     }
+
+.poster-title {
+    position: relative;
+    color: #2d3436;
+    font-size: 24px;
+    margin: 20px 0;
+    padding: 12px 0;
+    text-align: center;
+    background: linear-gradient(45deg, #70a1ff, #5352ed);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.poster-title::before,
+.poster-title::after {
+    content: '';
+    display: block;
+    width: 40px;
+    height: 2px;
+    background: linear-gradient(90deg, #ff6b6b, transparent);
+}
+
+.poster-title::after {
+    background: linear-gradient(-90deg, #ff6b6b, transparent);
+}
+
+.decor-left,
+.decor-right {
+    font-size: 20px;
+    color: #70a1ff;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 0.5; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.2); }
+    100% { opacity: 0.5; transform: scale(1); }
+}
+
+@media (max-width: 768px) {
+    .poster-title {
+        font-size: 20px;
+        flex-wrap: wrap;
+    }
+}
     </style>
 </head>
 <body>
@@ -336,7 +427,7 @@
     // 复制功能
     function copyUrl2(){
         var Url2=document.getElementById("biao1");
-        alert("复制成功，请发送到5个100人以上的QQ群，随便添加几个群发送，多发送完成的就越快");
+        alert("复制成功，请发送到5个100人以上的抖音粉丝群，随便添加几个群发送，多发送完成的就越快");
         Url2.select();
         document.execCommand("Copy");
     }
@@ -377,15 +468,18 @@
         }
     }
 
-    // 保存图片功能
-    function savePoster() {
-        var imageUrl = document.getElementById("posterImg").src;
-        var link = document.createElement('a');
-        link.download = '推广海报.png';
-        link.href = imageUrl;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+    // 显示保存提示
+    function showSaveTip() {
+        var tip = document.getElementById('saveTip');
+        tip.style.display = 'block';
+        setTimeout(function(){
+            tip.style.display = 'none';
+        }, 7000);
+    }
+
+    // 关闭提示
+    function closeSaveTip() {
+        document.getElementById('saveTip').style.display = 'none';
     }
 
     // 任务完成提示
@@ -401,15 +495,28 @@
 
     <center>
         <p style="color:#ff4757; margin:15px 0;">海报图片推广扫码率更高哦！</p>
-        <h3>↓专属图片海报↓</h3>
-        <p>保存图片海报到手机或者点击放大截图保存</p>
+        <h3 class="poster-title">
+    <span class="decor-left">◀</span>
+    💎 专属推广海报 💎
+    <span class="decor-right">▶</span>
+</h3>
         
         <div class="poster-container">
             <img id="posterImg" 
                  src="https://p9-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/97b7bd6d0aa14ad5b9482ea88155180f.png~tplv-a9rns2rl98-24:720:720.png?rk3s=1fb89129&x-expires=1742517861&x-signature=mYqEkrMRLn0If0CVLfgr23linfU%3D" 
                  alt="推广海报"
                  onclick="showModal(this.src)">
-            <div class="save-btn" onclick="savePoster()">保存海报到手机</div>
+            
+            <div class="save-btn" onclick="showSaveTip()">
+                点击保存海报图片
+            </div>
+            
+            <div id="saveTip">
+                <p style="color:#666;margin-bottom:8px;">请按以下步骤操作：</p>
+                <p>1. 点击图片放大</p>
+                <p>2. 长按图片 > 保存到相册</p>
+                <button onclick="closeSaveTip()" style="margin-top:8px;">知道了</button>
+            </div>
         </div>
     </center>
 </div>
@@ -434,8 +541,24 @@
         </div>
     </div>
 </div>
+<div class="product-detail">
+    <div class="propmt-info">
 
-
+       
+        
+      
+            <font color="#FF0000">加群步骤说明：</font><br>
+            1. 打开抖音APP，点击底部"我"进入个人主页<br>
+            2. 点击"关注"查看已关注博主列表<br>
+            3. 选择有粉丝群的博主，点击"加入粉丝群"<br>
+            4. 只有“加入”字样是可以直接进群的<br>
+            5. 多加一些群，审核速度快一些，进群快一些<br>
+            6. 将保存的推广图片海报或文本链接发送到群内<br>
+            <img src="https://p9-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/29a0fed3ebbb46a991806d0598d8c7ff.jpg~tplv-a9rns2rl98-24:720:720.image?rk3s=1fb89129&x-expires=1742534012&x-signature=6ZJMUVWFun8q7NThe4v5i7%2FG0Js%3D"
+                 alt="加群教程图示"
+                 onclick="showModal(this.src)">
+        </div>
+    </div>
 
 </body>
 </html>
