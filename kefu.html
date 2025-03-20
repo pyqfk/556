@@ -28,6 +28,8 @@
             justify-content: center;
             transition: all 0.3s ease;
             border: 2px solid #FFFFFF;
+            text-decoration: none !important;
+            outline: none !important;
         }
 
         .back-button::before {
@@ -36,6 +38,12 @@
             font-size: 24px;
             font-weight: 700;
             transform: translateY(-1px);
+            text-decoration: none !important;
+        }
+
+        .back-button:hover {
+            background: rgba(255,255,255,0.2);
+            transform: scale(1.05);
         }
 
         * {
@@ -173,6 +181,10 @@
                 border-radius: 10px;
             }
         }
+
+        #livechat-eye-catcher {
+            display: none !important;
+        }
     </style>
 </head>
 
@@ -224,7 +236,10 @@
         window.__lc = window.__lc || {};
         window.__lc.license = 19087985;
         window.__lc.integration_name = "manual_onboarding";
-        window.__lc.product_name = "livechat";
+        window.__lc.params = [
+            { name: 'hide_default_button', value: true }
+        ];
+        
         (function(n,t,c){
             function i(n){return e._h?e._h.apply(null,n):e._q.push(n)}
             var e={_q:[],_h:null,_v:"2.0",
@@ -240,12 +255,12 @@
                         n.src="https://cdn.livechatinc.com/tracking.js",
                         t.head.appendChild(n)}};
             !n.__lc.asyncInit&&e.init(),n.LiveChatWidget=n.LiveChatWidget||e
+            
+            // 自动弹出功能
+            window.addEventListener('load', function() {
+                setTimeout(() => LiveChatWidget.call('maximize'), 10000);
+            });
         })(window,document,[].slice);
-
-        // 自动弹出设置（2秒延迟）
-        window.addEventListener('load', function() {
-            setTimeout(() => LiveChatWidget.call('maximize'), 3000);
-        });
     </script>
     <noscript>
         <a href="https://www.livechat.com/chat-with/19087985/" rel="nofollow">Chat with us</a>, 
