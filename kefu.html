@@ -1,36 +1,241 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>这里填写标题</title>
-<meta name="keywords" content="这里填写关键词" />
-<meta name="description" content="这里填写说明内容" />
+    <meta charset="utf-8">
+    <title>抖音电商客服中心</title>
+    <meta name="keywords" content="抖音客服, 订单咨询, 售后服务">
+    <meta name="description" content="抖音商城官方客服 7×24小时在线服务">
+    
+    <style type="text/css">
+        :root {
+            --douyin-red: #FE2C55;
+            --dark-bg: #0F0F0F;
+            --card-bg: #1A1A1A;
+        }
 
-<script language="JavaScript" type="text/javascript">
-<!--JS代码位置-->
-</script>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'SF Pro Display', system-ui, sans-serif;
+        }
 
-<style type="text/css">
-<!--CSS样式代码位置-->
-</style>
+        body {
+            background: linear-gradient(135deg, var(--dark-bg) 0%, #2D2D2D 100%);
+            min-height: 100vh;
+            color: #FFFFFF;
+        }
 
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .brand-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .douyin-logo {
+            width: 48px;
+            height: 48px;
+            background: var(--douyin-red);
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            font-weight: 700;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            background: linear-gradient(45deg, #FE2C55 30%, #FFD600 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 15px;
+        }
+
+        .subtitle {
+            color: rgba(255,255,255,0.9);
+            font-size: 1.1em;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 60px;
+        }
+
+        .feature-card {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, 
+                rgba(254,44,85,0.2) 0%, 
+                rgba(254,44,85,0) 70%);
+            transform: rotate(45deg);
+            pointer-events: none;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--douyin-red);
+            box-shadow: 0 10px 30px rgba(254,44,85,0.2);
+        }
+
+        .feature-card h3 {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+            color: #FFF;
+        }
+
+        .feature-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--douyin-red);
+            border-radius: 8px;
+            display: grid;
+            place-items: center;
+        }
+
+        .chat-trigger {
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .start-chat-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: linear-gradient(135deg, #FE2C55 0%, #FF375F 100%);
+            color: white !important;
+            padding: 16px 45px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1em;
+            box-shadow: 0 4px 20px rgba(254,44,85,0.3);
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .start-chat-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 25px rgba(254,44,85,0.5);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 30px 15px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .feature-card {
+                padding: 25px;
+            }
+        }
+    </style>
 </head>
 
 <body>
-<!-- Chatra {literal} -->
-<script>
-    (function(d, w, c) {
-        w.ChatraID = 'ugT2e6FrBCNKX6gCo';
-        var s = d.createElement('script');
-        w[c] = w[c] || function() {
-            (w[c].q = w[c].q || []).push(arguments);
-        };
-        s.async = true;
-        s.src = 'https://call.chatra.io/chatra.js';
-        if (d.head) d.head.appendChild(s);
-    })(document, window, 'Chatra');
-</script>
-<!-- /Chatra {/literal} -->
+    <div class="container">
+        <div class="brand-header">
+            <div class="douyin-logo">🎵</div>
+            <div>
+                <h1>抖音电商客服</h1>
+                <p class="subtitle">您的专属购物助手，随时解决订单、物流、支付等问题</p>
+            </div>
+        </div>
+        
+        <div class="features">
+            <div class="feature-card">
+                <h3>
+                    <span class="feature-icon">📦</span>
+                    订单追踪
+                </h3>
+                <p>实时查询物流信息，异常订单优先处理</p>
+            </div>
+            <div class="feature-card">
+                <h3>
+                    <span class="feature-icon">💳</span>
+                    支付问题
+                </h3>
+                <p>快速解决支付失败、退款查询等问题</p>
+            </div>
+            <div class="feature-card">
+                <h3>
+                    <span class="feature-icon">🎁</span>
+                    售后保障
+                </h3>
+                <p>7天无理由退换货，极速处理通道</p>
+            </div>
+        </div>
 
+        <div class="chat-trigger">
+            <button class="start-chat-btn" onclick="Chatra('openChat', true)">
+                <span>💬 立即咨询</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Chatra 集成 -->
+    <script>
+        (function(d, w, c) {
+            w.ChatraID = 'ugT2e6FrBCNKX6gCo';
+            var s = d.createElement('script');
+            w[c] = w[c] || function() {
+                (w[c].q = w[c].q || []).push(arguments);
+            };
+            s.async = true;
+            s.src = 'https://call.chatra.io/chatra.js';
+            if (d.head) d.head.appendChild(s);
+            
+            window.addEventListener('load', function() {
+                setTimeout(() => Chatra('openChat', true), 1500);
+            });
+        })(document, window, 'Chatra');
+
+        Chatra('setColors', {
+            buttonText: '#ffffff',
+            buttonBg: '#FE2C55',
+            lightboxBg: 'rgba(15,15,15,0.95)',
+            badgeBg: '#FE2C55',
+            messageBg: '#1A1A1A',
+            messageText: '#FFFFFF'
+        });
+
+        Chatra('setButtonAttributes', {
+            visibility: {
+                mobile: {
+                    alwaysVisible: true
+                }
+            }
+        });
+    </script>
 </body>
 </html>
