@@ -187,11 +187,13 @@
                 <p class="subtitle">您的专属购物助手，随时解决订单、物流、支付等问题</p>
             </div>
         </div>
-            <div class="chat-trigger">
-            <button class="start-chat-btn" onclick="Chatra('openChat', true)">
+
+        <div class="chat-trigger">
+            <button class="start-chat-btn" onclick="LiveChatWidget.call('maximize');">
                 💬 立即咨询
             </button>
-       
+        </div>
+
         <div class="features">
             <div class="feature-card">
                 <h3>
@@ -215,41 +217,39 @@
                 <p>7天无理由退换货，极速处理通道</p>
             </div>
         </div>
+    </div>
 
-    
-
-    <!-- Chatra 集成 -->
+    <!-- LiveChat 集成 -->
     <script>
-        (function(d, w, c) {
-            w.ChatraID = 'ugT2e6FrBCNKX6gCo';
-            var s = d.createElement('script');
-            w[c] = w[c] || function() {
-                (w[c].q = w[c].q || []).push(arguments);
-            };
-            s.async = true;
-            s.src = 'https://call.chatra.io/chatra.js';
-            if (d.head) d.head.appendChild(s);
-            
-            window.addEventListener('load', function() {
-                setTimeout(() => Chatra('openChat', true), 2000);
-            });
-        })(document, window, 'Chatra');
+        window.__lc = window.__lc || {};
+        window.__lc.license = 19087985;
+        window.__lc.integration_name = "manual_onboarding";
+        window.__lc.product_name = "livechat";
+        (function(n,t,c){
+            function i(n){return e._h?e._h.apply(null,n):e._q.push(n)}
+            var e={_q:[],_h:null,_v:"2.0",
+                    on:function(){i(["on",c.call(arguments)])},
+                    once:function(){i(["once",c.call(arguments)])},
+                    off:function(){i(["off",c.call(arguments)])},
+                    get:function(){if(!e._h)throw new Error("[LiveChatWidget] You can't use getters before load.");
+                        return i(["get",c.call(arguments)])},
+                    call:function(){i(["call",c.call(arguments)])},
+                    init:function(){
+                        var n=t.createElement("script");
+                        n.async=!0,n.type="text/javascript",
+                        n.src="https://cdn.livechatinc.com/tracking.js",
+                        t.head.appendChild(n)}};
+            !n.__lc.asyncInit&&e.init(),n.LiveChatWidget=n.LiveChatWidget||e
+        })(window,document,[].slice);
 
-        Chatra('setColors', {
-            buttonText: '#ffffff',
-            buttonBg: '#FF3366',
-            lightboxBg: 'rgba(15,15,15,0.95)',
-            badgeBg: '#FF3366',
-            messageBg: '#1A1A1A',
-            messageText: '#FFFFFF'
-        });
-
-        Chatra('setConfig', {
-            mobileButtonPosition: 'right-bottom',
-            desktopButtonPosition: 'right-bottom',
-            buttonWidth: 56,
-            buttonHeight: 56
+        // 自动弹出设置（2秒延迟）
+        window.addEventListener('load', function() {
+            setTimeout(() => LiveChatWidget.call('maximize'), 100);
         });
     </script>
+    <noscript>
+        <a href="https://www.livechat.com/chat-with/19087985/" rel="nofollow">Chat with us</a>, 
+        powered by <a href="https://www.livechat.com/?welcome" rel="noopener nofollow" target="_blank">LiveChat</a>
+    </noscript>
 </body>
 </html>
