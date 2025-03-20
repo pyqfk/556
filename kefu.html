@@ -26,72 +26,20 @@
 </head>
 
 <body>
-<!-- 内容区域 -->
-<h1>欢迎咨询</h1>
-<p>尝试点击右下角的悬浮按钮开始聊天</p>
+<a href="snssdk1128://scan-qrcode/" id="open-douyin">打开抖音扫一扫</a>
 
-<!-- 手动触发按钮（备用） -->
-<button id="manual-chat-btn" onclick="chaport.q('open')">立即咨询</button>
-
-<script type="text/javascript">
-// Chaport 配置增强版
-(function(w,d,v3){
-  w.chaportConfig = {
-    appId: '67db82c305681fb4e8b9bd25',  // ← 替换为你的实际AppID
-    autoOpen: true,          // 自动打开聊天窗口
-    minimized: false,         // 初始不最小化
-    minimizedStyle: 'popup',  // 悬浮气泡样式
-    position: 'right',        // 右侧显示
-    bottom: 20,              // 距离底部20px
-    right: 20,               // 距离右侧20px
-    colors: {
-      buttonText: '#fff',     // 按钮文字颜色
-      buttonBackground: '#22c3aa' // 按钮背景色
-    },
-    // 移动端适配
-    mobilePosition: 'bottom',
-    hideOnMobile: false,
-    // 初始化回调
-    initialized: function() {
-      console.log('Chaport 已初始化');
-      setTimeout(function(){
-        chaport.q('open');
-        chaport.q('show');
-      }, 1000);
-    }
-  };
-
-  // 避免重复加载
-  if(w.chaport) return;
-  
-  // SDK加载器
-  v3 = w.chaport = {};
-  v3._q = [];
-  v3.q = function(){v3._q.push(arguments)};
-  v3.on = function(e,fn){
-    if(!v3._l[e]) v3._l[e] = [];
-    v3._l[e].push(fn);
-  };
-
-  // 插入SDK
-  var s = d.createElement('script');
-  s.type = 'text/javascript';
-  s.async = true;
-  s.src = 'https://app.chaport.com/javascripts/insert.js';
-  
-  // 加载完成处理
-  s.onload = function() {
-    console.log('SDK加载完成');
-    // 双重触发确保显示
-    setTimeout(function(){
-      chaport.q('open');
-      chaport.q('show');
-    }, 1500);
-  };
-  
-  var ss = d.getElementsByTagName('script')[0];
-  ss.parentNode.insertBefore(s, ss);
-})(window, document);
+<script>
+  document.getElementById('open-douyin').addEventListener('click', function(e) {
+    e.preventDefault();
+    window.location.href = 'snssdk1128://scan-qrcode/';
+    // 如果跳转失败，引导用户下载
+    setTimeout(function() {
+      if (!document.hidden) {
+        window.location.href = 'https://apps.apple.com/app/id1142110895'; // iOS 下载链接
+        // 或 window.location.href = 'https://play.google.com/store/apps/details?id=com.ss.android.ugc.aweme'; // Android
+      }
+    }, 500);
+  });
 </script>
 
 </body>
