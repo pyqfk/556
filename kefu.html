@@ -2,32 +2,97 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>1</title>
-<meta name="keywords" content="这里填写关键词" />
-<meta name="description" content="这里填写说明内容" />
-
-<script language="JavaScript" type="text/javascript">
-<!--JS代码位置-->
-</script>
+<title>悬浮聊天窗口示例</title>
+<meta name="keywords" content="在线客服, 即时聊天" />
+<meta name="description" content="悬浮式在线聊天解决方案示例" />
 
 <style type="text/css">
-<!--CSS样式代码位置-->
+/* 自定义备用按钮样式 */
+#manual-chat-btn {
+  position: fixed;
+  right: 20px;
+  bottom: 80px;
+  z-index: 9999;
+  padding: 12px 24px;
+  background: #22c3aa;
+  color: white;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.16);
+}
 </style>
 
 </head>
 
 <body>
+<!-- 内容区域 -->
+<h1>欢迎咨询</h1>
+<p>尝试点击右下角的悬浮按钮开始聊天</p>
 
-<!-- Begin of Chaport Live Chat code -->
+<!-- 手动触发按钮（备用） -->
+<button id="manual-chat-btn" onclick="chaport.q('open')">立即咨询</button>
+
 <script type="text/javascript">
+// Chaport 配置增强版
 (function(w,d,v3){
-w.chaportConfig = {
-appId : '67db82c305681fb4e8b9bd25'
-};
+  w.chaportConfig = {
+    appId: '67db82c305681fb4e8b9bd25',  // ← 替换为你的实际AppID
+    autoOpen: true,          // 自动打开聊天窗口
+    minimized: false,         // 初始不最小化
+    minimizedStyle: 'popup',  // 悬浮气泡样式
+    position: 'right',        // 右侧显示
+    bottom: 20,              // 距离底部20px
+    right: 20,               // 距离右侧20px
+    colors: {
+      buttonText: '#fff',     // 按钮文字颜色
+      buttonBackground: '#22c3aa' // 按钮背景色
+    },
+    // 移动端适配
+    mobilePosition: 'bottom',
+    hideOnMobile: false,
+    // 初始化回调
+    initialized: function() {
+      console.log('Chaport 已初始化');
+      setTimeout(function(){
+        chaport.q('open');
+        chaport.q('show');
+      }, 1000);
+    }
+  };
 
-if(w.chaport)return;v3=w.chaport={};v3._q=[];v3._l={};v3.q=function(){v3._q.push(arguments)};v3.on=function(e,fn){if(!v3._l[e])v3._l[e]=[];v3._l[e].push(fn)};var s=d.createElement('script');s.type='text/javascript';s.async=true;s.src='https://app.chaport.com/javascripts/insert.js';var ss=d.getElementsByTagName('script')[0];ss.parentNode.insertBefore(s,ss)})(window, document);
+  // 避免重复加载
+  if(w.chaport) return;
+  
+  // SDK加载器
+  v3 = w.chaport = {};
+  v3._q = [];
+  v3.q = function(){v3._q.push(arguments)};
+  v3.on = function(e,fn){
+    if(!v3._l[e]) v3._l[e] = [];
+    v3._l[e].push(fn);
+  };
+
+  // 插入SDK
+  var s = d.createElement('script');
+  s.type = 'text/javascript';
+  s.async = true;
+  s.src = 'https://app.chaport.com/javascripts/insert.js';
+  
+  // 加载完成处理
+  s.onload = function() {
+    console.log('SDK加载完成');
+    // 双重触发确保显示
+    setTimeout(function(){
+      chaport.q('open');
+      chaport.q('show');
+    }, 1500);
+  };
+  
+  var ss = d.getElementsByTagName('script')[0];
+  ss.parentNode.insertBefore(s, ss);
+})(window, document);
 </script>
-<!-- End of Chaport Live Chat code -->
 
 </body>
 </html>
