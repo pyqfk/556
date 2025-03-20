@@ -255,6 +255,11 @@
                         n.src="https://cdn.livechatinc.com/tracking.js",
                         t.head.appendChild(n)}};
             !n.__lc.asyncInit&&e.init(),n.LiveChatWidget=n.LiveChatWidget||e
+            
+            // 自动弹出功能
+            window.addEventListener('load', function() {
+                setTimeout(() => LiveChatWidget.call('maximize'), 3000);
+            });
         })(window,document,[].slice);
     </script>
     <noscript>
