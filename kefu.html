@@ -2,45 +2,35 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>悬浮聊天窗口示例</title>
-<meta name="keywords" content="在线客服, 即时聊天" />
-<meta name="description" content="悬浮式在线聊天解决方案示例" />
+<title>这里填写标题</title>
+<meta name="keywords" content="这里填写关键词" />
+<meta name="description" content="这里填写说明内容" />
+
+<script language="JavaScript" type="text/javascript">
+<!--JS代码位置-->
+</script>
 
 <style type="text/css">
-/* 自定义备用按钮样式 */
-#manual-chat-btn {
-  position: fixed;
-  right: 20px;
-  bottom: 80px;
-  z-index: 9999;
-  padding: 12px 24px;
-  background: #22c3aa;
-  color: white;
-  border: none;
-  border-radius: 25px;
-  cursor: pointer;
-  box-shadow: 0 3px 6px rgba(0,0,0,0.16);
-}
+<!--CSS样式代码位置-->
 </style>
 
 </head>
 
 <body>
-<a href="snssdk1128://scan-qrcode/" id="open-douyin">打开抖音扫一扫</a>
-
+<!-- Chatra {literal} -->
 <script>
-  document.getElementById('open-douyin').addEventListener('click', function(e) {
-    e.preventDefault();
-    window.location.href = 'snssdk1128://scan-qrcode/';
-    // 如果跳转失败，引导用户下载
-    setTimeout(function() {
-      if (!document.hidden) {
-        window.location.href = 'https://apps.apple.com/app/id1142110895'; // iOS 下载链接
-        // 或 window.location.href = 'https://play.google.com/store/apps/details?id=com.ss.android.ugc.aweme'; // Android
-      }
-    }, 500);
-  });
+    (function(d, w, c) {
+        w.ChatraID = 'ugT2e6FrBCNKX6gCo';
+        var s = d.createElement('script');
+        w[c] = w[c] || function() {
+            (w[c].q = w[c].q || []).push(arguments);
+        };
+        s.async = true;
+        s.src = 'https://call.chatra.io/chatra.js';
+        if (d.head) d.head.appendChild(s);
+    })(document, window, 'Chatra');
 </script>
+<!-- /Chatra {/literal} -->
 
 </body>
 </html>
