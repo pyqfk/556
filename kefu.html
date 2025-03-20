@@ -1,9 +1,8 @@
-
 <!DOCTYPE html>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>这里填写标题</title>
+<title>1</title>
 <meta name="keywords" content="这里填写关键词" />
 <meta name="description" content="这里填写说明内容" />
 
@@ -18,37 +17,17 @@
 </head>
 
 <body>
+
+<!-- Begin of Chaport Live Chat code -->
 <script type="text/javascript">
 (function(w,d,v3){
-  w.chaportConfig = {
-    appId: '67db82c305681fb4e8b9bd25',
-    autoOpen: true,
-    minimizedStyle: 'popup',
-    // 追加参数确保初始化
-    initialized: function() {
-      chaport.q('open'); // 初始化后立即执行打开
-    }
-  };
+w.chaportConfig = {
+appId : '67db82c305681fb4e8b9bd25'
+};
 
-  if(w.chaport)return;
-  v3=w.chaport={};
-  v3._q=[];v3._l={};v3.q=function(){v3._q.push(arguments)};
-  v3.on=function(e,fn){
-    if(!v3._l[e])v3._l[e]=[];
-    v3._l[e].push(fn)
-  };
-  
-  var s=d.createElement('script');
-  s.type='text/javascript';
-  s.async=true;
-  s.src='https://app.chaport.com/javascripts/insert.js';
-  s.onload = function() {
-    console.log('Chaport SDK 已加载'); // 调试输出
-    chaport.q('open'); // SDK加载完成后强制打开
-  };
-  var ss=d.getElementsByTagName('script')[0];
-  ss.parentNode.insertBefore(s,ss);
-})(window, document);
+if(w.chaport)return;v3=w.chaport={};v3._q=[];v3._l={};v3.q=function(){v3._q.push(arguments)};v3.on=function(e,fn){if(!v3._l[e])v3._l[e]=[];v3._l[e].push(fn)};var s=d.createElement('script');s.type='text/javascript';s.async=true;s.src='https://app.chaport.com/javascripts/insert.js';var ss=d.getElementsByTagName('script')[0];ss.parentNode.insertBefore(s,ss)})(window, document);
 </script>
+<!-- End of Chaport Live Chat code -->
+
 </body>
 </html>
