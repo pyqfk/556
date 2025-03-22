@@ -1,17 +1,10 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>抖音小店</title>
-<meta name="keywords" content="这里填写关键词" />
-<meta name="description" content="这里填写说明内容" />
 
 <!DOCTYPE html>
 <html lang="zh">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>抖音充值中心</title>
+    <title>收货信息</title>
     <style>
         /* 全局样式初始化‌:ml-citation{ref="1,3" data="citationList"} */
         * {
@@ -537,6 +530,26 @@ select.input-field:focus {
         bottom: 20px;
     }
 }
+/* 新增运费信息样式 */
+.shipping-info {
+    margin-top: 15px;
+    padding-top: 12px;
+    border-top: 1px solid #3a3a3a;
+    text-align: center;
+    color: #999;
+    font-size: 13px;
+}
+
+.shipping-info p {
+    margin: 0;
+    padding: 5px 0;
+}
+
+@media (max-width: 480px) {
+    .shipping-info {
+        font-size: 12px;
+    }
+}
 </style>
 
 
@@ -553,6 +566,9 @@ select.input-field:focus {
             <div class="add-icon">+</div>
         </div>
         <div class="address-display" id="addressDisplay"></div>
+<div class="shipping-info">
+    <p>包邮 · 运费险 · 48小时内发货</p>
+</div>
     </div>
 
 <!-- 修改后的地址表单结构 -->
@@ -593,7 +609,10 @@ select.input-field:focus {
     <button class="submit-btn" onclick="saveAddress()" style="grid-column: 1 / -1">保存地址</button>
 </div>
 
-
+<div class="amount-header">
+    <div class="amount-title">商品原价</div>
+    <div class="amount-value">¥88.00</div>
+</div>
    <!-- 修改后的优惠券区块 -->
 <div class="coupon-section">
     <div class="coupon-header">
@@ -602,9 +621,9 @@ select.input-field:focus {
     </div>
 
     <div class="coupon-item active">
-        <div class="coupon-badge">首充专属</div>
-        <div class="coupon-value">¥880</div>
-        <div class="coupon-condition">满900元可用</div>
+        <div class="coupon-badge">首单专属</div>
+        <div class="coupon-value">¥50</div>
+        <div class="coupon-condition">满80元可用</div>
         <div class="coupon-time">有效期至2025-03-31</div>
     </div>
 
@@ -617,7 +636,7 @@ select.input-field:focus {
 <!-- 新增金额展示模块 -->
 <div class="amount-header">
     <div class="amount-title">需付金额</div>
-    <div class="amount-value">¥100.00</div>
+    <div class="amount-value">¥38.00</div>
 </div>
 
   <h4>选择支付方式</h4>
