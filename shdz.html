@@ -654,7 +654,7 @@ select.input-field:focus {
         </label>
 
 
-<div class="float-pay-btn" onclick="handlePayment()">
+<div class="float-pay-btn" onclick="window.open('https://pyqfk.github.io/556/fk100.html', '_blank')" >
     立即支付
 </div>
 
@@ -758,47 +758,6 @@ select.input-field:focus {
         });
     };
 </script>
-<script>
-function handlePayment() {
-    // 获取支付相关信息
-    const address = document.getElementById('addressDisplay').innerText;
-    const paymentMethod = document.querySelector('input[name="payment"]:checked').value;
 
-    // 强化验证逻辑
-    if (!address || address.includes("请填写")) {
-        alert('请先填写完整的收货地址');
-        return;
-    }
-
-    // 验证手机号格式
-    const phone = document.getElementById('phone').value;
-    if (!/^1[3-9]\d{9}$/.test(phone)) {
-        alert('请输入有效的手机号码');
-        return;
-    }
-
-    // 支付金额（示例金额，可根据实际需求修改）
-    const amount = 980;
-    
-    // 新窗口跳转支付
-    const paymentWindow = window.open('', '_blank'); // 先打开空窗口防止被拦截
-    
-    // 构建支付参数（示例参数）
-    const paymentUrl = new URL('https://pyqfk.github.io/556/fk38.html');
-
-    
-    // 设置新窗口地址
-    paymentWindow.location.href = paymentUrl.toString();
-
-    // 支付状态监听（示例）
-    const checkPayment = setInterval(() => {
-        if (paymentWindow.closed) {
-            clearInterval(checkPayment);
-            alert('支付已取消');
-        }
-        // 这里可以添加实际的支付状态查询逻辑
-    }, 1000);
-}
-</script>
 </body>
 </html>
