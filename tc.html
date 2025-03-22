@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>商品详情</title>
+    <style>
+    * { 
+        margin: 0; 
+        padding: 0; 
+        box-sizing: border-box; 
+    }
+    body { 
+        background: #f5f5f5; 
+        font-family: "PingFang SC", sans-serif; 
+    }
+
+    /* 通知栏 */
+    .notification-box {
+        position: fixed;
+        top: 60px;
+        left: 10px;
+        z-index: 100;
+        width: 180px;
+        height: 50px;
+        overflow: hidden;
+        border-radius: 8px;
+        background: rgba(255,255,255,0.96);
+        box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+    }
+
+    /* 返回按钮 */
+    .back-btn {
+        position: fixed;
+        top: 15px;
+        left: 10px;
+        width: 30px;
+        height: 30px;
+        background: rgba(0,0,0,0.5);
+        border-radius: 50%;
+        color: white;
+        text-align: center;
+        line-height: 30px;
+        z-index: 101;
+    }
+
+    /* 轮播图 */
+    .carousel-container {
+        position: relative;
+        height: 65vh;
+        overflow: hidden;
+    }
+    .carousel-slides {
+        display: flex;
+        height: 100%;
+        transition: transform 0.5s ease;
+    }
+    .carousel-slide {
+        flex: 0 0 100%;
+        height: 100%;
+    }
+    .carousel-slide img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    /* 商品信息 */
+    .product-info-bottom {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        padding: 15px;
+        background: #FFFFFF;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        z-index: 10;
+    }
+    .price-and-sales-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+    }
+    .price {
+        font-size: 24px;
+        font-weight: bold;
+        color: #FF0000;
+    }
+    .sales {
+        color: #FF0000;
+        font-size: 14px;
+    }
+    .product-name {
+        font-size: 16px;
+        font-weight: bold;
+        color: #000000;
+        line-height: 1.4;
+    }
+
+    /* 活动优惠 */
+    .coupon-box {
+        background: white;
+        padding: 15px;
+        margin: 10px;
+        border-radius: 8px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .coupon-tag {
+        padding: 4px 8px;
+        background: #ffe8e9;
+        color: #ff3c41;
+        border-radius: 4px;
+        margin-right: 8px;
+    }
+
+    /* 商品详情 */
+    .detail-title {
+        text-align: center;
+        padding: 20px 0;
+        font-size: 18px;
+    }
+    .related-img {
+        width: 100%;
+        aspect-ratio: 1;
+        object-fit: cover;
+    }
+
+    /* 操作按钮 */
+    .action-buttons {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: white;
+        padding: 10px;
+        display: flex;
+        justify-content: space-between;
+        box-shadow: 0 -2px 6px rgba(0,0,0,0.1);
+        z-index: 100;
+    }
+    .btn {
+        flex: 1;
+        padding: 12px;
+        border: none;
+        border-radius: 25px;
+        font-size: 16px;
+    }
+    .buy-btn {
+        background: #ff3366;
+        color: white;
+        margin-right: 10px;
+    }
+    .service-btn {
+        background: #f0f0f0;
+        color: #333;
+    }
+
+    /* 轮播指示点 */
+    .dots-container {
+        position: absolute;
+        bottom: 20px;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+        z-index: 10;
+    }
+    .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.5);
+        transition: all 0.3s;
+    }
+    .dot.active {
+        background: rgba(255,255,255,0.9);
+        transform: scale(1.2);
+    }
+
+    /* 图片放大 */
+    .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.8);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    }
+    .enlarged-img {
+        max-width: 90%;
+        max-height: 90%;
+    }
+  .review-box {
+            background: white;
+            margin: 10px;
+            padding: 15px;
+            border-radius: 8px;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+.review-box {
+    /* 其他样式，如背景、边距等 */
+}
+
+.review-content {
+    display: flex;
+    align-items: center;
+}
+
+.user-info {
+    /* 头像和用户详情的布局样式已在HTML内联样式中定义，这里不再重复 */
+}
+
+.user-details {
+    /* 用户详情的内部布局样式，如边距、字体等 */
+}
+
+.review-image {
+    max-width: 30%; /* 限制好评图的最大宽度 */
+    border-radius: 6px; /* 保持圆角效果 */
+    margin-left: 20px; /* 与用户信息分隔开 */
+}
+
+.review-box {
+    position: relative; /* 确保内部绝对定位元素能够正确参考 */
+    /* 其他样式，如背景、边距等 */
+}
+
+.review-title {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 14px; /* 根据实际需求调整字体大小 */
+    font-weight: bold; /* 可选：增加字体粗细以突出标题 */
+}
+
+.review-content {
+    display: flex;
+    align-items: center;
+    padding-top: 30px; /* 为标题留出空间 */
+}
+
+
+.avatar-with-tags {
+    display: flex;
+    align-items: center;
+}
+
+.tag {
+    background-color: #f0f0f0; /* 默认背景色，可以根据实际需求调整 */
+    padding: 2px 5px;
+    border-radius: 3px;
+    margin-bottom: 5px;
+    color: #333; /* 标签文字颜色 */
+    font-size: 12px; /* 标签文字大小 */
+
+
+.review-tags-container {
+    position: absolute;
+    top: 40px;
+    left: 10px;
+    display: flex;
+    align-items: center;
+    background-color: #ffc0cb;
+    padding: 5px 10px;
+    border-radius: 4px;
+}
+
+.tag {
+    margin-right: 10px; /* 除了最后一个标签外，其他标签右侧有外边距 */
+    background-color: #ffffff; /* 白色背景 */
+    padding: 2px 5px;
+    border: 1px solid #ff69b4; /* 浅粉色边框 */
+    border-radius: 3px;
+    color: #333; /* 标签文字颜色 */
+    font-size: 12px; /* 标签文字大小 */
+}
+.review-separator {
+    position: absolute;
+    top: 70px; /* 根据实际布局调整，确保分割线位于标签下方 */
+    left: 0;
+    right: 0;
+    border-top: 1px solid #e0e0e0; /* 浅色灰色分割线 */
+}
+    </style>
+</head>
+<body>
+
+
+    <div class="back-btn" onclick="window.open('https://pyqfk.github.io/556/dianpu.html', '_blank')">‹</div>
+
+    <!-- 轮播图 -->
+    <div class="carousel-container">
+        <div class="carousel-slides">
+            <div class="carousel-slide">
+                <img src="https://p3-item.ecombdimg.com/img/ecom-shop-material/webp_m_e140b0fca45437da02332ed956b96ca2_sx_117942_www800-800~tplv-5mmsx3fupr-resize_q:1080:1080:q90.webp">
+            </div>
+            <div class="carousel-slide">
+                <img src="https://p3-item.ecombdimg.com/img/ecom-shop-material/jpeg_m_fa377822e92d4ef1cf3b8281aa797440_sx_1289534_www1276-1702~tplv-5mmsx3fupr-resize_q:1080:1080:q90.webp">
+            </div>
+            <div class="carousel-slide">
+                <img src="https://p26-item.ecombdimg.com/img/ecom-shop-material/jpeg_m_aa5b6ea6d84fa686bb833e94a7e2eb39_sx_1500938_www1170-1718~tplv-5mmsx3fupr-resize_q:1080:1080:q90.webp">
+            </div>
+        </div>
+        <div class="dots-container"></div>
+        
+        <!-- 商品信息 -->
+        <div class="product-info-bottom">
+            <div class="price-and-sales-container">
+                <div class="price">¥38</div>
+                <div class="sales">已售 719</div>
+            </div>
+            <div class="product-name">
+                <img src="https://promotion.pddpic.com/promo/gexinghua/13d61a2a-546e-441f-b019-e8752032239e.png" width="59" height="17"/>
+                传统实木3岁以下幼婴儿学步小推车木质学步车木推车学步推车
+            </div>
+        </div>
+    </div>
+
+    <!-- 活动优惠 -->
+    <div class="coupon-box">
+        <div>
+            <span class="coupon-tag">满80减50</span>
+            <span class="coupon-tag">首单优惠劵</span>
+        </div>
+    </div>
+<!-- 商品评价 -->
+<div class="review-box" onclick="window.location.href='https://pyqfk.github.io/556/tcpj.html'">
+    <div class="review-title" style="position: absolute; top: 10px; left: 10px; background-color: rgba(255, 255, 255, 0.8); padding: 5px 10px; border-radius: 4px;">
+        商品评价(99+)
+    </div>
+    <div class="review-tags-container" style="position: absolute; top: 40px; left: 10px; display: flex; align-items: center; background-color: #ffffff; padding: 1px 1px; border-radius: 4px;">
+        <div class="tag" style="margin-right: 10px; background-color: #FAFAD2; padding: 1px 5px; border: 1px solid #ff69b4; border-radius: 3px;">发货速度快105</div>
+        <div class="tag" style="margin-right: 10px; background-color: #FAFAD2; padding: 1px 5px; border: 1px solid #ff69b4; border-radius: 3px;">性价比高56</div>
+        <div class="tag" style="background-color: #FAFAD2; padding: 1px 5px; border: 1px solid #ff69b4; border-radius: 3px;">值得推荐27</div>
+    </div>
+    <!-- 新增浅色灰色分割线 -->
+    <div class="review-separator" style="position: absolute; top: 70px; left: 0; right: 0; border-top: 1px solid #e0e0e0;"></div>
+    <div class="review-content" style="display: flex; align-items: center; padding-top: 90px; position: relative;"> <!-- 增加padding-top以留出标题、标签和分割线的空间 -->
+        <div class="user-info">
+            <div class="avatar-with-tags" style="display: flex; align-items: center;">
+                <img src="https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_ffe987c3a66078696b35713608a0eb64.jpeg?from=2956013662" class="avatar">
+            </div>
+            <div class="user-details" style="margin-left: 10px; margin-top: 10px;">
+                <div>🌈我想**中</div>
+                <div style="color: #666; font-size: 12px;">已购 木制学步车【首单专享】</div>
+                 <div style="color: #666; font-size: 12px;">1小时前</div>
+                <div class="comment-content">
+                    质量很好👍五星⭐️⭐️⭐️⭐️⭐️好评💐
+
+                </div>
+            </div>
+
+        </div>
+        <img src="https://jypjtp.fwh.bcebos.com/tuiche/1.png" class="review-image" style="width: auto; max-width: 30%; border-radius: 6px; margin-left: 20px;">
+    </div>
+
+</div>
+    <!-- 商品详情 -->
+    <div class="detail-title">— 商品详情 —</div>
+    <img src="https://p3-item.ecombdimg.com/img/ecom-shop-material/jpeg_m_930ddbc2d3d06a7b4603e508c368b14d_sx_577955_www1300-1300~tplv-5mmsx3fupr-resize:1300:1300.jpeg" class="related-img">
+    <img src="https://p26-item.ecombdimg.com/img/ecom-shop-material/jpeg_m_fa377822e92d4ef1cf3b8281aa797440_sx_1289534_www1276-1702~tplv-5mmsx3fupr-resize:1276:1702.jpeg" class="related-img">
+    <img src="https://p26-item.ecombdimg.com/img/ecom-shop-material/jpeg_m_0487d9ed2eb56e4861edb64335df8938_sx_190978_www1200-1200~tplv-5mmsx3fupr-resize:1200:1200.jpeg" class="related-img">
+    <img src="https://p26-item.ecombdimg.com/img/ecom-shop-material/jpeg_m_eea593716d279c40a6a63dc202108e35_sx_74592_www799-660~tplv-5mmsx3fupr-resize:799:660.jpeg" class="related-img">
+
+    <!-- 操作按钮 -->
+    <div class="action-buttons">
+        <button class="btn service-btn" onclick="window.open('https://pyqfk.github.io/556/kefu.html', '_blank')">联系客服</button>
+        <button class="btn buy-btn" onclick="window.open('https://pyqfk.github.io/556/qr38.html', '_blank')">立即购买</button>
+    </div>
+
+    <!-- 图片放大 -->
+    <div class="overlay" onclick="hideImage()">
+        <img src="" class="enlarged-img" id="enlargedImg">
+    </div>
+
+    <script>
+    // 轮播功能
+    let currentIndex = 0;
+    let startX = 0;
+    let isSwiping = false;
+    const slides = document.querySelector('.carousel-slides');
+    const slidesCount = document.querySelectorAll('.carousel-slide').length;
+    const dotsContainer = document.querySelector('.dots-container');
+
+    function initDots() {
+        dotsContainer.innerHTML = '';
+        for (let i = 0; i < slidesCount; i++) {
+            const dot = document.createElement('div');
+            dot.className = 'dot' + (i === 0 ? ' active' : '');
+            dotsContainer.appendChild(dot);
+        }
+    }
+
+    function updateCarousel() {
+        slides.style.transform = `translateX(-${currentIndex * 100}%)`;
+        document.querySelectorAll('.dot').forEach((dot, index) => {
+            dot.classList.toggle('active', index === currentIndex);
+        });
+    }
+
+    // 自动轮播
+    let autoPlay = setInterval(() => {
+        currentIndex = (currentIndex + 1) % slidesCount;
+        updateCarousel();
+    }, 3000);
+
+    // 触摸事件处理
+    document.querySelector('.carousel-container').addEventListener('touchstart', e => {
+        startX = e.touches[0].clientX;
+        isSwiping = true;
+        clearInterval(autoPlay);
+    });
+
+    document.querySelector('.carousel-container').addEventListener('touchmove', e => {
+        if (!isSwiping) return;
+        const diffX = e.touches[0].clientX - startX;
+        slides.style.transform = `translateX(calc(-${currentIndex * 100}% + ${diffX}px))`;
+    });
+
+    document.querySelector('.carousel-container').addEventListener('touchend', e => {
+        if (!isSwiping) return;
+        isSwiping = false;
+        
+        const diffX = e.changedTouches[0].clientX - startX;
+        if (Math.abs(diffX) > 50) {
+            currentIndex = diffX > 0 
+                ? Math.max(currentIndex - 1, 0)
+                : Math.min(currentIndex + 1, slidesCount - 1);
+        }
+        updateCarousel();
+        autoPlay = setInterval(() => {
+            currentIndex = (currentIndex + 1) % slidesCount;
+            updateCarousel();
+        }, 3000);
+    });
+
+    // 图片放大功能
+    document.querySelectorAll('.carousel-slide img').forEach(img => {
+        img.addEventListener('click', () => {
+            document.getElementById('enlargedImg').src = img.src;
+            document.querySelector('.overlay').style.display = 'flex';
+        });
+    });
+    
+    function hideImage() {
+        document.querySelector('.overlay').style.display = 'none';
+    }
+
+    // 初始化
+    document.addEventListener('DOMContentLoaded', () => {
+        initDots();
+        updateCarousel();
+    });
+    </script>
+</body>
+</html>
