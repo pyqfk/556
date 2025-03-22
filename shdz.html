@@ -2,9 +2,9 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>行政区划选择系统 - 安全版</title>
+    <title>行政区划选择系统 - 百度地图版</title>
     <style>
-        /* 样式优化 */
+        /* 样式保持原有优化 */
         .container {
             max-width: 800px;
             margin: 2rem auto;
@@ -46,114 +46,77 @@
     </div>
 
 <script>
-// 配置参数（需用户自行修改）
-const CONFIG = {
-    key: 'UGFBZ-XO2KZ-DTCXA-7EDBP-W2F4K-KYFNR', // 替换为有效Key
-    domain: 'pyqfk.github.io',          // 白名单域名
-    enableSN: false                             // 是否启用签名校验
+// 百度地图配置
+const BAIDU_CONFIG = {
+    ak: 'S89EnnZyjlokQEwbtkue4bbAlM80oav5', // 您的AK
+    api_endpoint: 'https://api.map.baidu.com/api_region/v1/list',
+    extensions: 2  // 返回行政区边界坐标
 };
-
-// 腾讯地图API端点
-const API_ENDPOINT = 'https://apis.map.qq.com/ws/district/v1/list';
 
 // 初始化加载
 window.addEventListener('DOMContentLoaded', async () => {
     try {
-        // 环境检测
-        if (!verifyDomain()) {
-            showError('域名未授权访问，请检查白名单配置');
-            return;
-        }
-        
         // 加载省级数据
-        const data = await fetchData({ level: 'province' });
-        renderOptions('province', data);
+        const provinceData = await fetchBaiduData('province');
+        renderOptions('province', provinceData);
     } catch (error) {
         handleError(error);
     }
 });
 
-// 安全数据请求
-async function fetchData(params) {
-    const url = new URL(API_ENDPOINT);
-    const baseParams = {
-        key: CONFIG.key,
-        output: 'jsonp',
-        callback: 'jsonpCallback'
+// 百度API请求封装
+async function fetchBaiduData(level, parentId = null) {
+    const params = {
+        ak: BAIDU_CONFIG.ak,
+        extensions: BAIDU_CONFIG.extensions,
+        output: 'json'
     };
 
-    // 合并参数
-    const finalParams = { ...baseParams, ...params };
-    
-    // 生成签名（如果启用）
-    if (CONFIG.enableSN) {
-        finalParams.sig = await generateSignature(finalParams);
+    // 构造请求参数
+    switch(level) {
+        case 'province':
+            params.region = '中国';
+            break;
+        case 'city':
+            params.region = parentId.toString();
+            break;
+        case 'district':
+            params.region = parentId.toString();
+            params.level = 'district';
+            break;
     }
 
-    // 添加参数到URL
-    Object.entries(finalParams).forEach(([k, v]) => {
+    const url = new URL(BAIDU_CONFIG.api_endpoint);
+    Object.entries(params).forEach(([k, v]) => {
         url.searchParams.append(k, v);
     });
 
-    return new Promise((resolve, reject) => {
-        // JSONP回调处理
-        window.jsonpCallback = (response) => {
-            if (response.status === 0) {
-                resolve(response.result[0]);
-            } else {
-                reject(new Error(`API错误: ${response.message} (代码:${response.status})`));
-            }
-        };
-
-        // 创建脚本标签
-        const script = document.createElement('script');
-        script.src = url;
-        script.onerror = () => reject(new Error('网络请求失败'));
-        document.body.appendChild(script);
-    });
-}
-
-// 签名生成函数（示例，实际应在后端实现）
-async function generateSignature(params) {
-    // 警告：前端暴露SecretKey存在安全风险，生产环境应通过后端生成
-    const secretKey = 'YOUR_SECRET_KEY'; 
-    const paramStr = Object.keys(params)
-        .sort()
-        .map(key => `${key}=${params[key]}`)
-        .join('&');
+    const response = await fetch(url);
+    if (!response.ok) throw new Error(`HTTP错误: ${response.status}`);
     
-    const signStr = `${paramStr}${secretKey}`;
-    const encoder = new TextEncoder();
-    const hash = await crypto.subtle.digest('SHA-256', encoder.encode(signStr));
-    return Array.from(new Uint8Array(hash))
-        .map(b => b.toString(16).padStart(2, '0'))
-        .join('');
+    const data = await response.json();
+    if (data.status !== 0) {
+        throw new Error(`百度API错误: ${data.message} (状态码:${data.status})`);
+    }
+    
+    return data.districts[0]?.districts || [];
 }
 
-// 域名验证
-function verifyDomain() {
-    const currentDomain = window.location.hostname;
-    return currentDomain === CONFIG.domain || 
-           currentDomain.endsWith('.' + CONFIG.domain);
-}
-
-// 渲染选项
+// 渲染选项（适配百度数据结构）
 function renderOptions(targetId, items) {
     const select = document.getElementById(targetId);
     select.disabled = false;
     select.innerHTML = items.map(item => 
-        `<option value="${item.id}">${item.fullname}</option>`
+        `<option value="${item.code}">${item.name}</option>`
     ).join('');
     
-    // 绑定下级加载事件
+    // 动态绑定下级加载
     if (targetId === 'province') {
         select.addEventListener('change', async (e) => {
             try {
-                const data = await fetchData({ 
-                    level: 'city', 
-                    id: e.target.value 
-                });
-                renderOptions('city', data);
+                const cityData = await fetchBaiduData('city', e.target.value);
+                renderOptions('city', cityData);
+                document.getElementById('district').innerHTML = '<option value="">请先选择城市</option>';
             } catch (error) {
                 handleError(error);
             }
@@ -163,11 +126,8 @@ function renderOptions(targetId, items) {
     if (targetId === 'city') {
         select.addEventListener('change', async (e) => {
             try {
-                const data = await fetchData({ 
-                    level: 'district', 
-                    id: e.target.value 
-                });
-                renderOptions('district', data);
+                const districtData = await fetchBaiduData('district', e.target.value);
+                renderOptions('district', districtData);
             } catch (error) {
                 handleError(error);
             }
@@ -175,11 +135,11 @@ function renderOptions(targetId, items) {
     }
 }
 
-// 错误处理
+// 错误处理（保持原有逻辑）
 function handleError(error) {
     console.error(error);
-    const errorMsg = error.message.includes('110') ? 
-        '白名单配置错误，请检查控制台设置' :
+    const errorMsg = error.message.includes('AK') ? 
+        'AK配置错误，请检查控制台设置' :
         error.message;
     showError(errorMsg);
 }
@@ -187,7 +147,7 @@ function handleError(error) {
 function showError(message) {
     const errorDiv = document.getElementById('error');
     errorDiv.style.display = 'block';
-    errorDiv.textContent = `错误: ${message} (当前域名: ${window.location.hostname})`;
+    errorDiv.textContent = `错误: ${message}`;
 }
 </script>
 </body>
