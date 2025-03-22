@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>行政区划选择系统 - 正式版</title>
+    <style>
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            font-family: "Microsoft YaHei", sans-serif;
+            background: #f8f9fa;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 12px 15px;
+            margin: 8px 0;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+        }
+
+        select:focus, input:focus {
+            border-color: #4dabf7;
+            box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.2);
+        }
+
+        .loading {
+            color: #495057;
+            padding: 15px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .error {
+            color: #e03131;
+            padding: 15px;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .retry-btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            background: #339af0;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background 0.3s;
+        }
+
+        .retry-btn:hover {
+            background: #228be6;
+        }
+
+        .cache-info {
+            color: #868e96;
+            font-size: 12px;
+            text-align: right;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 style="color: #2b2d42; text-align: center; margin-bottom: 30px;">📦 收货地址填写</h2>
+        
+        <div class="form-group">
+            <select id="province" onchange="loadChildren('province', this.value)">
+                <option value="">请选择省份</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <select id="city" disabled onchange="loadChildren('city', this.value)">
+                <option value="">请选择城市</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <select id="district" disabled>
+                <option value="">请选择区县</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <input type="text" placeholder="详细地址（如街道门牌号）" id="address">
+        </div>
+        
+        <div class="form-group">
+            <input type="text" placeholder="收货人姓名" id="name">
+        </div>
+        
+        <div class="form-group">
+            <input type="tel" placeholder="联系电话（11位手机号）" pattern="\d{11}" id="phone">
+        </div>
+        
+        <div class="loading" id="loading">正在加载数据...</div>
+        <div class="error" id="error"></div>
+        <button class="retry-btn" onclick="retryLoad()" style="display: none;" id="retryBtn">🔄 重新加载数据</button>
+        <div class="cache-info" id="cacheInfo"></div>
+    </div>
+
+<script>
+// 配置参数（请替换为您的有效Key）
+const CONFIG = {
+    key: 'UGFBZ-XO2KZ-DTCXA-7EDBP-W2F4K-KYFNR',
+    cacheExpire: 86400, // 本地缓存时间（秒）
+    maxRetry: 3,        // 最大重试次数
+    apiEndpoint: 'https://apis.map.qq.com/ws/district/v1/list'
+};
+
+// 初始化执行
+window.onload = () => {
+    checkCache();
+    loadProvince().catch(handleFatalError);
+};
+
+// 缓存管理
+function checkCache() {
+    const lastUpdate = localStorage.getItem('lastUpdate');
+    if (lastUpdate) {
+        const diff = Math.floor((Date.now() - lastUpdate) / 1000);
+        document.getElementById('cacheInfo').textContent = `本地缓存数据（${diff}秒前更新）`;
+    }
+}
+
+// 省级数据加载
+async function loadProvince() {
+    try {
+        showLoading('正在加载省份数据...');
+        
+        // 尝试读取缓存
+        const cacheKey = 'province_data';
+        const cachedData = localStorage.getItem(cacheKey);
+        if (cachedData) {
+            const data = JSON.parse(cachedData);
+            renderOptions('province', data);
+            return;
+        }
+
+        // 发起API请求
+        const params = new URLSearchParams({
+            key: CONFIG.key,
+            level: 'province'
+        });
+        
+        const response = await fetchWithRetry(`${CONFIG.apiEndpoint}?${params}`);
+        const data = await processResponse(response);
+        
+        // 缓存数据
+        localStorage.setItem(cacheKey, JSON.stringify(data));
+        localStorage.setItem('lastUpdate', Date.now());
+        
+        renderOptions('province', data);
+        showLoading('');
+        
+    } catch (error) {
+        handleDataError('省份', error);
+    }
+}
+
+// 下级数据加载
+async function loadChildren(type, code) {
+    try {
+        const levelMap = { province: 'city', city: 'district' };
+        const nextLevel = levelMap[type];
+        showLoading(`正在加载${nextLevel === 'city' ? '城市' : '区县'}数据...`);
+
+        const cacheKey = `${type}_${code}`;
+        const cachedData = localStorage.getItem(cacheKey);
+        if (cachedData) {
+            const data = JSON.parse(cachedData);
+            renderOptions(nextLevel, data);
+            resetChildren(type);
+            return;
+        }
+
+        const params = new URLSearchParams({
+            key: CONFIG.key,
+            level: nextLevel,
+            id: code
+        });
+        
+        const response = await fetchWithRetry(`${CONFIG.apiEndpoint}?${params}`);
+        const data = await processResponse(response);
+        
+        localStorage.setItem(cacheKey, JSON.stringify(data));
+        renderOptions(nextLevel, data);
+        resetChildren(type);
+        showLoading('');
+        
+    } catch (error) {
+        handleDataError('数据', error);
+    }
+}
+
+// 通用请求方法
+async function fetchWithRetry(url, retryCount = 0) {
+    try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        return response;
+    } catch (error) {
+        if (retryCount < CONFIG.maxRetry) {
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            return fetchWithRetry(url, retryCount + 1);
+        }
+        throw error;
+    }
+}
+
+// 处理API响应
+async function processResponse(response) {
+    const data = await response.json();
+    if (data.status !== 0) throw new Error(data.message);
+    return data.result[0] || [];
+}
+
+// 渲染下拉选项
+function renderOptions(targetId, items) {
+    const select = document.getElementById(targetId);
+    select.disabled = false;
+    select.innerHTML = `<option value="">请选择</option>` + 
+        items.map(item => `
+            <option value="${item.id}" 
+                    data-lng="${item.location?.lng}" 
+                    data-lat="${item.location?.lat}">
+                ${item.fullname}
+            </option>
+        `).join('');
+}
+
+// 重置下级菜单
+function resetChildren(currentType) {
+    const targets = {
+        province: ['city', 'district'],
+        city: ['district']
+    }[currentType] || [];
+    
+    targets.forEach(target => {
+        const select = document.getElementById(target);
+        select.innerHTML = `<option value="">请选择</option>`;
+        select.disabled = true;
+    });
+}
+
+// 错误处理
+function handleDataError(type, error) {
+    console.error(`${type}加载错误:`, error);
+    showError(`${type}加载失败: ${error.message}`, true);
+}
+
+function handleFatalError(error) {
+    console.error('致命错误:', error);
+    showError('系统初始化失败，请检查网络连接', true);
+}
+
+// 界面状态控制
+function showLoading(text) {
+    const loading = document.getElementById('loading');
+    loading.textContent = text;
+}
+
+function showError(message, showButton = false) {
+    const errorDiv = document.getElementById('error');
+    errorDiv.textContent = message;
+    document.getElementById('retryBtn').style.display = showButton ? 'block' : 'none';
+    showLoading('');
+}
+
+// 重试机制
+function retryLoad() {
+    document.getElementById('error').textContent = '';
+    document.getElementById('retryBtn').style.display = 'none';
+    localStorage.clear();
+    window.location.reload();
+}
+</script>
+</body>
+</html>
