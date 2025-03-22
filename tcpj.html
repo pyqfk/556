@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>商品评价列表</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #f8f8f8;
+            font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+        }
+        .container {
+            padding: 12px 15px 80px;
+        }
+        .comment-item {
+            background: #fff;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        .nickname {
+            font-size: 14px;
+            color: #333;
+            font-weight: 500;
+        }
+        .content {
+            font-size: 15px;
+            color: #444;
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+        .image-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .comment-img {
+            width: calc(50% - 8px);
+            border-radius: 8px;
+            aspect-ratio: 1/1;
+            object-fit: cover;
+            cursor: pointer;
+        }
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+        }
+        .enlarged-img {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 8px;
+        }
+        .pagination {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            background: #fff;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            box-shadow: 0 -2px 8px rgba(0,0,0,0.05);
+        }
+        .page-btn {
+            width: 45%;
+            height: 44px;
+            border: none;
+            border-radius: 22px;
+            background: #ff9955;
+            color: #fff;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+ /* 悬浮式返回按钮样式调整 */
+    .back-button {
+        position: fixed;
+        top: 20px;
+        right: 20px;  /* 将按钮定位到页面右上角 */
+        z-index: 1000;
+        background-color: #ff3366;
+        color: white;
+        padding: 5px 5px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        /* 添加以下样式以实现居中（相对于页面宽度）的效果，但此处直接定位到右上角，所以不需要额外居中样式 */
+        /* 若需水平居中（不推荐，因为通常返回按钮放在角落），可移除right属性，并添加以下样式：
+        left: 50%;
+        transform: translateX(-50%);
+        但请注意，这将使按钮相对于整个页面宽度居中，而非右上角。*/
+    }
+    </style>
+</head>
+<body>
+    <!-- 悬浮式返回按钮 -->
+    <button class="back-button" onclick="window.history.back()">返回下单</button>
+
+    <div class="container">
+   
+        <div class="comment-item">
+<p>商品评价列表<p>
+        </div>
+
+
+
+
+  <!-- 原始评论项（作为模板） -->
+        <div class="comment-item">
+            <div class="user-info">
+                <img src="https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-i-0813_e297257677a04a75997ad7c3c14ef439.jpeg?from=2956013662" class="avatar" alt="用户头像">
+                <span class="nickname">艿*子🐮<div style="color: #666; font-size: 12px;">1小时前</div></span>
+            </div>
+<div style="color: #666; font-size: 12px;">已购 木制学步车【首单专享】</div>
+            <p class="content">这款婴儿学步车真的很不错！它稳固又安全，宝宝站在上面能保持平衡，走得更自信。设计简洁，颜色也非常讨喜，每次用它的时候宝宝都特别开心，真是帮助宝宝学习走路的好帮手！</p>
+
+        </div>
+
+        <!-- 新增的19个评论项 -->
+        <!-- 评论项 1 -->
+        <div class="comment-item">
+            <div class="user-info">
+                <img src="https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/mosaic-legacy_f6620008d75fb8bc552b.jpeg?from=2956013662
+" class="avatar" alt="用户头像">
+                <span class="nickname">黑*哥<div style="color: #666; font-size: 12px;">2小时前</div></span>
+            </div>
+<div style="color: #666; font-size: 12px;">已购 木制学步车【首单专享】</div>
+
+            <p class="content">服务质量好，态度热情，物流很快，宝宝也喜欢玩，物有所值！</p>
+            <div class="image-grid">
+                <img src="https://jypjtp.fwh.bcebos.com/tuiche/2.png
+" class="comment-img" onclick="showImage(this.src)">
+            </div>
+        </div>
+
+        <!-- 新增的19个评论项 -->
+        <!-- 评论项 1 -->
+        <div class="comment-item">
+            <div class="user-info">
+                <img src="https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_11df712d466bb23ee67edd4d56f971d1.jpeg?from=2956013662
+" class="avatar" alt="用户头像">
+                <span class="nickname">吃*的向导🌸<div style="color: #666; font-size: 12px;">2小时前</div></span>
+            </div>
+<div style="color: #666; font-size: 12px;">已购 木制学步车【首单专享】</div>
+
+            <p class="content">客服售前就很专业了，解答专业问题，售后安装也指导到位，车子质量很好。
+</p>
+            <div class="image-grid">
+                <img src="https://jypjtp.fwh.bcebos.com/tuiche/3.png
+" class="comment-img" onclick="showImage(this.src)">
+            </div>
+        </div>
+        <!-- 新增的19个评论项 -->
+        <!-- 评论项 1 -->
+        <div class="comment-item">
+            <div class="user-info">
+                <img src="https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-i-0813c000-ce_okBjuLIg8fAFuEf5GZ7m3hfPAJDPJEAQPAJPcH.jpeg?from=2956013662
+" class="avatar" alt="用户头像">
+                <span class="nickname">半*.<div style="color: #666; font-size: 12px;">3小时前</div></span>
+            </div>
+<div style="color: #666; font-size: 12px;">已购 木制学步车【首单专享】</div>
+
+            <p class="content">车车非常棒！适合刚学走路的宝宝，又能扶着走路，又能当玩具，安装简单，非常赞👍🏻！这下宝宝可以推着玩咯！
+</p>
+            <div class="image-grid">
+                <img src="https://jypjtp.fwh.bcebos.com/tuiche/4.png
+" class="comment-img" onclick="showImage(this.src)">
+            </div>
+        </div>
+        <!-- 新增的19个评论项 -->
+        <!-- 评论项 1 -->
+        <div class="comment-item">
+            <div class="user-info">
+                <img src="https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_4a23bf10c6b68702853fc7e54f6c80e1.jpeg?from=2956013662
+" class="avatar" alt="用户头像">
+                <span class="nickname">🌱～*aurel flowe<div style="color: #666; font-size: 12px;">1个月前</div></span>
+            </div>
+<div style="color: #666; font-size: 12px;">已购 木制学步车【首单专享】</div>
+            <p class="content">车车很好用，宝宝一岁不到，拿到就推着走了，质量好，有水箱增重不容易倒，玩了好几天了走的越来越好
+。</p>
+            <div class="image-grid">
+                <img src="https://jypjtp.fwh.bcebos.com/tuiche/5.png
+" class="comment-img" onclick="showImage(this.src)">
+            </div>
+        </div>
+        <!-- 新增的19个评论项 -->
+        <!-- 评论项 1 -->
+        <div class="comment-item">
+            <div class="user-info">
+                <img src="https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_4e002ce817d8a24a499a432f328963d9.jpeg?from=2956013662
+" class="avatar" alt="用户头像">
+                <span class="nickname">潮*玉姐<div style="color: #666; font-size: 12px;">3天前</div></span>
+            </div>
+<div style="color: #666; font-size: 12px;">已购 木制学步车【首单专享】</div>
+
+            <p class="content">适合学走路的娃，质量到位，孩子也喜欢玩，已经推荐给了其他需要的宝妈
+</p>
+            <div class="image-grid">
+                <img src="https://jypjtp.fwh.bcebos.com/tuiche/6.png
+" class="comment-img" onclick="showImage(this.src)">
+            </div>
+        </div>
+        <!-- 新增的19个评论项 -->
+        <!-- 评论项 1 -->
+        <div class="comment-item">
+            <div class="user-info">
+                <img src="https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/mosaic-legacy_2d6d100008fe9610b31cb.jpeg?from=2956013662
+" class="avatar" alt="用户头像">
+                <span class="nickname">キ*ララ<div style="color: #666; font-size: 12px;">1天前</div></span>
+            </div>
+<div style="color: #666; font-size: 12px;">已购 木制学步车【首单专享】</div>
+            <p class="content">宝贝特点：好玩 有意思 整理容易度：很容易安装  这款学步车容易安装 宝宝喜欢玩 好评
+</p>
+            <div class="image-grid">
+                <img src="https://jypjtp.fwh.bcebos.com/tuiche/7.png
+" class="comment-img" onclick="showImage(this.src)">
+            </div>
+        </div>
+        <!-- 新增的19个评论项 -->
+        <!-- 评论项 1 -->
+        <div class="comment-item">
+            <div class="user-info">
+                <img src="https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_7382db5befc7873b4fed89a9080e168e.jpeg?from=2956013662
+" class="avatar" alt="用户头像">
+                <span class="nickname">A*na<div style="color: #666; font-size: 12px;">6小时前</div></span>
+            </div>
+<div style="color: #666; font-size: 12px;">已购 木制学步车【首单专享】</div>
+            <p class="content">挺好的孩子九月多月学走路，用这个很方便，好用
+</p>
+            <div class="image-grid">
+                <img src="https://jypjtp.fwh.bcebos.com/tuiche/8.png
+" class="comment-img" onclick="showImage(this.src)">
+            </div>
+        </div>
+        <!-- 新增的19个评论项 -->
+        <!-- 评论项 1 -->
+        <div class="comment-item">
+            <div class="user-info">
+                <img src="https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-i-0813c001_oAxyA95QsHQCfAIdA3Ag2nfXz8HWfeD0CM4IAd.jpeg?from=2956013662
+" class="avatar" alt="用户头像">
+                <span class="nickname">s*per～<div style="color: #666; font-size: 12px;">6小时前</div></span>
+            </div>
+<div style="color: #666; font-size: 12px;">已购 木制学步车【首单专享】</div>
+
+            <p class="content">学步车很好用，颜色好看，实用性高。宝宝推着走很稳
+</p>
+            <div class="image-grid">
+                <img src="https://jypjtp.fwh.bcebos.com/tuiche/9.png
+" class="comment-img" onclick="showImage(this.src)">
+            </div>
+        </div>
+        <!-- 新增的19个评论项 -->
+        <!-- 评论项 1 -->
+        <div class="comment-item">
+            <div class="user-info">
+                <img src="https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-i-0813c001_oEL9lAP9rNAS9hIyC0fNACgB2YPAHPEUeAzOAq.jpeg?from=2956013662
+" class="avatar" alt="用户头像">
+                <span class="nickname">浪*<div style="color: #666; font-size: 12px;">7小时前</div></span>
+            </div>
+<div style="color: #666; font-size: 12px;">已购 木制学步车【首单专享】</div>
+
+            <p class="content">物流很快 收到货之后安装视频就发来了很好安装
+</p>
+            <div class="image-grid">
+
+            </div>
+        </div>
+        <!-- 新增的19个评论项 -->
+        <!-- 评论项 1 -->
+        <div class="comment-item">
+            <div class="user-info">
+                <img src="https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_22d09c3d8adabe90283a56e533026647.jpeg?from=2956013662
+" class="avatar" alt="用户头像">
+                <span class="nickname">胜*体育<div style="color: #666; font-size: 12px;">8小时前</div></span>
+            </div>
+<div style="color: #666; font-size: 12px;">已购 木制学步车【首单专享】</div>
+
+            <p class="content">
+质量挺好的 回来就装上了，安装比较简单，话筒能说话比较惊喜，物超所值
+</p>
+
+        </div>
+        <!-- 新增的19个评论项 -->
+        <!-- 评论项 1 -->
+        <div class="comment-item">
+            <div class="user-info">
+                <img src="https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_f0d49743a3ad335cdb9615eb16c13a76.jpeg?from=2956013662
+" class="avatar" alt="用户头像">
+                <span class="nickname">盼*下班的阿熙<div style="color: #666; font-size: 12px;">8小时前</div></span>
+            </div>
+<div style="color: #666; font-size: 12px;">已购 木制学步车【首单专享】</div>
+
+            <p class="content">学步车收到了，很适合周岁宝宝学走路，还送了电池。
+</p>
+
+
+        </div>
+        <!-- 新增的19个评论项 -->
+        <!-- 评论项 1 -->
+        <div class="comment-item">
+            <div class="user-info">
+                <img src="https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_377c5c64ae73c790bb21b4f63d91b0cd.jpeg?from=2956013662
+" class="avatar" alt="用户头像">
+                <span class="nickname">腾*儿👑🌈⭐️<div style="color: #666; font-size: 12px;">3个月前</div></span>
+            </div>
+<div style="color: #666; font-size: 12px;">已购 木制学步车【首单专享】</div>
+
+            <p class="content">这个车很适合学走路的小朋友，使用效果很不错。
+</p>
+
+        </div>
+        <!-- 新增的19个评论项 -->
+        <!-- 评论项 1 -->
+        <div class="comment-item">
+            <div class="user-info">
+                <img src="https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_f2e0e073db43b1b4c7ab5afa8f4cd0a9.jpeg?from=2956013662
+" class="avatar" alt="用户头像">
+                <span class="nickname">智*果无人槟榔机<div style="color: #666; font-size: 12px;">3小时前</div></span>
+            </div>
+<div style="color: #666; font-size: 12px;">已购 木制学步车【首单专享】</div>
+            <p class="content">很好孩子很喜欢还可以练习走路 现在孩子通过这辆车都会走路了 棒棒哒👍 ❤
+</p>
+
+        </div>
+        <!-- 新增的19个评论项 -->
+        <!-- 评论项 1 -->
+        <div class="comment-item">
+            <div class="user-info">
+                <img src="https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-i-hf2m9xxmck_c67419c44d0f488bb9f096663bdc3752.jpeg?from=2956013662
+" class="avatar" alt="用户头像">
+                <span class="nickname">东*市塘厦壹站式汽车美容服务中心<div style="color: #666; font-size: 12px;">4小时前</div></span>
+            </div>
+<div style="color: #666; font-size: 12px;">已购 木制学步车【首单专享】</div>
+            <p class="content">挺稳当的，宝宝很爱玩，便宜又好用的学步车
+</p>
+
+        </div>
+        <!-- 新增的19个评论项 -->
+        <!-- 评论项 1 -->
+        <div class="comment-item">
+            <div class="user-info">
+                <img src="https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_a3c44cc1bb45df3aad95adb5a3d43dca.jpeg?from=2956013662
+" class="avatar" alt="用户头像">
+                <span class="nickname">明*九点就睡<div style="color: #666; font-size: 12px;">15天前</div></span>
+            </div>
+<div style="color: #666; font-size: 12px;">已购 木制学步车【首单专享】</div>
+            <p class="content">颜色很好看，挺不错的小车 很稳不用担心侧翻 挺实用的
+</p>
+
+        </div>
+        <!-- 新增的19个评论项 -->
+        <!-- 评论项 1 -->
+        <div class="comment-item">
+            <div class="user-info">
+                <img src="https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_673d849cb964113334537b9dd3dc7cdd.jpeg?from=2956013662
+" class="avatar" alt="用户头像">
+                <span class="nickname">喵*球上的汪星人<div style="color: #666; font-size: 12px;">18小时前</div></span>
+            </div>
+<div style="color: #666; font-size: 12px;">已购 木制学步车【首单专享】</div>
+            <p class="content">非常好质量非常好 宝宝很喜欢 介绍朋友买了
+</p>
+
+        </div>
+        <!-- 新增的19个评论项 -->
+        <!-- 评论项 1 -->
+        <div class="comment-item">
+            <div class="user-info">
+                <img src="https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-i-0813_e0b811d7904043f8a21a535b0a20bac8.jpeg?from=2956013662
+" class="avatar" alt="用户头像">
+                <span class="nickname">一*榴莲树🌱<div style="color: #666; font-size: 12px;">4小时前</div></span>
+            </div>
+<div style="color: #666; font-size: 12px;">已购 木制学步车【首单专享】</div>
+            <p class="content">收到货了，马上装上宝宝非常喜欢，推着小车特别开心，还坐地研究起来，喜欢
+</p>
+
+        </div>
+        <!-- 新增的19个评论项 -->
+        <!-- 评论项 1 -->
+        <div class="comment-item">
+            <div class="user-info">
+                <img src="https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_0b6e123754d561e0563939fba2157d02.jpeg?from=2956013662
+" class="avatar" alt="用户头像">
+                <span class="nickname">喜*吃奶盖的🐟<div style="color: #666; font-size: 12px;">8小时前</div></span>
+            </div>
+<div style="color: #666; font-size: 12px;">已购 木制学步车【首单专享】</div>
+            <p class="content">买给我干儿子的小礼物 很好 挺有意思的 内容也丰富
+</p>
+
+        </div>
+        <!-- 新增的19个评论项 -->
+        <!-- 评论项 1 -->
+        <div class="comment-item">
+            <div class="user-info">
+                <img src="https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_141002e3ab91fd04e6c72c1dab3dd893.jpeg?from=2956013662
+" class="avatar" alt="用户头像">
+                <span class="nickname">想*烤肉<div style="color: #666; font-size: 12px;">1天前</div></span>
+            </div>
+<div style="color: #666; font-size: 12px;">已购 木制学步车【首单专享】</div>
+            <p class="content">宝宝用着方便、推着就能走、练习走路很好
+</p>
+
+        </div>
+        <!-- 图片放大层 -->
+        <div class="overlay" onclick="hideImage()">
+            <img src="" class="enlarged-img" id="enlargedImg">
+        </div>
+
+        <!-- 分页按钮 -->
+        <div class="pagination">
+            <button class="page-btn" onclick="nextPage('https://pyqfk.github.io/556/tc.html')">下一页</button>
+        </div>
+    </div>
+
+    <script>
+        function showImage(src) {
+            document.getElementById('enlargedImg').src = src;
+            document.querySelector('.overlay').style.display = 'flex';
+        }
+
+        function hideImage() {
+            document.querySelector('.overlay').style.display = 'none';
+        }
+
+        function prevPage() {
+            alert('上一页功能');
+        }
+
+        function nextPage(url) {
+            if (url) {
+                window.location.href = url;
+            } else {
+                alert('下一页功能（无指定网址）');
+            }
+        }
+    </script>
+</body>
+</html>
