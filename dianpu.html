@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -273,18 +274,22 @@
             border-top: 1px solid #eee;
         }
 
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            color: #666;
-            font-size: 12px;
-            padding: 4px 10px;
-        }
+/* 修改后的导航项样式 */
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #666;
+    font-size: 12px;
+    padding: 4px 10px;
+    text-decoration: none; /* 去除下划线 */
+    cursor: pointer;
+}
 
-        .nav-item.active {
-            color: #ff2c55;
-        }
+/* 保持原有激活状态样式 */
+.nav-item.active {
+    color: #ff2c55;
+}
 .tags {
             display: flex;
             gap: 6px;
@@ -440,20 +445,22 @@
 
         </div>
 
-         <div class="search-bar">  <div class="stats">
-  <div class="stat-item">
+<div class="search-bar">
+    <div class="stats">
+        <div class="stat-item" data-href="https://v.douyin.com/i5g5NQpN/">
             <div class="stat-number">466.4万</div>
             <div class="stat-label">粉丝</div>
         </div>
-        <div class="stat-item">
+        <div class="stat-item" data-href="https://v.douyin.com/i5g5NQpN/">
             <div class="stat-number">5.7万</div>
             <div class="stat-label">销量</div>
         </div>
-        <div class="stat-item">
+        <div class="stat-item" data-href="https://v.douyin.com/i5g5NQpN/">
             <div class="stat-number">1738</div>
             <div class="stat-label">抖音作品</div>
         </div>
-                </div>   </div>
+    </div>
+</div>
 
 
     </div>
@@ -536,20 +543,35 @@
         </div>
     </a>
 </div>
-    <!-- 底部导航 -->
-    <div class="footer-nav">
-        <div class="nav-item active">
-            <span>首页</span>
-        </div>
-        <div class="nav-item">
-            <span>全部商品</span>
-        </div>
-        <div class="nav-item">
-            <span>订单查询</span>
-        </div>
-        <div class="nav-item">
-            <span>联系客服</span>
-        </div>
-    </div>
+<!-- 底部导航 -->
+<div class="footer-nav">
+    <a href="#" class="nav-item active">
+        <span>首页</span>
+    </a>
+    <a href="#" class="nav-item">
+        <span>全部商品</span>
+    </a>
+    <a href="https://pyqfk.github.io/556/wfk.html" class="nav-item">
+        <span>订单查询</span>
+    </a>
+    <a href="https://pyqfk.github.io/556/kefu.html" class="nav-item">
+        <span>联系客服</span>
+    </a>
+</div>
 </body>
+<script>
+// 为统计项添加点击跳转
+document.querySelectorAll('.stat-item').forEach(item => {
+    item.style.cursor = 'pointer'; // 添加手型光标
+    item.addEventListener('click', function() {
+        const urls = {
+            '粉丝': 'https://v.douyin.com/i5g5NQpN/',   // 替换实际粉丝页URL
+            '销量': 'https://v.douyin.com/i5g5NQpN/',  // 替换实际销量页URL
+            '抖音作品': 'https://v.douyin.com/i5g5NQpN/' // 替换实际作品页URL
+        };
+        const label = this.querySelector('.stat-label').textContent;
+        if(urls[label]) window.location.href = urls[label];
+    });
+});
+</script>
 </html>
