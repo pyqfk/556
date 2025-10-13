@@ -1,605 +1,450 @@
-
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>支付</title>
+    <title>微信支付</title>
     <style>
-        /* 微信支付最新视觉规范 */
-        :root {
-            --primary-color: #07C160;
-            --text-dark: #333;
-            --text-light: #666;
-            --border-color: #e5e5e5;
-        }
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'WeChat Sans', sans-serif;
-            -webkit-tap-highlight-color: transparent;
+            font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
         }
-
+        
         body {
-            background: #f8f9fb;
-            font-size: 16px;
+            height: 100vh;
+            overflow: hidden;
+            background: url('https://jypjtp.fwh.bcebos.com/BJJ.png') no-repeat center center;
+            background-size: cover;
+            position: relative;
         }
-
-        /* 支付触发按钮 */
-        .pay-trigger {
-            display: block;
-            width: 85%;
-            margin: 1vh auto;
-            padding: 14px 0;
-            background: var(--primary-color);
-            color: white;
+        
+        /* 支付卡片容器 - 保持58%高度不变 */
+        .payment-container {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 58%; 
+            background: white;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        /* 支付卡片头部 - 减少上下间距 */
+        .payment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 20px; /* 上下间距从12px减至8px */
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .close-btn {
+            width: 30px;
+            height: 30px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="%23000" d="M18.3 5.71a.996.996 0 0 0-1.41 0L12 10.59 7.11 5.7A.996.996 0 1 0 5.7 7.11L10.59 12 5.7 16.89a.996.996 0 1 0 1.41 1.41L12 13.41l4.89 4.89a.996.996 0 1 0 1.41-1.41L13.41 12l4.89-4.89c.38-.38.38-1.02 0-1.4z"/></svg>') no-repeat center;
+            background-size: 20px;
             border: none;
-            border-radius: 12px;
+            cursor: pointer;
+        }
+        
+        .password-link {
+            color: #5A7FFF;
+            font-size: 16px;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        
+        /* 支付信息区域 - 优化布局 */
+        .payment-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 5px 20px 0; /* 上间距从15px减至5px */
+            justify-content: flex-start; /* 改为顶部对齐 */
+        }
+        
+        /* 商户名称和支付金额间距优化 */
+        .merchant-name {
             font-size: 18px;
             font-weight: 500;
+            color: #333;
+            text-align: center;
+            margin-bottom: 5px; /* 减小间距 */
+        }
+        
+        .payment-amount {
+            font-size: 40px;
+            font-weight: 600;
+            color: #333;
+            text-align: center;
+            margin-bottom: 5px; /* 减小间距 */
+        }
+        
+        .divider {
+            height: 1px;
+            background: #f0f0f0;
+            margin: 8px 0; /* 减小间距 */
+        }
+        
+        .payment-method-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px; /* 减小间距 */
+        }
+        
+        .payment-method-title {
+            font-size: 16px;
+            color: #333;
+        }
+        
+        .change-link {
+            color: #999;
+            font-size: 16px;
+            text-decoration: none;
+        }
+        
+        .payment-method-area {
+            background: #FFF9E6;
+            border-radius: 10px;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .payment-method-left {
+            display: flex;
+            align-items: center;
+        }
+        
+        .payment-logo {
+            width: 30px;
+            height: 30px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="%23FFC300"/><text x="12" y="16" text-anchor="middle" font-size="12" fill="white">¥</text></svg>') no-repeat center;
+            background-size: contain;
+            margin-right: 10px;
+        }
+        
+        .payment-method-text {
+            font-size: 16px;
+            color: #333;
+        }
+        
+        .checkmark {
+            width: 20px;
+            height: 20px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="%2307C160" d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>') no-repeat center;
+            background-size: contain;
+        }
+        
+        /* 支付按钮 - 优化位置 */
+        .pay-button {
+            background: linear-gradient(90deg, #07C160, #09B057);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 15px;
+            font-size: 18px;
+            font-weight: 500;
+            width: calc(100% - 40px);
+            margin: 0 20px 15px; /* 移除上边距 */
             cursor: pointer;
-            box-shadow: 0 4px 16px rgba(7,193,96,0.15);
-            transition: transform 0.1s;
+            transition: all 0.2s;
+            box-shadow: 0 4px 10px rgba(7, 193, 96, 0.3);
         }
-
-        .pay-trigger:active {
+        
+        .pay-button:active {
             transform: scale(0.98);
+            box-shadow: 0 2px 5px rgba(7, 193, 96, 0.3);
         }
-
-        /* 支付弹窗容器 */
-        .pay-modal {
-            display: none;
+        
+        /* 支付处理状态 - 优化布局 */
+        .payment-processing {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        
+        .payment-processing.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        
+        .merchant-name-top {
+            position: absolute;
+            top: 15px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 18px;
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .wechat-logo {
+            width: 80px;
+            height: 80px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="%2307C160" d="M8.4,10.2h1.2v1.2H8.4V10.2z M14.4,10.2h1.2v1.2h-1.2V10.2z M11.8,3C7.2,3,3.5,6.5,3.5,10.9c0,2.2,1,4.1,2.6,5.4l-0.7,2.5l2.7-0.7c1.3,0.7,2.8,1.1,4.4,1.1c4.6,0,8.3-3.5,8.3-7.9C20.1,6.5,16.4,3,11.8,3z M11.8,16.5c-1.3,0-2.5-0.3-3.6-0.9l-0.2-0.1l-1.8,0.5l0.5-1.8l-0.1-0.2c-0.6-1-0.9-2.2-0.9-3.5c0-3.1,2.7-5.6,6.1-5.6c1.6,0,3.1,0.6,4.2,1.7c1.1,1.1,1.7,2.6,1.7,4.2C17.4,13.8,14.9,16.5,11.8,16.5z"/></svg>') no-repeat center;
+            background-size: contain;
+            margin-bottom: 10px;
+        }
+        
+        .wechat-text {
+            font-size: 16px;
+            color: #999;
+            margin-bottom: 20px;
+        }
+        
+        .loading-dots {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #ccc;
+            margin: 0 5px;
+            animation: dotFade 1.5s infinite;
+        }
+        
+        .dot:nth-child(2) {
+            animation-delay: 0.5s;
+        }
+        
+        .dot:nth-child(3) {
+            animation-delay: 1s;
+        }
+        
+        @keyframes dotFade {
+            0%, 100% { opacity: 0.1; }
+            50% { opacity: 1; }
+        }
+        
+        /* 面容ID弹窗 */
+        .faceid-modal {
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            animation: modalFade 0.3s;
-        }
-
-        /* 支付内容区域 */
-        .pay-dialog {
-            position: absolute;
+            right: 0;
             bottom: 0;
-            width: 100%;
-            background: #fff;
-            border-radius: 24px 24px 0 0;
-            animation: dialogSlide 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-        }
-
-        /* 头部区域 */
-        .pay-header {
-            padding: 20px;
-            border-bottom: 1px solid var(--border-color);
-            position: relative;
-        }
-
-        .close-btn {
-            width: 24px;
-            height: 24px;
-            position: absolute;
-            left: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBkPSJNMTkgNi40MUwxNy41OSA1IDEyIDEwLjU5IDYuNDEgNSA1IDYuNDEgMTAuNTkgMTIgNSAxNy41OSA2LjQxIDE5IDEyIDEzLjQxIDE3LjU5IDE5IDE5IDE3LjU5IDEzLjQxIDEyIDE5IDYuNDF6IiBmaWxsPSIjNjY2Ii8+PC9zdmc+");
-            opacity: 0.8;
-            transition: opacity 0.2s;
-        }
-
-        .close-btn:active {
-            opacity: 1;
-        }
-
-        .security-tip {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            color: var(--text-light);
-            font-size: 15px;
-        }
-
-        .secure-logo {
-            width: 20px;
-            height: 20px;
-        }
-
-        /* 金额显示 */
-        .pay-amount {
-            padding: 28px 0;
-            text-align: center;
-        }
-
-        .price {
-            color: var(--text-dark);
-            font-size: 28px;
-            font-weight: 600;
-            letter-spacing: 1px;
-        }
-
-        /* 密码输入区 */
-        .pwd-container {
-            padding: 0 20px 24px;
-        }
-
-        .pwd-dots {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin: 20px auto;
-        }
-
-        .pwd-dot {
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            background: #ddd;
-            transition: all 0.2s;
-        }
-
-        .pwd-dot.active {
-            background: var(--text-dark);
-            transform: scale(1.2);
-        }
-
-        /* 数字键盘 */
-        .num-keyboard {
-            background: #f8f9fb;
-            padding: 12px 0;
-            border-top: 1px solid var(--border-color);
-        }
-
-        .key-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 16px;
-            margin-bottom: 8px;
-        }
-
-        .key {
-            width: 30%;
-            height: 56px;
-            background: #fff;
-            border: none;
-            border-radius: 12px;
-            font-size: 24px;
-            color: var(--text-dark);
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .key:active {
-            background: #f0f0f0;
-            transform: scale(0.95);
-        }
-
-        .func-btn {
-            font-size: 17px;
-            color: var(--text-light);
-        }
-
-        /* 动画效果 */
-        @keyframes modalFade {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        @keyframes dialogSlide {
-            from { transform: translateY(100%); }
-            to { transform: translateY(0); }
-        }
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
-        }
-
-        body {
-            background: #fff;
-            min-height: 100vh;
+            background: rgba(0, 0, 0, 0.7);
             display: flex;
             flex-direction: column;
-        }
-
-        .container {
-            flex: 1;
-            padding: 40px 24px 24px;
-            max-width: 375px;
-            margin: 0 auto;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
-        }
-
-        body {
-            background: #f0f0f0;
-            height: 100vh;
-            position: relative;
-        }
-
-
-        /* 主容器 */
-        .main-container {
-            padding: 40px 24px;
-            text-align: center;
-            max-width: 375px;
-            margin: 0 auto;
-        }
-
-        /* 商品信息 */
-        .product-info {
-            margin-bottom: 32px;
-        }
-
-.product-name {
-    font-size: 18px;
-    color: #333;
-    line-height: 1.5;
-    margin-bottom: 12px;
-    font-weight: 700; /* 新增加粗 */
-}
-
-        .price {
-            font-size: 28px;
-            color: #333;
-            font-weight: 600;
-            margin: 16px 0;
-            letter-spacing: 1px;
-        }
-
-               /* 新增收款方样式 */
-        .payee-info {
-            background: #fff;
-            border-radius: 8px;
-            margin: 24px 0;
-            padding: 16px;
-            width: 100%; /* 新增 */
-            box-shadow: 0 2px 12px rgba(0,0,0,0.05); /* 新增阴影 */
-        }
-
-        .payee-row {
-            display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
-            width: 100%; /* 新增 */
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
         }
-
-        .payee-title {
-            font-size: 14px;
-            color: #666;
-            white-space: nowrap; /* 新增防止换行 */
-            flex-shrink: 0; /* 新增禁止收缩 */
+        
+        .faceid-modal.active {
+            opacity: 1;
+            pointer-events: all;
         }
-
-        .payee-name {
+        
+        .faceid-container {
+            background: #F5F5F7;
+            border-radius: 20px;
+            width: 280px;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .faceid-icon {
+            width: 180px;
+            height: 180px;
+            background: #E8E8E8;
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 15px;
+            cursor: pointer;
+        }
+        
+        .scan-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0.8), rgba(255,255,255,0));
+            animation: scan 2s infinite linear;
+        }
+        
+        @keyframes scan {
+            0% { top: 0; }
+            100% { top: 100%; }
+        }
+        
+        .faceid-label {
             font-size: 16px;
             color: #333;
             font-weight: 500;
-            text-align: right; /* 新增右对齐 */
-            flex-grow: 1; /* 新增自动扩展 */
-            padding-left: 20px; /* 新增间距 */
-            overflow: hidden;
-            text-overflow: ellipsis; /* 新增超长显示省略号 */
+            margin-bottom: 15px;
         }
-
-        /* 安全提示 */
-        .security-notice {
-            position: absolute;
-            bottom: 16px;
-            width: 100%;
-            text-align: center;
-            font-size: 12px;
-            color: #999;
-            padding: 0 24px;
+        
+        .cancel-button {
+            background: none;
+            border: none;
+            color: #007AFF;
+            font-size: 17px;
+            font-weight: 500;
+            padding: 8px 16px;
+            cursor: pointer;
         }
-/* 更新提示框样式 */
-#timeoutAlert {
-    /* 保持原有定位样式 */
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: rgba(0,0,0,0.9);
-    color: #fff;
-    padding: 20px 15px;
-    border-radius: 8px;
-    width: 90%;
-    max-width: 300px;
-    text-align: center;
-    z-index: 9999;
-    opacity: 0;
-    animation: alertShow 0.5s ease forwards;
-    box-sizing: border-box;
-}
-
-.alert-title {
-    font-size: 16px;
-    font-weight: 600;
-    margin: 0 0 10px 0;
-    color: #fff;
-}
-
-.alert-subtitle {
-    font-size: 14px;
-    line-height: 1.4;
-    color: rgba(255,255,255,0.9);
-    margin: 0 0 15px 0;
-    word-break: break-word;
-}
-
-.confirm-btn {
-    background: #fff;
-    color: #333;
-    border: none;
-    border-radius: 4px;
-    padding: 8px 25px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-
-.confirm-btn:active {
-    transform: scale(0.95);
-    opacity: 0.9;
-}
-
-/* 保持原有动画 */
-@keyframes alertShow {
-    from {
-        opacity: 0;
-        transform: translate(-50%, -40%);
-    }
-    to {
-        opacity: 1;
-        transform: translate(-50%, -50%);
-    }
-}
-
-@keyframes alertHide {
-    from {
-        opacity: 1;
-        transform: translate(-50%, -50%);
-    }
-    to {
-        opacity: 0;
-        transform: translate(-50%, -60%);
-    }
-}
+        
+        /* 支付成功提示 */
+        .success-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 12px;
+            font-size: 18px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        
+        .success-message.active {
+            opacity: 1;
+        }
+        
+        /* 底部安全区域 */
+        .safe-area {
+            height: env(safe-area-inset-bottom);
+            background: white;
+        }
     </style>
 </head>
 <body>
-    <div class="main-container">
-        <!-- 商品信息 -->
-        <div class="product-info">
-            <div class="product-name">Q币（为1**756购买）</div>
-            <div class="price">￥100.00</div>
+    <!-- 支付卡片 -->
+    <div class="payment-container">
+        <div class="payment-header">
+            <button class="close-btn"></button>
+            <a href="#" class="password-link">使用密码</a>
         </div>
-
-        <!-- 新版收款方布局 -->
-        <div class="payee-info">
-            <div class="payee-row">
-                <span class="payee-title">收款方</span>
-                <span class="payee-name">深圳市腾讯计算机有限公司</span>
-            </div>
-        </div>
-
-    </div>
-   <button class="pay-trigger">立即支付</button>
-
-<!-- 修改提示框结构 -->
-<div id="timeoutAlert" style="display: none;">
-    <div class="alert-content">
-        <h3 class="alert-title">支付失败</h3>
-        <p class="alert-subtitle">由于创建订单长时间未付款，订单已取消，如有付款已自动退回，请重新下单</p>
-        <button class="confirm-btn">确定</button>
-    </div>
-</div>
-    <!-- 安全提示 -->
-    <div class="security-notice">
-        支付安全由中国人民财产保险股份有限公司承保
-        </div>
-    </div>
-
-
-    <div class="pay-modal" id="payModal">
-        <div class="pay-dialog">
-            <div class="pay-header">
-                <div class="close-btn"></div>
-                <div class="security-tip">
-                  
-                    <span>微信安全支付</span>
-                </div>
-            </div>
-
-            <div class="pay-amount">
-                <p class="price">￥100.00</p>
-            </div>
-
-            <div class="pwd-container">
-                <div class="pwd-dots">
-                    <div class="pwd-dot"></div>
-                    <div class="pwd-dot"></div>
-                    <div class="pwd-dot"></div>
-                    <div class="pwd-dot"></div>
-                    <div class="pwd-dot"></div>
-                    <div class="pwd-dot"></div>
-                </div>
-                <input type="password" id="pwdInput" maxlength="6" autocomplete="off" readonly 
-                       style="opacity: 0; height: 0; width: 0; position: absolute;">
-            </div>
-
-            <div class="num-keyboard">
-                <div class="key-row">
-                    <button class="key">1</button>
-                    <button class="key">2</button>
-                    <button class="key">3</button>
-                </div>
-                <div class="key-row">
-                    <button class="key">4</button>
-                    <button class="key">5</button>
-                    <button class="key">6</button>
-                </div>
-                <div class="key-row">
-                    <button class="key">7</button>
-                    <button class="key">8</button>
-                    <button class="key">9</button>
-                </div>
-                <div class="key-row">
-                    <button class="key func-btn">清空</button>
-                    <button class="key">0</button>
-                    <button class="key func-btn">⌫</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // 支付模块初始化
-        const modal = document.getElementById('payModal');
-        const trigger = document.querySelector('.pay-trigger');
-        const closeBtn = document.querySelector('.close-btn');
-        const keys = document.querySelectorAll('.key');
-        const pwdInput = document.getElementById('pwdInput');
-        const dots = document.querySelectorAll('.pwd-dot');
         
-        let password = '';
-        let errorCount = 0;
-
-        // 打开支付弹窗
-        trigger.addEventListener('click', () => {
-            modal.style.display = 'block';
-            pwdInput.focus();
+        <div class="payment-info">
+            <div class="merchant-name">倍贝优家居小店</div>
+            <div class="payment-amount">¥1.00</div>
+            
+            <div class="divider"></div>
+            
+            <div class="payment-method-header">
+                <div class="payment-method-title">付款方式</div>
+                <a href="#" class="change-link">更改</a>
+            </div>
+            
+            <div class="payment-method-area">
+                <div class="payment-method-left">
+                    <div class="payment-logo"></div>
+                    <div class="payment-method-text">零钱</div>
+                </div>
+                <div class="checkmark"></div>
+            </div>
+        </div>
+        
+        <button class="pay-button" id="pay-button">支付</button>
+        <div class="safe-area"></div>
+        
+        <!-- 支付处理状态 -->
+        <div class="payment-processing" id="payment-processing">
+            <div class="merchant-name-top">倍贝优家居小店</div>
+            <div class="wechat-logo"></div>
+            <div class="wechat-text">微信支付</div>
+            <div class="loading-dots">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 面容ID弹窗 -->
+    <div class="faceid-modal" id="faceid-modal">
+        <div class="faceid-container">
+            <div class="faceid-icon" id="faceid-icon">
+                <div class="scan-line"></div>
+            </div>
+            <div class="faceid-label">面容ID</div>
+            <button class="cancel-button" id="cancel-button">取消</button>
+        </div>
+    </div>
+    
+    <!-- 支付成功提示 -->
+    <div class="success-message" id="success-message">支付成功</div>
+    
+    <script>
+        // 支付按钮点击事件
+        document.getElementById('pay-button').addEventListener('click', function() {
+            // 显示支付处理状态
+            document.getElementById('payment-processing').classList.add('active');
+            
+            // 显示面容ID弹窗
+            setTimeout(function() {
+                document.getElementById('faceid-modal').classList.add('active');
+            }, 500);
         });
-
-        // 关闭支付弹窗
-        closeBtn.addEventListener('click', () => {
-            modal.style.display = 'none';
-            resetInput();
+        
+        // 面容ID图标点击事件（模拟验证）
+        document.getElementById('faceid-icon').addEventListener('click', function() {
+            // 关闭面容ID弹窗
+            document.getElementById('faceid-modal').classList.remove('active');
+            
+            // 显示支付成功提示
+            const successMessage = document.getElementById('success-message');
+            successMessage.classList.add('active');
+            
+            // 3秒后隐藏提示
+            setTimeout(function() {
+                successMessage.classList.remove('active');
+                // 隐藏支付处理状态
+                document.getElementById('payment-processing').classList.remove('active');
+            }, 3000);
         });
-
-        // 点击外部关闭
-        window.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                modal.style.display = 'none';
-                resetInput();
-            }
+        
+        // 取消按钮点击事件
+        document.getElementById('cancel-button').addEventListener('click', function() {
+            // 关闭面容ID弹窗
+            document.getElementById('faceid-modal').classList.remove('active');
+            // 隐藏支付处理状态
+            document.getElementById('payment-processing').classList.remove('active');
         });
-
-        // 键盘输入处理
-        keys.forEach(key => {
-            key.addEventListener('click', () => {
-                const action = key.textContent;
-                
-                switch(action) {
-                    case '⌫':
-                        if (password.length > 0) {
-                            password = password.slice(0, -1);
-                            updateDots();
-                        }
-                        break;
-                    case '清空':
-                        password = '';
-                        updateDots();
-                        break;
-                    default:
-                        if (password.length < 6 && /\d/.test(action)) {
-                            password += action;
-                            updateDots();
-                        }
-                }
-
-                // 密码输入完成处理
-                if (password.length === 6) {
-                    handlePayment();
-                }
-            });
+        
+        // 关闭按钮点击事件
+        document.querySelector('.close-btn').addEventListener('click', function() {
+            // 这里可以添加关闭逻辑，比如返回上一页
+            alert('关闭支付页面');
         });
-
-        // 更新圆点状态
-        function updateDots() {
-            dots.forEach((dot, index) => {
-                dot.classList.toggle('active', index < password.length);
-            });
-        }
-
-        // 模拟支付处理
-        function handlePayment() {
-            if (password === '123123') { // 测试用正确密码
-                modal.style.display = 'none';
-                alert('支付成功！');
-                resetInput();
-            } else {
-                errorCount++;
-                alert(`密码错误，剩余尝试次数：${5 - errorCount}`);
-                password = '';
-                updateDots();
-                
-                if (errorCount >= 5) {
-                    alert('密码错误次数过多，请稍后再试');
-                    modal.style.display = 'none';
-                    resetInput();
-                }
-            }
-        }
-
-        // 重置输入状态
-        function resetInput() {
-            password = '';
-            errorCount = 0;
-            updateDots();
-        }
     </script>
-<script>
-// 修改后的跳转逻辑
-document.addEventListener('DOMContentLoaded', function() {
-    const alertBox = document.getElementById('timeoutAlert');
-    const confirmBtn = document.querySelector('.confirm-btn');
-    let timer = null;
-
-    // 显示提示框
-    alertBox.style.display = 'block';
-
-    // 设置自动跳转定时器
-    timer = setTimeout(() => {
-        redirectTo();
-    }, 20000);
-
-    // 确认按钮点击事件
-    confirmBtn.addEventListener('click', () => {
-        clearTimeout(timer);
-        alertBox.style.animation = 'alertHide 0.3s ease forwards';
-        setTimeout(redirectTo, 300); // 等待隐藏动画完成
-    });
-
-    function redirectTo() {
-        window.location.href = 'https://pyqfk.github.io/556/wfk.html'; // 替换实际地址
-    }
-});
-
-// 添加隐藏动画
-const style = document.createElement('style');
-style.textContent = `
-@keyframes alertHide {
-    from {
-        opacity: 1;
-        transform: translate(-50%, -50%);
-    }
-    to {
-        opacity: 0;
-        transform: translate(-50%, -60%);
-    }
-}
-`;
-document.head.appendChild(style);
-</script>
 </body>
 </html>
