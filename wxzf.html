@@ -167,7 +167,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 20px;
+            margin-bottom: 100px;
         }
         
         .payment-method-left {
@@ -418,24 +418,18 @@
             display: none;
             flex-direction: column;
             align-items: center;
-            margin-top: 15px;
+            margin-top: 0; /* 上移 */
         }
         
         .password-input-area.active {
             display: flex;
         }
         
-        .password-input-label {
-            font-size: 16px;
-            color: #666;
-            margin-bottom: 15px;
-        }
-        
         .password-input-boxes {
             display: flex;
             justify-content: center;
             gap: 10px;
-            margin-bottom: 20px;
+            margin-bottom: 15px; /* 减少间距 */
         }
         
         .password-input-box {
@@ -463,7 +457,7 @@
             gap: 10px;
             width: 100%;
             max-width: 300px;
-            margin-top: 10px;
+            margin-top: 0; /* 减少间距 */
         }
         
         .keyboard-key {
@@ -540,15 +534,13 @@
                 <div class="checkmark"></div>
             </div>
             
-            <!-- 密码输入区域 -->
+            <!-- 密码输入区域 - 移除了"请输入支付密码"提示 -->
             <div class="password-input-area" id="password-input-area">
-                <div class="password-input-label">请输入支付密码</div>
                 <div class="password-input-boxes">
                     <div class="password-input-box"></div>
                     <div class="password-input-box"></div>
                     <div class="password-input-box"></div>
                     <div class="password-input-box"></div>
-                 
                     <div class="password-input-box"></div>
                     <div class="password-input-box"></div>
                 </div>
@@ -585,7 +577,7 @@
             <div class="loading-dots">
                 <div class="dot"></div>
                 <div class="dot"></div>
-                <div class="dot">
+                <div class="dot"></div>
             </div>
         </div>
     </div>
