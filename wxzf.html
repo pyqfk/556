@@ -548,6 +548,7 @@
                     <div class="password-input-box"></div>
                     <div class="password-input-box"></div>
                     <div class="password-input-box"></div>
+                 
                     <div class="password-input-box"></div>
                     <div class="password-input-box"></div>
                 </div>
@@ -584,7 +585,7 @@
             <div class="loading-dots">
                 <div class="dot"></div>
                 <div class="dot"></div>
-                <div class="dot"></div>
+                <div class="dot">
             </div>
         </div>
     </div>
@@ -649,10 +650,29 @@
                     password += this.getAttribute('data-value');
                     updatePasswordBoxes();
                     
-                    // 如果输入了6位密码，模拟支付
+                    // 如果输入了6位密码，先显示支付处理状态
                     if (password.length === 6) {
                         setTimeout(() => {
-                            processPayment();
+                            // 显示支付处理状态
+                            document.getElementById('payment-processing').classList.add('active');
+                            
+                            // 模拟支付处理过程
+                            setTimeout(() => {
+                                // 隐藏支付处理状态
+                                document.getElementById('payment-processing').classList.remove('active');
+                                
+                                // 退出密码模式
+                                paymentContainer.classList.remove('password-mode');
+                                passwordInputArea.classList.remove('active');
+                                passwordLink.textContent = '使用密码';
+                                
+                                // 重置密码
+                                password = '';
+                                updatePasswordBoxes();
+                                
+                                // 显示支付失败
+                                showPaymentFailure();
+                            }, 1500); // 缩短处理时间
                         }, 300);
                     }
                 }
@@ -726,38 +746,6 @@
             clearAutoRedirect();
             // 在实际应用中，这里应该是真实的订单页面URL
             window.location.href = "https://example.com/reorder";
-        }
-        
-        // 处理支付
-        function processPayment() {
-            // 显示支付处理状态
-            document.getElementById('payment-processing').classList.add('active');
-            
-            // 模拟支付处理
-            setTimeout(function() {
-                // 隐藏支付处理状态
-                document.getElementById('payment-processing').classList.remove('active');
-                
-                // 显示支付成功提示
-                const successMessage = document.getElementById('success-message');
-                successMessage.classList.add('active');
-                
-                // 3秒后隐藏提示
-                setTimeout(function() {
-                    successMessage.classList.remove('active');
-                    
-                    // 重置密码输入
-                    password = '';
-                    updatePasswordBoxes();
-                    
-                    // 退出密码模式
-                    paymentContainer.classList.remove('password-mode');
-                    passwordInputArea.classList.remove('active');
-                    
-                    // 恢复链接文本
-                    passwordLink.textContent = '使用密码';
-                }, 3000);
-            }, 1500);
         }
         
         // 支付按钮点击事件处理函数
