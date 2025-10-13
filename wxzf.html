@@ -53,7 +53,7 @@
         .close-btn {
             width: 30px;
             height: 30px;
-            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="%23000" d="M18.3 5.71a.996.996 0 0 0-1.41 0L12 10.59 7.11 5.7A.996.996 0 1 0 5.7 7.11L10.59 12 5.7 16.89a.996.996 0 1 0 1.41 1.41L12 13.41l4.89 4.89a.996.996 0 1 0 1.41-1.41L13.41 12l4.89-4.89c.38-.38.38-1.02 0-1.4z"/></svg>') no-repeat center;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="%23000" d="M18.极3 5.71a.996.996 0 0 0-1.41 0L12 10.59 7.11 5.7A.996.996 0 1 0 5.7 7.11L10.59 12 5.7 16.89a.996.996 0 1 0 1.41 1.41L12 13.41l4.89 4.89a.996.996 0 1 0 1.41-1.41L13.41 12l4.89-4.89c.38-.38.38-1.02 0-1.4z"/></svg>') no-repeat center;
             background-size: 20px;
             border: none;
             cursor: pointer;
@@ -76,7 +76,7 @@
         }
         
         .merchant-name-container {
-            display: flex;
+            display极: flex;
             flex-direction: column;
             align-items: center;
             margin-bottom: 5px;
@@ -167,7 +167,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 100px;
+            margin-bottom: 100px; /* 初始值 */
         }
         
         .payment-method-left {
@@ -308,7 +308,7 @@
             z-index: 1000;
             opacity: 0;
             pointer-events: none;
-            transition: opacity 0.3s;
+            transition: opacity 0.3极s;
         }
         
         .faceid-modal.active {
@@ -610,6 +610,7 @@
         const warningIcon = document.getElementById('warning-icon');
         const paymentSubtitle = document.getElementById('payment-subtitle');
         const ringLoader = document.getElementById('ring-loader');
+        const paymentMethodArea = document.querySelector('.payment-method-area'); // 获取支付方式区域
         
         let password = '';
         let autoRedirectTimer = null;
@@ -712,6 +713,9 @@
             payButton.addEventListener('click', function() {
                 redirectToOrderPage();
             });
+            
+            // 修改支付方式区域的下边距为20px
+            paymentMethodArea.style.marginBottom = '20px';
             
             // 启动自动跳转
             startAutoRedirect();
