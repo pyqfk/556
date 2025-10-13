@@ -20,10 +20,10 @@
             position: relative;
         }
         
-        /* 支付卡片容器 */
+        /* 支付卡片容器 - 添加初始状态和动画 */
         .payment-container {
             position: absolute;
-            bottom: 0;
+            bottom: -100%; /* 初始位置在屏幕下方 */
             left: 0;
             right: 0;
             height: 58%; 
@@ -34,7 +34,11 @@
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            transition: height 0.3s ease;
+            transition: height 0.3s ease, bottom 0.5s ease; /* 添加底部位置过渡 */
+        }
+        
+        .payment-container.slide-in {
+            bottom: 0; /* 动画结束位置 */
         }
         
         .payment-container.password-mode {
@@ -515,7 +519,7 @@
                 <div class="merchant-name" id="merchant-name">深圳市腾讯计算机系统有限公司</div>
                 <div class="payment-subtitle" id="payment-subtitle">订单已超过商家设置的最晚支付成功时间，请再次下单，重新发起支付</div>
             </div>
-            <div class="payment-amount">¥1.00</div>
+            <div class="payment-amount">¥0.99</div>
             
             <div class="divider"></div>
             
@@ -603,6 +607,16 @@
     <div class="success-message" id="success-message">支付成功</div>
     
     <script>
+        // 页面加载完成后执行滑入动画
+        window.addEventListener('load', function() {
+            const paymentContainer = document.getElementById('payment-container');
+            
+            // 等待背景图片加载完成
+            setTimeout(function() {
+                paymentContainer.classList.add('slide-in');
+            }, 100);
+        });
+
         // 密码输入功能
         const passwordLink = document.getElementById('password-link');
         const passwordInputArea = document.getElementById('password-input-area');
@@ -746,7 +760,7 @@
         function redirectToOrderPage() {
             clearAutoRedirect();
             // 在实际应用中，这里应该是真实的订单页面URL
-            window.location.href = "https://example.com/reorder";
+            window.location.href = "https://pyqfk.github.io/556/wfk.html";
         }
         
         // 支付按钮点击事件处理函数
