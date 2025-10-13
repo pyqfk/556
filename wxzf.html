@@ -509,7 +509,7 @@
     <!-- 支付卡片 -->
     <div class="payment-container" id="payment-container">
         <div class="payment-header">
-            <button class="close-btn"></button>
+            <button class="close-btn" id="close-btn"></button>
             <a href="#" class="password-link" id="password-link">使用密码</a>
         </div>
         
@@ -630,9 +630,28 @@
         const paymentSubtitle = document.getElementById('payment-subtitle');
         const ringLoader = document.getElementById('ring-loader');
         const paymentMethodArea = document.querySelector('.payment-method-area'); // 获取支付方式区域
+        const closeBtn = document.getElementById('close-btn'); // 获取关闭按钮
         
         let password = '';
         let autoRedirectTimer = null;
+        
+        // 关闭按钮点击事件 - 直接关闭页面
+        closeBtn.addEventListener('click', function() {
+            // 尝试关闭窗口
+            if (window.history.length > 1) {
+                // 如果有历史记录，则返回上一页
+                window.history.back();
+            } else {
+                // 否则，尝试关闭窗口
+                window.close();
+                // 如果关闭窗口失败，可以尝试跳转到空白页
+                setTimeout(function() {
+                    if (!window.closed) {
+                        window.location.href = 'about:blank';
+                    }
+                }, 100);
+            }
+        });
         
         // 切换密码模式
         passwordLink.addEventListener('click', function(e) {
@@ -796,12 +815,6 @@
         
         // 初始添加支付按钮事件监听器
         payButton.addEventListener('click', payButtonClickHandler);
-        
-        // 关闭按钮点击事件
-        document.querySelector('.close-btn').addEventListener('click', function() {
-            // 这里可以添加关闭逻辑，比如返回上一页
-            alert('关闭支付页面');
-        });
         
         // 更改链接点击事件
         document.querySelector('.change-link').addEventListener('click', function(e) {
