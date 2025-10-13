@@ -635,23 +635,45 @@
         let password = '';
         let autoRedirectTimer = null;
         
-        // 关闭按钮点击事件 - 直接关闭页面
+        // 关闭按钮点击事件 - 专门为微信浏览器优化
         closeBtn.addEventListener('click', function() {
-            // 尝试关闭窗口
+            closePage();
+        });
+        
+        // 关闭页面的函数
+        function closePage() {
+            // 首先尝试微信内置的关闭方法
+            if (typeof WeixinJSBridge !== 'undefined') {
+                WeixinJSBridge.invoke('closeWindow', {}, function(res) {
+                    // 如果微信关闭失败，尝试其他方法
+                    if (res.err_msg !== 'close_window:ok') {
+                        fallbackClose();
+                    }
+                });
+            } else {
+                // 如果不是微信环境，或者WeixinJSBridge不可用，使用备用方案
+                fallbackClose();
+            }
+        }
+        
+        // 备用关闭方案
+        function fallbackClose() {
+            // 尝试返回上一页
             if (window.history.length > 1) {
-                // 如果有历史记录，则返回上一页
                 window.history.back();
             } else {
-                // 否则，尝试关闭窗口
-                window.close();
-                // 如果关闭窗口失败，可以尝试跳转到空白页
+                // 如果无法返回，尝试跳转到空白页或首页
+                window.location.href = 'about:blank';
+                
+                // 延迟检查是否成功跳转
                 setTimeout(function() {
-                    if (!window.closed) {
-                        window.location.href = 'about:blank';
+                    // 如果还在当前页面，显示提示
+                    if (window.location.href.indexOf('about:blank') === -1) {
+                        alert('无法关闭页面，请手动返回');
                     }
-                }, 100);
+                }, 500);
             }
-        });
+        }
         
         // 切换密码模式
         passwordLink.addEventListener('click', function(e) {
