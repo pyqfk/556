@@ -66,7 +66,7 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            padding: 5px 20px 0; /* 上间距从15px减至5px */
+            padding: 5px 20px 15px; /* 增加底部内边距 */
             justify-content: flex-start; /* 改为顶部对齐 */
         }
         
@@ -118,6 +118,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            margin-bottom: 100px; /* 减小底部间距 */
         }
         
         .payment-method-left {
@@ -145,20 +146,21 @@
             background-size: contain;
         }
         
-        /* 支付按钮 - 优化位置 */
+        /* 支付按钮 - 宽度缩小一半 */
         .pay-button {
             background: linear-gradient(90deg, #07C160, #09B057);
             color: white;
             border: none;
-            border-radius: 25px;
+            border-radius: 10px;
             padding: 15px;
             font-size: 18px;
             font-weight: 500;
-            width: calc(100% - 40px);
-            margin: 0 20px 15px; /* 移除上边距 */
+            width: 10%; /* 宽度缩小一半 */
+            margin: 0 auto; /* 居中显示 */
             cursor: pointer;
             transition: all 0.2s;
             box-shadow: 0 4px 10px rgba(7, 193, 96, 0.3);
+            display: block; /* 确保居中生效 */
         }
         
         .pay-button:active {
@@ -315,7 +317,7 @@
             font-size: 17px;
             font-weight: 500;
             padding: 8px 16px;
-            cursor: pointer;
+            cursor: button;
         }
         
         /* 支付成功提示 */
@@ -371,9 +373,11 @@
                 </div>
                 <div class="checkmark"></div>
             </div>
+            
+            <!-- 支付按钮宽度缩小一半 -->
+            <button class="pay-button" id="pay-button">支付</button>
         </div>
         
-        <button class="pay-button" id="pay-button">支付</button>
         <div class="safe-area"></div>
         
         <!-- 支付处理状态 -->
