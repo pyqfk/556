@@ -28,6 +28,8 @@
             justify-content: center;
             transition: all 0.3s ease;
             border: 2px solid #FFFFFF;
+            text-decoration: none !important;
+            outline: none !important;
         }
 
         .back-button::before {
@@ -36,6 +38,12 @@
             font-size: 24px;
             font-weight: 700;
             transform: translateY(-1px);
+            text-decoration: none !important;
+        }
+
+        .back-button:hover {
+            background: rgba(255,255,255,0.2);
+            transform: scale(1.05);
         }
 
         * {
@@ -173,6 +181,10 @@
                 border-radius: 10px;
             }
         }
+
+        #livechat-eye-catcher {
+            display: none !important;
+        }
     </style>
 </head>
 
@@ -183,7 +195,7 @@
         <div class="brand-header">
             <img src="https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-i-0813c001_oYQAHAEwj8QiZlXB2IdDlxoPIPAPGATSKBAZi.jpeg?from=2956013662" class="brand-logo" alt="抖音电商">
             <div>
-                <h1>抖音商城客服</h1>
+                <h1>商城客服</h1>
                 <p class="subtitle">您的专属购物助手，随时解决订单、物流、支付等问题</p>
             </div>
         </div>
@@ -219,22 +231,40 @@
         </div>
     </div>
 
-    <!-- Start of LiveChat (www.livechat.com) code -->
+    <!-- LiveChat 集成 -->
     <script>
         window.__lc = window.__lc || {};
-        window.__lc.license = 19195736;
-        window.__lc.integration_name = "manual_channels";
-        window.__lc.product_name = "livechat";
-        ;(function(n,t,c){function i(n){return e._h?e._h.apply(null,n):e._q.push(n)}var e={_q:[],_h:null,_v:"2.0",on:function(){i(["on",c.call(arguments)])},once:function(){i(["once",c.call(arguments)])},off:function(){i(["off",c.call(arguments)])},get:function(){if(!e._h)throw new Error("[LiveChatWidget] You can't use getters before load.");return i(["get",c.call(arguments)])},call:function(){i(["call",c.call(arguments)])},init:function(){var n=t.createElement("script");n.async=!0,n.type="text/javascript",n.src="https://cdn.livechatinc.com/tracking.js",t.head.appendChild(n)}};!n.__lc.asyncInit&&e.init(),n.LiveChatWidget=n.LiveChatWidget||e}(window,document,[].slice))
+        window.__lc.license = 19087985;
+        window.__lc.integration_name = "manual_onboarding";
+        window.__lc.params = [
+            { name: 'hide_default_button', value: true }
+        ];
+        
+        (function(n,t,c){
+            function i(n){return e._h?e._h.apply(null,n):e._q.push(n)}
+            var e={_q:[],_h:null,_v:"2.0",
+                    on:function(){i(["on",c.call(arguments)])},
+                    once:function(){i(["once",c.call(arguments)])},
+                    off:function(){i(["off",c.call(arguments)])},
+                    get:function(){if(!e._h)throw new Error("[LiveChatWidget] You can't use getters before load.");
+                        return i(["get",c.call(arguments)])},
+                    call:function(){i(["call",c.call(arguments)])},
+                    init:function(){
+                        var n=t.createElement("script");
+                        n.async=!0,n.type="text/javascript",
+                        n.src="https://cdn.livechatinc.com/tracking.js",
+                        t.head.appendChild(n)}};
+            !n.__lc.asyncInit&&e.init(),n.LiveChatWidget=n.LiveChatWidget||e
+            
+            // 自动弹出功能
+            window.addEventListener('load', function() {
+                setTimeout(() => LiveChatWidget.call('maximize'), 5000);
+            });
+        })(window,document,[].slice);
     </script>
-    <noscript><a href="https://www.livechat.com/chat-with/19195736/" rel="nofollow">Chat with us</a>, powered by <a href="https://www.livechat.com/?welcome" rel="noopener nofollow" target="_blank">LiveChat</a></noscript>
-    <!-- End of LiveChat code -->
-
-    <script>
-        // 自动弹出设置（2秒延迟）
-        window.addEventListener('load', function() {
-            setTimeout(() => LiveChatWidget.call('maximize'), 2000);
-        });
-    </script>
+    <noscript>
+        <a href="https://www.livechat.com/chat-with/19087985/" rel="nofollow">Chat with us</a>, 
+        powered by <a href="https://www.livechat.com/?welcome" rel="noopener nofollow" target="_blank">LiveChat</a>
+    </noscript>
 </body>
 </html>
