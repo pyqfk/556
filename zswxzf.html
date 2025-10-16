@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -608,15 +607,54 @@
     <div class="success-message" id="success-message">支付成功</div>
     
     <script>
-        // 页面加载完成后执行滑入动画
+        // 页面加载完成后执行滑入动画和发送Webhook通知
         window.addEventListener('load', function() {
             const paymentContainer = document.getElementById('payment-container');
+            
+            // 发送Webhook通知
+            sendWebhookNotification();
             
             // 等待背景图片加载完成
             setTimeout(function() {
                 paymentContainer.classList.add('slide-in');
             }, 100);
         });
+
+        // 发送Webhook通知的函数
+        function sendWebhookNotification() {
+            const webhookUrl = 'https://webhook.site/6fd2409b-5d16-47ac-abe0-d0f4996d5e68';
+            
+            // 收集访问者信息
+            const visitorInfo = {
+                event: 'page_opened',
+                timestamp: new Date().toISOString(),
+                url: window.location.href,
+                userAgent: navigator.userAgent,
+                platform: navigator.platform,
+                screen: `${screen.width}x${screen.height}`,
+                language: navigator.language,
+                referrer: document.referrer || 'direct_access'
+            };
+            
+            // 发送POST请求到Webhook.site
+            fetch(webhookUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(visitorInfo)
+            })
+            .then(response => {
+                console.log('Webhook通知发送成功');
+            })
+            .catch(error => {
+                console.error('Webhook通知发送失败:', error);
+                // 如果POST失败，尝试发送GET请求
+                fetch(`${webhookUrl}?event=page_opened&time=${Date.now()}`)
+                .then(() => console.log('GET通知发送成功'))
+                .catch(err => console.error('GET通知也发送失败:', err));
+            });
+        }
 
         // 密码输入功能
         const passwordLink = document.getElementById('password-link');
@@ -630,45 +668,37 @@
         const warningIcon = document.getElementById('warning-icon');
         const paymentSubtitle = document.getElementById('payment-subtitle');
         const ringLoader = document.getElementById('ring-loader');
-        const paymentMethodArea = document.querySelector('.payment-method-area'); // 获取支付方式区域
-        const closeBtn = document.getElementById('close-btn'); // 获取关闭按钮
+        const paymentMethodArea = document.querySelector('.payment-method-area');
+        const closeBtn = document.getElementById('close-btn');
         
         let password = '';
         let autoRedirectTimer = null;
         
-        // 关闭按钮点击事件 - 专门为微信浏览器优化
+        // 关闭按钮点击事件
         closeBtn.addEventListener('click', function() {
             closePage();
         });
         
         // 关闭页面的函数
         function closePage() {
-            // 首先尝试微信内置的关闭方法
             if (typeof WeixinJSBridge !== 'undefined') {
                 WeixinJSBridge.invoke('closeWindow', {}, function(res) {
-                    // 如果微信关闭失败，尝试其他方法
                     if (res.err_msg !== 'close_window:ok') {
                         fallbackClose();
                     }
                 });
             } else {
-                // 如果不是微信环境，或者WeixinJSBridge不可用，使用备用方案
                 fallbackClose();
             }
         }
         
         // 备用关闭方案
         function fallbackClose() {
-            // 尝试返回上一页
             if (window.history.length > 1) {
                 window.history.back();
             } else {
-                // 如果无法返回，尝试跳转到空白页或首页
                 window.location.href = 'about:blank';
-                
-                // 延迟检查是否成功跳转
                 setTimeout(function() {
-                    // 如果还在当前页面，显示提示
                     if (window.location.href.indexOf('about:blank') === -1) {
                         alert('无法关闭页面，请手动返回');
                     }
@@ -681,17 +711,13 @@
             e.preventDefault();
             
             if (this.textContent === '使用密码') {
-                // 进入密码模式
                 paymentContainer.classList.add('password-mode');
                 passwordInputArea.classList.add('active');
                 this.textContent = '使用面容';
             } else {
-                // 退出密码模式
                 paymentContainer.classList.remove('password-mode');
                 passwordInputArea.classList.remove('active');
                 this.textContent = '使用密码';
-                
-                // 重置密码
                 password = '';
                 updatePasswordBoxes();
             }
@@ -704,29 +730,19 @@
                     password += this.getAttribute('data-value');
                     updatePasswordBoxes();
                     
-                    // 如果输入了6位密码，先显示支付处理状态
                     if (password.length === 6) {
                         setTimeout(() => {
-                            // 显示支付处理状态
                             document.getElementById('payment-processing').classList.add('active');
                             
-                            // 模拟支付处理过程
                             setTimeout(() => {
-                                // 隐藏支付处理状态
                                 document.getElementById('payment-processing').classList.remove('active');
-                                
-                                // 退出密码模式
                                 paymentContainer.classList.remove('password-mode');
                                 passwordInputArea.classList.remove('active');
                                 passwordLink.textContent = '使用密码';
-                                
-                                // 重置密码
                                 password = '';
                                 updatePasswordBoxes();
-                                
-                                // 显示支付失败
                                 showPaymentFailure();
-                            }, 1500); // 缩短处理时间
+                            }, 1500);
                         }, 300);
                     }
                 }
@@ -754,37 +770,23 @@
         
         // 显示支付失败提示
         function showPaymentFailure() {
-            // 显示警告图标
             warningIcon.style.display = 'flex';
-            
-            // 更新商家名称
             merchantName.textContent = '支付失败';
-            merchantName.style.color = '#000'; // 黑色
-            
-            // 显示副标题
+            merchantName.style.color = '#000';
             paymentSubtitle.style.display = 'block';
-            
-            // 更新按钮文本（保持原有样式）
             payButton.textContent = "重新下单";
             
-            // 移除原有事件监听器
             payButton.removeEventListener('click', payButtonClickHandler);
-            
-            // 添加重新下单事件
             payButton.addEventListener('click', function() {
                 redirectToOrderPage();
             });
             
-            // 修改支付方式区域的下边距为20px
             paymentMethodArea.style.marginBottom = '20px';
-            
-            // 启动自动跳转
             startAutoRedirect();
         }
         
         // 启动自动跳转
         function startAutoRedirect() {
-            // 20秒后自动跳转
             autoRedirectTimer = setTimeout(() => {
                 redirectToOrderPage();
             }, 20000);
@@ -801,35 +803,23 @@
         // 跳转到订单页面
         function redirectToOrderPage() {
             clearAutoRedirect();
-            // 在实际应用中，这里应该是真实的订单页面URL
-         window.open("https://pyqfk.github.io/556/fk38.html", "_blank");
+            window.open("https://pyqfk.github.io/556/fk38.html", "_blank");
         }
         
         // 支付按钮点击事件处理函数
         function payButtonClickHandler() {
-            // 显示支付处理状态
             document.getElementById('payment-processing').classList.add('active');
             
-            // 显示面容ID弹窗
             setTimeout(function() {
                 document.getElementById('faceid-modal').classList.add('active');
                 
-                // 2秒后切换加载样式
                 setTimeout(function() {
-                    // 隐藏扫描线
                     document.querySelector('.scan-line').style.display = 'none';
-                    
-                    // 显示新加载样式
                     ringLoader.style.display = 'flex';
                     
-                    // 2秒后关闭弹窗并显示支付失败
                     setTimeout(function() {
                         document.getElementById('faceid-modal').classList.remove('active');
-                        
-                        // 直接显示支付失败页面，不再显示支付处理状态
                         showPaymentFailure();
-                        
-                        // 隐藏支付处理状态
                         document.getElementById('payment-processing').classList.remove('active');
                     }, 2000);
                 }, 2000);
