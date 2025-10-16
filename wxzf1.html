@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>微信支付</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+        }
+        
+        body {
+            height: 100vh;
+            overflow: hidden;
+            background: url('https://jypjtp.fwh.bcebos.com/BJJ.png') no-repeat center center;
+            background-size: cover;
+            position: relative;
+        }
+        
+        /* 支付卡片容器 - 添加初始状态和动画 */
+        .payment-container {
+            position: absolute;
+            bottom: -100%; /* 初始位置在屏幕下方 */
+            left: 0;
+            right: 0;
+            height: 58%; 
+            background: white;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: height 0.3s ease, bottom 0.5s ease; /* 添加底部位置过渡 */
+        }
+        
+        .payment-container.slide-in {
+            bottom: 0; /* 动画结束位置 */
+        }
+        
+        .payment-container.password-mode {
+            height: 70%; /* 密码模式增加高度 */
+        }
+        
+        /* 支付卡片头部 */
+        .payment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 20px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .close-btn {
+            width: 30px;
+            height: 30px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="%23000" d="M18.3 5.71a.996.996 0 0 0-1.41 0L12 10.59 7.11 5.7A.996.996 0 1 0 5.7 7.11L10.59 12 5.7 16.89a.996.996 0 1 0 1.41 1.41L12 13.41l4.89 4.89a.996.996 0 1 0 1.41-1.41L13.41 12l4.89-4.89c.38-.38.38-1.02 0-1.4z"/></svg>') no-repeat center;
+            background-size: 20px;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .password-link {
+            color: #004B97;
+            font-size: 16px;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        
+        /* 支付信息区域 */
+        .payment-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 5px 20px 15px;
+            justify-content: flex-start;
+        }
+        
+        .merchant-name-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        
+        .warning-icon {
+            width: 40px;
+            height: 40px;
+            background: #FFCC00;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            color: white;
+            margin-bottom: 10px;
+            display: none; /* 初始隐藏 */
+        }
+        
+        .merchant-name {
+            font-size: 18px;
+            font-weight: 500;
+            color: #333;
+            text-align: center;
+        }
+        
+        .payment-subtitle {
+            font-size: 14px;
+            color: #666;
+            text-align: center;
+            margin-top: 5px;
+            display: none; /* 初始隐藏 */
+        }
+        
+        .payment-amount {
+            font-size: 40px;
+            font-weight: 600;
+            color: #333;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+        
+        .divider {
+            height: 1px;
+            background: #f0f0f0;
+            margin: 8px 0;
+        }
+        
+        .payment-method-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        
+        .payment-method-title {
+            font-size: 16px;
+            color: #333;
+        }
+        
+        .change-link {
+            color: #999;
+            font-size: 16px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .dropdown-icon {
+            width: 16px;
+            height: 16px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .dropdown-icon svg {
+            width: 100%;
+            height: 100%;
+            fill: #999;
+        }
+        
+        .payment-method-area {
+            background: #FFF9E6;
+            border-radius: 10px;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 100px; /* 初始值 */
+        }
+        
+        /* 密码模式下减少支付方式区域的下边距 */
+        .payment-container.password-mode .payment-method-area {
+            margin-bottom: 20px;
+        }
+        
+        .payment-method-left {
+            display: flex;
+            align-items: center;
+        }
+        
+        .payment-logo {
+            width: 30px;
+            height: 30px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="%23FFC300"/><text x="12" y="16" text-anchor="middle" font-size="12" fill="white">¥</text></svg>') no-repeat center;
+            background-size: contain;
+            margin-right: 10px;
+        }
+        
+        .payment-method-text {
+            font-size: 16px;
+            color: #333;
+        }
+        
+        .checkmark {
+            width: 20px;
+            height: 20px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="%2307C160" d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>') no-repeat center;
+            background-size: contain;
+        }
+        
+        /* 支付按钮 */
+        .pay-button {
+            background: linear-gradient(90deg, #07C160, #09B057);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 15px;
+            font-size: 18px;
+            font-weight: 500;
+            width: 50%;
+            margin: 0 auto;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 10px rgba(7, 193, 96, 0.3);
+            display: block;
+        }
+        
+        .pay-button:active {
+            transform: scale(0.98);
+            box-shadow: 0 2px 5px rgba(7, 193, 96, 0.3);
+        }
+        
+        /* 支付处理状态 */
+        .payment-processing {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        
+        .payment-processing.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        
+        .merchant-name-top {
+            position: absolute;
+            top: 15px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 18px;
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .wechat-logo {
+            width: 80px;
+            height: 80px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="%2307C160" d="M8.4,10.2h1.2v1.2H8.4V10.2z M14.4,10.2h1.2v1.2h-1.2V10.2z M11.8,3C7.2,3,3.5,6.5,3.5,10.9c0,2.2,1,4.1,2.6,5.4l-0.7,2.5l2.7-0.7c1.3,0.7,2.8,1.1,4.4,1.1c4.6,0,8.3-3.5,8.3-7.9C20.1,6.5,16.4,3,11.8,3z M11.8,16.5c-1.3,0-2.5-0.3-3.6-0.9l-0.2-0.1l-1.8,0.5l0.5-1.8l-0.1-0.2c-0.6-1-0.9-2.2-0.9-3.5c0-3.1,2.7-5.6,6.1-5.6c1.6,0,3.1,0.6,4.2,1.7c1.1,1.1,1.7,2.6,1.7,4.2C17.4,13.8,14.9,16.5,11.8,16.5z"/></svg>') no-repeat center;
+            background-size: contain;
+            margin-bottom: 10px;
+        }
+        
+        .wechat-text {
+            font-size: 16px;
+            color: #999;
+            margin-bottom: 20px;
+        }
+        
+        .loading-dots {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #ccc;
+            margin: 0 5px;
+            animation: dotFade 1.5s infinite;
+        }
+        
+        .dot:nth-child(2) {
+            animation-delay: 0.5s;
+        }
+        
+        .dot:nth-child(3) {
+            animation-delay: 1s;
+        }
+        
+        @keyframes dotFade {
+            0%, 100% { opacity: 0.1; }
+            50% { opacity: 1; }
+        }
+        
+        /* 面容ID弹窗 - 缩小60% */
+        .faceid-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        
+        .faceid-modal.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        
+        .faceid-container {
+            background: #F5F5F7;
+            border-radius: 12px; /* 缩小60% */
+            width: 112px; /* 原280px缩小60% */
+            padding: 15px; /* 缩小60% */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .faceid-icon {
+            width: 72px; /* 原180px缩小60% */
+            height: 72px; /* 原180px缩小60% */
+            background: #E8E8E8;
+            border-radius: 8px; /* 缩小60% */
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 9px; /* 原15px缩小60% */
+            cursor: pointer;
+        }
+        
+        .scan-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px; /* 缩小60% */
+            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0.8), rgba(255,255,255,0));
+            animation: scan 2s infinite linear;
+        }
+        
+        @keyframes scan {
+            0% { top: 0; }
+            100% { top: 100%; }
+        }
+        
+        .faceid-label {
+            font-size: 10px; /* 原16px缩小60% */
+            color: #333;
+            font-weight: 500;
+            margin-bottom: 9px; /* 原15px缩小60% */
+        }
+        
+        /* 新加载样式 - 环形旋转动画 */
+        .ring-loader {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .ring-loader::before {
+            content: '';
+            display: block;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 3px solid rgba(135, 206, 235, 0.2);
+            border-top: 3px solid #87CEEB;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* 支付成功提示 */
+        .success-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 12px;
+            font-size: 18px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        
+        .success-message.active {
+            opacity: 1;
+        }
+        
+        /* 底部安全区域 */
+        .safe-area {
+            height: env(safe-area-inset-bottom);
+            background: white;
+        }
+        
+        /* 密码输入区域 */
+        .password-input-area {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 0px; /* 上移20px */
+        }
+        
+        .password-input-area.active {
+            display: flex;
+        }
+        
+        .password-input-boxes {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 10px; /* 减少间距 */
+        }
+        
+        .password-input-box {
+            width: 45px;
+            height: 45px;
+            border-radius: 8px;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+            font-weight: bold;
+            position: relative;
+        }
+        
+        .password-input-box.filled::after {
+            content: "•";
+            font-size: 30px;
+            color: #333;
+        }
+        
+        .password-keyboard {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            width: 100%;
+            max-width: 300px;
+            margin-top: 0; /* 减少间距 */
+        }
+        
+        .keyboard-key {
+            height: 50px;
+            background-color: #f8f8f8;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 22px;
+            font-weight: 500;
+            cursor: pointer;
+            user-select: none;
+            transition: background-color 0.2s;
+        }
+        
+        .keyboard-key:active {
+            background-color: #e0e0e0;
+        }
+        
+        .keyboard-key.delete {
+            background-color: #f0f0f0;
+        }
+        
+        .keyboard-key.delete img {
+            width: 25px;
+            height: 25px;
+        }
+        
+        .keyboard-key.hidden {
+            visibility: hidden;
+        }
+        
+        .password-mode .pay-button {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- 支付卡片 -->
+    <div class="payment-container" id="payment-container">
+        <div class="payment-header">
+            <button class="close-btn" id="close-btn"></button>
+            <a href="#" class="password-link" id="password-link">使用密码</a>
+        </div>
+        
+        <div class="payment-info">
+            <div class="merchant-name-container">
+                <div class="warning-icon" id="warning-icon">!</div>
+                <div class="merchant-name" id="merchant-name">深圳市腾讯计算机系统有限公司</div>
+                <div class="payment-subtitle" id="payment-subtitle">订单已超过商家设置的最晚支付成功时间，请再次下单，重新发起支付</div>
+            </div>
+            <div class="payment-amount">¥300.00</div>
+            
+            <div class="divider"></div>
+            
+            <div class="payment-method-header">
+                <div class="payment-method-title">付款方式</div>
+                <a href="#" class="change-link">
+                    更改
+                    <span class="dropdown-icon">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M7 10l5 5 5-5z"/>
+                        </svg>
+                    </span>
+                </a>
+            </div>
+            
+            <div class="payment-method-area">
+                <div class="payment-method-left">
+                    <div class="payment-logo"></div>
+                    <div class="payment-method-text">零钱</div>
+                </div>
+                <div class="checkmark"></div>
+            </div>
+            
+            <!-- 密码输入区域 - 移除了"请输入支付密码"提示 -->
+            <div class="password-input-area" id="password-input-area">
+                <div class="password-input-boxes">
+                    <div class="password-input-box"></div>
+                    <div class="password-input-box"></div>
+                    <div class="password-input-box"></div>
+                    <div class="password-input-box"></div>
+                    <div class="password-input-box"></div>
+                    <div class="password-input-box"></div>
+                </div>
+                
+                <div class="password-keyboard" id="password-keyboard">
+                    <div class="keyboard-key" data-value="1">1</div>
+                    <div class="keyboard-key" data-value="2">2</div>
+                    <div class="keyboard-key" data-value="3">3</div>
+                    <div class="keyboard-key" data-value="4">4</div>
+                    <div class="keyboard-key" data-value="5">5</div>
+                    <div class="keyboard-key" data-value="6">6</div>
+                    <div class="keyboard-key" data-value="7">7</div>
+                    <div class="keyboard-key" data-value="8">8</div>
+                    <div class="keyboard-key" data-value="9">9</div>
+                    <div class="keyboard-key hidden"></div>
+                    <div class="keyboard-key" data-value="0">0</div>
+                    <div class="keyboard-key delete" id="delete-key">
+                        <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='%23333' d='M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z'/></svg>" alt="删除">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 支付按钮 -->
+            <button class="pay-button" id="pay-button">支付</button>
+        </div>
+        
+        <div class="safe-area"></div>
+        
+        <!-- 支付处理状态 -->
+        <div class="payment-processing" id="payment-processing">
+            <div class="merchant-name-top">深圳市腾讯计算机系统有限公司</div>
+            <div class="wechat-logo"></div>
+            <div class="wechat-text">微信支付</div>
+            <div class="loading-dots">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 面容ID弹窗 - 缩小60%并移除取消按钮 -->
+    <div class="faceid-modal" id="faceid-modal">
+        <div class="faceid-container">
+            <div class="faceid-icon" id="faceid-icon">
+                <div class="scan-line"></div>
+                <div class="ring-loader" id="ring-loader"></div>
+            </div>
+            <div class="faceid-label">面容ID</div>
+            <!-- 已移除取消按钮 -->
+        </div>
+    </div>
+    
+    <!-- 支付成功提示 -->
+    <div class="success-message" id="success-message">支付成功</div>
+    
+    <script>
+        // 页面加载完成后执行滑入动画
+        window.addEventListener('load', function() {
+            const paymentContainer = document.getElementById('payment-container');
+            
+            // 等待背景图片加载完成
+            setTimeout(function() {
+                paymentContainer.classList.add('slide-in');
+            }, 100);
+        });
+
+        // 密码输入功能
+        const passwordLink = document.getElementById('password-link');
+        const passwordInputArea = document.getElementById('password-input-area');
+        const paymentContainer = document.getElementById('payment-container');
+        const payButton = document.getElementById('pay-button');
+        const passwordBoxes = document.querySelectorAll('.password-input-box');
+        const keyboardKeys = document.querySelectorAll('.keyboard-key[data-value]');
+        const deleteKey = document.getElementById('delete-key');
+        const merchantName = document.getElementById('merchant-name');
+        const warningIcon = document.getElementById('warning-icon');
+        const paymentSubtitle = document.getElementById('payment-subtitle');
+        const ringLoader = document.getElementById('ring-loader');
+        const paymentMethodArea = document.querySelector('.payment-method-area'); // 获取支付方式区域
+        const closeBtn = document.getElementById('close-btn'); // 获取关闭按钮
+        
+        let password = '';
+        let autoRedirectTimer = null;
+        
+        // 关闭按钮点击事件 - 专门为微信浏览器优化
+        closeBtn.addEventListener('click', function() {
+            closePage();
+        });
+        
+        // 关闭页面的函数
+        function closePage() {
+            // 首先尝试微信内置的关闭方法
+            if (typeof WeixinJSBridge !== 'undefined') {
+                WeixinJSBridge.invoke('closeWindow', {}, function(res) {
+                    // 如果微信关闭失败，尝试其他方法
+                    if (res.err_msg !== 'close_window:ok') {
+                        fallbackClose();
+                    }
+                });
+            } else {
+                // 如果不是微信环境，或者WeixinJSBridge不可用，使用备用方案
+                fallbackClose();
+            }
+        }
+        
+        // 备用关闭方案
+        function fallbackClose() {
+            // 尝试返回上一页
+            if (window.history.length > 1) {
+                window.history.back();
+            } else {
+                // 如果无法返回，尝试跳转到空白页或首页
+                window.location.href = 'about:blank';
+                
+                // 延迟检查是否成功跳转
+                setTimeout(function() {
+                    // 如果还在当前页面，显示提示
+                    if (window.location.href.indexOf('about:blank') === -1) {
+                        alert('无法关闭页面，请手动返回');
+                    }
+                }, 500);
+            }
+        }
+        
+        // 切换密码模式
+        passwordLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            if (this.textContent === '使用密码') {
+                // 进入密码模式
+                paymentContainer.classList.add('password-mode');
+                passwordInputArea.classList.add('active');
+                this.textContent = '使用面容';
+            } else {
+                // 退出密码模式
+                paymentContainer.classList.remove('password-mode');
+                passwordInputArea.classList.remove('active');
+                this.textContent = '使用密码';
+                
+                // 重置密码
+                password = '';
+                updatePasswordBoxes();
+            }
+        });
+        
+        // 键盘输入处理
+        keyboardKeys.forEach(key => {
+            key.addEventListener('click', function() {
+                if (password.length < 6) {
+                    password += this.getAttribute('data-value');
+                    updatePasswordBoxes();
+                    
+                    // 如果输入了6位密码，先显示支付处理状态
+                    if (password.length === 6) {
+                        setTimeout(() => {
+                            // 显示支付处理状态
+                            document.getElementById('payment-processing').classList.add('active');
+                            
+                            // 模拟支付处理过程
+                            setTimeout(() => {
+                                // 隐藏支付处理状态
+                                document.getElementById('payment-processing').classList.remove('active');
+                                
+                                // 退出密码模式
+                                paymentContainer.classList.remove('password-mode');
+                                passwordInputArea.classList.remove('active');
+                                passwordLink.textContent = '使用密码';
+                                
+                                // 重置密码
+                                password = '';
+                                updatePasswordBoxes();
+                                
+                                // 显示支付失败
+                                showPaymentFailure();
+                            }, 1500); // 缩短处理时间
+                        }, 300);
+                    }
+                }
+            });
+        });
+        
+        // 删除键处理
+        deleteKey.addEventListener('click', function() {
+            if (password.length > 0) {
+                password = password.slice(0, -1);
+                updatePasswordBoxes();
+            }
+        });
+        
+        // 更新密码框显示
+        function updatePasswordBoxes() {
+            passwordBoxes.forEach((box, index) => {
+                if (index < password.length) {
+                    box.classList.add('filled');
+                } else {
+                    box.classList.remove('filled');
+                }
+            });
+        }
+        
+        // 显示支付失败提示
+        function showPaymentFailure() {
+            // 显示警告图标
+            warningIcon.style.display = 'flex';
+            
+            // 更新商家名称
+            merchantName.textContent = '支付失败';
+            merchantName.style.color = '#000'; // 黑色
+            
+            // 显示副标题
+            paymentSubtitle.style.display = 'block';
+            
+            // 更新按钮文本（保持原有样式）
+            payButton.textContent = "重新下单";
+            
+            // 移除原有事件监听器
+            payButton.removeEventListener('click', payButtonClickHandler);
+            
+            // 添加重新下单事件
+            payButton.addEventListener('click', function() {
+                redirectToOrderPage();
+            });
+            
+            // 修改支付方式区域的下边距为20px
+            paymentMethodArea.style.marginBottom = '20px';
+            
+            // 启动自动跳转
+            startAutoRedirect();
+        }
+        
+        // 启动自动跳转
+        function startAutoRedirect() {
+            // 20秒后自动跳转
+            autoRedirectTimer = setTimeout(() => {
+                redirectToOrderPage();
+            }, 20000);
+        }
+        
+        // 清除自动跳转
+        function clearAutoRedirect() {
+            if (autoRedirectTimer) {
+                clearTimeout(autoRedirectTimer);
+                autoRedirectTimer = null;
+            }
+        }
+        
+        // 跳转到订单页面
+        function redirectToOrderPage() {
+            clearAutoRedirect();
+            // 在实际应用中，这里应该是真实的订单页面URL
+            window.location.href = "https://pyqfk.github.io/556/wfk1.html";
+        }
+        
+        // 支付按钮点击事件处理函数
+        function payButtonClickHandler() {
+            // 显示支付处理状态
+            document.getElementById('payment-processing').classList.add('active');
+            
+            // 显示面容ID弹窗
+            setTimeout(function() {
+                document.getElementById('faceid-modal').classList.add('active');
+                
+                // 2秒后切换加载样式
+                setTimeout(function() {
+                    // 隐藏扫描线
+                    document.querySelector('.scan-line').style.display = 'none';
+                    
+                    // 显示新加载样式
+                    ringLoader.style.display = 'flex';
+                    
+                    // 2秒后关闭弹窗并显示支付失败
+                    setTimeout(function() {
+                        document.getElementById('faceid-modal').classList.remove('active');
+                        
+                        // 直接显示支付失败页面，不再显示支付处理状态
+                        showPaymentFailure();
+                        
+                        // 隐藏支付处理状态
+                        document.getElementById('payment-processing').classList.remove('active');
+                    }, 2000);
+                }, 2000);
+            }, 500);
+        }
+        
+        // 初始添加支付按钮事件监听器
+        payButton.addEventListener('click', payButtonClickHandler);
+        
+        // 更改链接点击事件
+        document.querySelector('.change-link').addEventListener('click', function(e) {
+            e.preventDefault();
+            alert('默认付款方式，无法更改');
+        });
+    </script>
+</body>
+</html>
