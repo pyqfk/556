@@ -2,545 +2,721 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>页面访问监控系统 - 诊断工具</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>抖音风格视频播放器</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
+        
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Microsoft YaHei", sans-serif;
+            background-color: #000;
+            color: #fff;
             overflow: hidden;
+            height: 100vh;
+            position: relative;
         }
-        .header {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            color: white;
-            padding: 30px;
-            text-align: center;
-        }
-        .header h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-        }
-        .header p {
-            font-size: 1.2em;
-            opacity: 0.9;
-        }
-        .content {
-            padding: 30px;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-        }
-        .panel {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 25px;
-            border-left: 4px solid #4facfe;
-        }
-        .panel h2 {
-            color: #2c3e50;
-            margin-bottom: 20px;
-            font-size: 1.4em;
-        }
-        .config-section {
-            grid-column: 1 / -1;
-        }
-        .input-group {
-            margin-bottom: 20px;
-        }
-        .input-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #2c3e50;
-        }
-        .input-group input {
+        
+        .video-container {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
-            padding: 12px;
-            border: 2px solid #e9ecef;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: border-color 0.3s;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1;
         }
-        .input-group input:focus {
-            outline: none;
-            border-color: #4facfe;
+        
+        .video-player {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            background-color: #000;
         }
-        .btn {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            margin-right: 10px;
-            margin-bottom: 10px;
-        }
-        .btn-primary {
-            background: #4facfe;
-            color: white;
-        }
-        .btn-primary:hover {
-            background: #3a9bfc;
-            transform: translateY(-2px);
-        }
-        .btn-success {
-            background: #28a745;
-            color: white;
-        }
-        .btn-warning {
-            background: #ffc107;
-            color: #212529;
-        }
-        .btn-danger {
-            background: #dc3545;
-            color: white;
-        }
-        .btn-info {
-            background: #17a2b8;
-            color: white;
-        }
-        .status-log {
-            background: #2c3e50;
-            color: white;
+        
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
             padding: 15px;
-            border-radius: 8px;
-            max-height: 300px;
-            overflow-y: auto;
-            font-family: 'Courier New', monospace;
+            background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 30%, transparent 50%);
+        }
+        
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+        }
+        
+        .search-icon, .more-icon {
+            color: #fff;
+            font-size: 22px;
+            background: rgba(0,0,0,0.3);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .center-area {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 3;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .play-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+        
+        .play-icon i {
+            font-size: 32px;
+            color: #fff;
+        }
+        
+        .video-info {
+            padding: 15px;
+            max-width: 80%;
+        }
+        
+        .video-title {
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+        
+        .author-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .author-name {
+            font-size: 16px;
+            font-weight: 500;
+        }
+        
+        .follow-btn {
+            background: transparent;
+            border: 1px solid #ff0050;
+            color: #ff0050;
+            padding: 4px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            margin-left: 10px;
+        }
+        
+        .video-description {
+            font-size: 14px;
+            color: #eee;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+        
+        .hashtags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        
+        .hashtag {
+            background: rgba(255,255,255,0.1);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+        }
+        
+        .music-info {
+            display: flex;
+            align-items: center;
             font-size: 14px;
         }
-        .log-entry {
+        
+        .music-icon {
+            margin-right: 8px;
+            color: #fff;
+        }
+        
+        .right-bar {
+            position: absolute;
+            right: 15px;
+            bottom: 120px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 3;
+        }
+        
+        .action-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        
+        .action-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
             margin-bottom: 8px;
-            padding: 5px;
-            border-radius: 4px;
         }
-        .log-success { background: #28a745; }
-        .log-error { background: #dc3545; }
-        .log-warning { background: #ffc107; color: #212529; }
-        .log-info { background: #17a2b8; }
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-top: 15px;
+        
+        .action-icon i {
+            font-size: 24px;
+            color: #fff;
         }
-        .info-item {
-            background: white;
-            padding: 15px;
-            border-radius: 8px;
-            border-left: 4px solid #4facfe;
+        
+        .action-count {
+            font-size: 13px;
+            color: #fff;
         }
-        .info-item strong {
-            display: block;
-            color: #2c3e50;
+        
+        .avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid #fff;
+            background: linear-gradient(45deg, #ff0050, #ff4500);
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+        
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .progress-container {
+            position: absolute;
+            bottom: 70px;
+            left: 15px;
+            right: 15px;
+            height: 3px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 2px;
+            overflow: hidden;
+            z-index: 3;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: #ff0050;
+            width: 0%;
+            transition: width 0.2s linear;
+        }
+        
+        .bottom-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+            padding: 15px 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 3;
+        }
+        
+        .nav-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #fff;
+            font-size: 12px;
+        }
+        
+        .nav-btn i {
+            font-size: 24px;
             margin-bottom: 5px;
         }
-        .request-details {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 15px;
+        
+        .nav-btn.active {
+            color: #ff0050;
         }
-        .json-view {
-            background: #2c3e50;
-            color: white;
-            padding: 15px;
-            border-radius: 8px;
-            font-family: 'Courier New', monospace;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-            max-height: 200px;
+        
+        .video-list {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            z-index: 10;
+            transform: translateY(100%);
+            transition: transform 0.4s ease;
             overflow-y: auto;
+            padding: 15px;
+            padding-top: 50px;
         }
-        .diagnosis-section {
-            background: #fff3cd;
-            border: 1px solid #ffeaa7;
+        
+        .video-list.active {
+            transform: translateY(0);
+        }
+        
+        .list-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .list-title {
+            font-size: 20px;
+            font-weight: 500;
+        }
+        
+        .close-list {
+            font-size: 24px;
+            color: #fff;
+        }
+        
+        .video-item {
+            display: flex;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .video-thumb {
+            width: 150px;
+            height: 100px;
             border-radius: 8px;
-            padding: 20px;
-            margin-top: 20px;
+            background: #333;
+            margin-right: 15px;
+            position: relative;
+            overflow: hidden;
         }
-        .solution-steps {
-            background: #d1ecf1;
-            border: 1px solid #bee5eb;
-            border-radius: 8px;
-            padding: 20px;
-            margin-top: 20px;
+        
+        .video-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
-        @media (max-width: 768px) {
-            .content {
-                grid-template-columns: 1fr;
+        
+        .video-duration {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            background: rgba(0,0,0,0.7);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        
+        .video-item-info {
+            flex: 1;
+        }
+        
+        .video-item-title {
+            font-size: 16px;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+        
+        .video-item-author {
+            font-size: 14px;
+            color: #aaa;
+            margin-bottom: 8px;
+        }
+        
+        .video-item-stats {
+            display: flex;
+            font-size: 13px;
+            color: #aaa;
+        }
+        
+        .video-item-stats span {
+            margin-right: 15px;
+        }
+        
+        .sound-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 4;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+        }
+        
+        @media (max-width: 480px) {
+            .video-title {
+                font-size: 16px;
             }
-            .config-section {
-                grid-column: 1;
+            
+            .action-btn {
+                margin-bottom: 20px;
+            }
+            
+            .action-icon {
+                width: 45px;
+                height: 45px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>🔍 页面访问监控系统诊断工具</h1>
-            <p>诊断和解决阿里云函数计算连接问题</p>
+    <div class="video-container">
+        <video class="video-player" id="videoPlayer" muted autoplay playsinline>
+            <source src="https://jypjtp.fwh.bcebos.com/%E4%B8%8B%E8%BD%BD.mp4" type="video/mp4">
+            您的浏览器不支持HTML5视频播放
+        </video>
+    </div>
+    
+    <!-- 声音控制按钮 -->
+    <div class="sound-btn" id="soundBtn">
+        <i class="fas fa-volume-mute"></i>
+    </div>
+    
+    <div class="overlay">
+        <div class="top-bar">
+            <div class="search-icon">
+                <i class="fas fa-search"></i>
+            </div>
+            <div class="more-icon">
+                <i class="fas fa-ellipsis-h"></i>
+            </div>
         </div>
         
-        <div class="content">
-            <div class="panel config-section">
-                <h2>⚙️ 函数配置</h2>
-                <div class="input-group">
-                    <label for="functionUrl">函数计算URL地址：</label>
-                    <input type="text" id="functionUrl" 
-                           value="https://page-mofunction-khbohtokia.cn-hangzhou.fcapp.run"
-                           placeholder="请输入您的函数计算URL">
+        <div class="center-area" id="centerArea">
+            <div class="play-icon">
+                <i class="fas fa-pause"></i>
+            </div>
+        </div>
+        
+        <div class="video-info">
+            <div class="video-title">简约生活美学 | 城市中的宁静时刻</div>
+            
+            <div class="author-info">
+                <div class="author-name">@生活美学</div>
+                <button class="follow-btn">关注</button>
+            </div>
+            
+            <div class="video-description">
+                在繁忙的都市生活中寻找片刻宁静，一杯咖啡，一本好书，享受属于自己的时光。
+            </div>
+            
+            <div class="hashtags">
+                <div class="hashtag">#生活美学</div>
+                <div class="hashtag">#城市生活</div>
+                <div class="hashtag">#宁静时刻</div>
+            </div>
+            
+            <div class="music-info">
+                <i class="fas fa-music music-icon"></i>
+                <span>宁静时光 - 原创音乐</span>
+            </div>
+        </div>
+        
+        <div class="right-bar">
+            <!-- 头像位于爱心上方 -->
+            <div class="avatar">
+                <img src="https://randomuser.me/api/portraits/women/43.jpg" alt="作者头像">
+            </div>
+            
+            <div class="action-btn">
+                <div class="action-icon">
+                    <i class="fas fa-heart"></i>
                 </div>
-                <div class="btn-group">
-                    <button class="btn btn-primary" onclick="saveConfig()">💾 保存配置</button>
-                    <button class="btn btn-info" onclick="testConnection()">🔗 测试连接</button>
-                    <button class="btn btn-success" onclick="sendAccessRecord()">📨 发送访问记录</button>
-                    <button class="btn btn-warning" onclick="testWithMockData()">🧪 模拟数据测试</button>
-                    <button class="btn btn-danger" onclick="clearLog()">🗑️ 清除日志</button>
+                <div class="action-count">24.8K</div>
+            </div>
+            
+            <div class="action-btn">
+                <div class="action-icon">
+                    <i class="fas fa-comment"></i>
+                </div>
+                <div class="action-count">1.2K</div>
+            </div>
+            
+            <div class="action-btn">
+                <div class="action-icon">
+                    <i class="fas fa-share"></i>
+                </div>
+                <div class="action-count">分享</div>
+            </div>
+        </div>
+        
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+    </div>
+    
+    <div class="bottom-bar">
+        <div class="nav-btn active">
+            <i class="fas fa-home"></i>
+            <span>首页</span>
+        </div>
+        <div class="nav-btn">
+            <i class="fas fa-compass"></i>
+            <span>发现</span>
+        </div>
+        <div class="nav-btn" id="videoListBtn">
+            <i class="fas fa-list"></i>
+            <span>列表</span>
+        </div>
+        <div class="nav-btn">
+            <i class="fas fa-user"></i>
+            <span>我的</span>
+        </div>
+    </div>
+    
+    <div class="video-list" id="videoList">
+        <div class="list-header">
+            <div class="list-title">推荐视频</div>
+            <div class="close-list" id="closeListBtn">
+                <i class="fas fa-times"></i>
+            </div>
+        </div>
+        
+        <div class="video-item">
+            <div class="video-thumb">
+                <img src="https://picsum.photos/300/200?random=1" alt="视频缩略图">
+                <div class="video-duration">4:22</div>
+            </div>
+            <div class="video-item-info">
+                <div class="video-item-title">简约生活美学 | 城市中的宁静时刻</div>
+                <div class="video-item-author">@生活美学</div>
+                <div class="video-item-stats">
+                    <span><i class="fas fa-heart"></i> 24.8K</span>
+                    <span><i class="fas fa-comment"></i> 1.2K</span>
                 </div>
             </div>
-
-            <div class="panel">
-                <h2>📊 系统状态</h2>
-                <div class="status-log" id="statusLog">
-                    <div class="log-entry log-info">系统就绪，等待操作...</div>
+        </div>
+        
+        <div class="video-item">
+            <div class="video-thumb">
+                <img src="https://picsum.photos/300/200?random=2" alt="视频缩略图">
+                <div class="video-duration">3:45</div>
+            </div>
+            <div class="video-item-info">
+                <div class="video-item-title">城市夜景延时摄影</div>
+                <div class="video-item-author">@摄影达人</div>
+                <div class="video-item-stats">
+                    <span><i class="fas fa-heart"></i> 18.5K</span>
+                    <span><i class="fas fa-comment"></i> 892</span>
                 </div>
             </div>
-
-            <div class="panel">
-                <h2>🌐 访问环境信息</h2>
-                <div class="info-grid" id="environmentInfo">
-                    <!-- 环境信息将通过JavaScript动态生成 -->
+        </div>
+        
+        <div class="video-item">
+            <div class="video-thumb">
+                <img src="https://picsum.photos/300/200?random=3" alt="视频缩略图">
+                <div class="video-duration">6:18</div>
+            </div>
+            <div class="video-item-info">
+                <div class="video-item-title">海洋生物纪录片片段</div>
+                <div class="video-item-author">@自然探索</div>
+                <div class="video-item-stats">
+                    <span><i class="fas fa-heart"></i> 32.1K</span>
+                    <span><i class="fas fa-comment"></i> 2.4K</span>
                 </div>
             </div>
-
-            <div class="panel">
-                <h2>📝 请求详情</h2>
-                <div class="request-details">
-                    <strong>请求URL：</strong>
-                    <div id="requestUrl">等待配置...</div>
-                    
-                    <strong>请求数据：</strong>
-                    <div class="json-view" id="requestData">等待请求...</div>
-                    
-                    <strong>响应状态：</strong>
-                    <div id="responseStatus">未发送</div>
-                    
-                    <strong>响应数据：</strong>
-                    <div class="json-view" id="responseData">等待响应...</div>
+        </div>
+        
+        <div class="video-item">
+            <div class="video-thumb">
+                <img src="https://picsum.photos/300/200?random=4" alt="视频缩略图">
+                <div class="video-duration">5:02</div>
+            </div>
+            <div class="video-item-info">
+                <div class="video-item-title">森林徒步旅行记录</div>
+                <div class="video-item-author">@户外探险</div>
+                <div class="video-item-stats">
+                    <span><i class="fas fa-heart"></i> 15.7K</span>
+                    <span><i class="fas fa-comment"></i> 765</span>
                 </div>
             </div>
-
-            <div class="diagnosis-section">
-                <h2>🔧 问题诊断</h2>
-                <div id="diagnosisResult">
-                    <p>点击"测试连接"开始诊断...</p>
-                </div>
+        </div>
+        
+        <div class="video-item">
+            <div class="video-thumb">
+                <img src="https://picsum.photos/300/200?random=5" alt="视频缩略图">
+                <div class="video-duration">2:56</div>
             </div>
-
-            <div class="solution-steps">
-                <h2>💡 解决方案</h2>
-                <div id="solutionSteps">
-                    <p>根据诊断结果提供具体解决方案...</p>
+            <div class="video-item-info">
+                <div class="video-item-title">美食制作教程：意面</div>
+                <div class="video-item-author">@美食厨房</div>
+                <div class="video-item-stats">
+                    <span><i class="fas fa-heart"></i> 28.3K</span>
+                    <span><i class="fas fa-comment"></i> 1.8K</span>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // 配置管理
-        const CONFIG_KEY = 'fc_monitor_config';
-        
-        // 初始化配置
-        function loadConfig() {
-            const saved = localStorage.getItem(CONFIG_KEY);
-            if (saved) {
-                const config = JSON.parse(saved);
-                document.getElementById('functionUrl').value = config.url || '';
-            }
-            updateEnvironmentInfo();
-        }
-
-        // 保存配置
-        function saveConfig() {
-            const url = document.getElementById('functionUrl').value.trim();
-            if (!url) {
-                log('请输入有效的URL地址', 'error');
-                return;
-            }
-            
-            const config = { url, timestamp: new Date().toISOString() };
-            localStorage.setItem(CONFIG_KEY, JSON.stringify(config));
-            log('配置已保存', 'success');
-            updateRequestDetails();
-        }
-
-        // 更新环境信息
-        function updateEnvironmentInfo() {
-            const info = {
-                '页面URL': window.location.href,
-                '用户代理': navigator.userAgent,
-                '屏幕分辨率': `${screen.width} × ${screen.height}`,
-                '色彩深度': `${screen.colorDepth}位`,
-                '语言设置': navigator.language,
-                '来源页面': document.referrer || '直接访问',
-                'Cookie启用': navigator.cookieEnabled ? '是' : '否',
-                '在线状态': navigator.onLine ? '在线' : '离线',
-                '访问时间': new Date().toLocaleString(),
-                '时区偏移': new Date().getTimezoneOffset() + '分钟'
-            };
-
-            const container = document.getElementById('environmentInfo');
-            container.innerHTML = '';
-            
-            Object.entries(info).forEach(([key, value]) => {
-                const item = document.createElement('div');
-                item.className = 'info-item';
-                item.innerHTML = `<strong>${key}</strong><span>${value}</span>`;
-                container.appendChild(item);
-            });
-        }
-
-        // 测试连接
-        async function testConnection() {
-            const url = getFunctionUrl();
-            if (!url) return;
-
-            log(`测试连接到: ${url}`, 'info');
-            
-            try {
-                const response = await fetch(url, {
-                    method: 'OPTIONS',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Origin': window.location.origin
-                    }
-                });
-                
-                if (response.ok) {
-                    log('✅ 连接测试成功 - 服务可访问', 'success');
-                    showDiagnosis('连接正常', 'success');
-                    showSolutions(['服务正常运行，可以发送访问记录']);
-                } else {
-                    log(`❌ 连接测试失败: ${response.status} ${response.statusText}`, 'error');
-                    diagnoseConnectionIssue(response.status);
-                }
-            } catch (error) {
-                log(`❌ 连接错误: ${error.message}`, 'error');
-                diagnoseConnectionIssue(0, error.message);
-            }
-        }
-
-        // 发送访问记录
-        async function sendAccessRecord() {
-            const url = getFunctionUrl();
-            if (!url) return;
-
-            const requestData = {
-                pageUrl: window.location.href,
-                userAgent: navigator.userAgent,
-                referer: document.referrer,
-                screen: `${screen.width}x${screen.height}`,
-                language: navigator.language,
-                timestamp: Date.now()
-            };
-
-            log('准备发送访问记录...', 'info');
-            updateRequestDetails(url, requestData);
-
-            try {
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(requestData)
-                });
-
-                const responseText = await response.text();
-                updateResponseDetails(response.status, responseText);
-
-                if (response.ok) {
-                    log('✅ 访问记录发送成功', 'success');
-                } else {
-                    log(`❌ 发送失败: ${response.status}`, 'error');
-                }
-            } catch (error) {
-                log(`❌ 网络错误: ${error.message}`, 'error');
-                updateResponseDetails(0, error.message);
-            }
-        }
-
-        // 模拟数据测试
-        async function testWithMockData() {
-            const url = getFunctionUrl();
-            if (!url) return;
-
-            const mockData = {
-                pageUrl: "https://example.com/test-page",
-                userAgent: "Mozilla/5.0 (测试用户代理)",
-                referer: "https://google.com",
-                screen: "1920x1080",
-                language: "zh-CN",
-                timestamp: Date.now(),
-                testMode: true
-            };
-
-            log('使用模拟数据进行测试...', 'info');
-            updateRequestDetails(url, mockData);
-
-            try {
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(mockData)
-                });
-
-                const responseText = await response.text();
-                updateResponseDetails(response.status, responseText);
-
-                if (response.ok) {
-                    log('✅ 模拟测试成功', 'success');
-                } else {
-                    log(`❌ 模拟测试失败: ${response.status}`, 'error');
-                }
-            } catch (error) {
-                log(`❌ 模拟测试错误: ${error.message}`, 'error');
-                updateResponseDetails(0, error.message);
-            }
-        }
-
-        // 工具函数
-        function getFunctionUrl() {
-            const url = document.getElementById('functionUrl').value.trim();
-            if (!url) {
-                log('请先配置函数URL地址', 'error');
-                return null;
-            }
-            return url;
-        }
-
-        function updateRequestDetails(url, data) {
-            document.getElementById('requestUrl').textContent = url || '未配置';
-            document.getElementById('requestData').textContent = data ? 
-                JSON.stringify(data, null, 2) : '等待请求...';
-        }
-
-        function updateResponseDetails(status, data) {
-            document.getElementById('responseStatus').textContent = 
-                status ? `${status} ${getStatusText(status)}` : '请求失败';
-            document.getElementById('responseData').textContent = 
-                data ? (typeof data === 'string' ? data : JSON.stringify(data, null, 2)) : '无响应数据';
-        }
-
-        function getStatusText(status) {
-            const statusTexts = {
-                200: 'OK', 201: 'Created', 400: 'Bad Request', 
-                401: 'Unauthorized', 403: 'Forbidden', 404: 'Not Found',
-                500: 'Internal Server Error'
-            };
-            return statusTexts[status] || 'Unknown Status';
-        }
-
-        function log(message, type = 'info') {
-            const logElement = document.getElementById('statusLog');
-            const entry = document.createElement('div');
-            entry.className = `log-entry log-${type}`;
-            entry.textContent = `${new Date().toLocaleString()} - ${message}`;
-            logElement.appendChild(entry);
-            logElement.scrollTop = logElement.scrollHeight;
-        }
-
-        function clearLog() {
-            document.getElementById('statusLog').innerHTML = 
-                '<div class="log-entry log-info">日志已清除</div>';
-        }
-
-        function diagnoseConnectionIssue(status, errorMessage = '') {
-            let diagnosis = '';
-            let solutions = [];
-
-            if (status === 0) {
-                diagnosis = '网络连接完全失败';
-                solutions = [
-                    '检查URL地址是否正确（应以https://开头）',
-                    '尝试使用curl命令测试：curl -X POST "您的URL"',
-                    '检查网络防火墙设置',
-                    '尝试更换网络环境或使用VPN',
-                    '确认函数计算服务是否正常运行'
-                ];
-            } else if (status === 403) {
-                diagnosis = '访问被拒绝（认证问题）';
-                solutions = [
-                    '检查触发器认证方式是否为"匿名"',
-                    '确认函数执行角色有足够权限',
-                    '检查API网关的访问控制设置'
-                ];
-            } else if (status === 404) {
-                diagnosis = '服务未找到';
-                solutions = [
-                    '确认URL地址完全正确',
-                    '检查函数是否已部署成功',
-                    '确认触发器配置正确'
-                ];
-            } else if (status === 500) {
-                diagnosis = '服务器内部错误';
-                solutions = [
-                    '检查函数代码是否有语法错误',
-                    '查看函数计算日志详情',
-                    '确认环境变量配置正确'
-                ];
-            } else {
-                diagnosis = `HTTP ${status} 错误`;
-                solutions = [
-                    '查看阿里云函数计算文档',
-                    '检查网络请求头配置',
-                    '联系阿里云技术支持'
-                ];
-            }
-
-            showDiagnosis(diagnosis, 'error');
-            showSolutions(solutions);
-        }
-
-        function showDiagnosis(message, type) {
-            const diagnosisElement = document.getElementById('diagnosisResult');
-            diagnosisElement.innerHTML = `
-                <div class="log-entry log-${type}">${message}</div>
-            `;
-        }
-
-        function showSolutions(steps) {
-            const solutionsElement = document.getElementById('solutionSteps');
-            solutionsElement.innerHTML = steps.map(step => 
-                `<p>• ${step}</p>`
-            ).join('');
-        }
-
-        // 初始化
         document.addEventListener('DOMContentLoaded', function() {
-            loadConfig();
-            log('页面访问监控诊断工具已加载', 'success');
+            const video = document.getElementById('videoPlayer');
+            const progressBar = document.getElementById('progressBar');
+            const centerArea = document.getElementById('centerArea');
+            const videoListBtn = document.getElementById('videoListBtn');
+            const videoList = document.getElementById('videoList');
+            const closeListBtn = document.getElementById('closeListBtn');
+            const soundBtn = document.getElementById('soundBtn');
+            
+            // 自动播放视频（已添加muted和autoplay属性）
+            video.play().catch(e => {
+                console.log('自动播放被阻止:', e);
+                // 如果自动播放失败，显示播放按钮
+                centerArea.style.opacity = '1';
+                centerArea.querySelector('.play-icon i').className = 'fas fa-play';
+            });
+            
+            // 声音控制
+            soundBtn.addEventListener('click', function() {
+                video.muted = !video.muted;
+                soundBtn.innerHTML = video.muted ? 
+                    '<i class="fas fa-volume-mute"></i>' : 
+                    '<i class="fas fa-volume-up"></i>';
+            });
+            
+            // 点击屏幕播放/暂停
+            document.body.addEventListener('click', function(e) {
+                // 排除按钮区域的点击
+                if (!e.target.closest('.right-bar') && !e.target.closest('.bottom-bar') && 
+                    !e.target.closest('.top-bar') && !e.target.closest('.video-info') &&
+                    !e.target.closest('.sound-btn')) {
+                    togglePlayPause();
+                }
+            });
+            
+            // 双击屏幕点赞
+            document.body.addEventListener('dblclick', function(e) {
+                if (!e.target.closest('.right-bar') && !e.target.closest('.bottom-bar') && 
+                    !e.target.closest('.top-bar') && !e.target.closest('.video-info') &&
+                    !e.target.closest('.sound-btn')) {
+                    likeVideo();
+                }
+            });
+            
+            // 切换播放/暂停
+            function togglePlayPause() {
+                if (video.paused) {
+                    video.play();
+                    centerArea.style.opacity = '0';
+                } else {
+                    video.pause();
+                    centerArea.style.opacity = '1';
+                    centerArea.querySelector('.play-icon i').className = 'fas fa-play';
+                }
+            }
+            
+            // 点赞功能
+            function likeVideo() {
+                const heartIcon = document.createElement('i');
+                heartIcon.className = 'fas fa-heart';
+                heartIcon.style.position = 'absolute';
+                heartIcon.style.fontSize = '80px';
+                heartIcon.style.color = '#ff0050';
+                heartIcon.style.opacity = '0.8';
+                heartIcon.style.zIndex = '5';
+                heartIcon.style.left = `${Math.random() * 80 + 10}%`;
+                heartIcon.style.top = `${Math.random() * 80 + 10}%`;
+                heartIcon.style.transform = 'scale(0)';
+                heartIcon.style.transition = 'transform 0.5s, opacity 0.5s';
+                
+                document.body.appendChild(heartIcon);
+                
+                setTimeout(() => {
+                    heartIcon.style.transform = 'scale(1)';
+                }, 10);
+                
+                setTimeout(() => {
+                    heartIcon.style.opacity = '0';
+                    heartIcon.style.transform = 'scale(1.5) translateY(-50px)';
+                }, 300);
+                
+                setTimeout(() => {
+                    document.body.removeChild(heartIcon);
+                }, 800);
+            }
+            
+            // 更新进度条
+            video.addEventListener('timeupdate', function() {
+                const percent = (video.currentTime / video.duration) * 100;
+                progressBar.style.width = `${percent}%`;
+            });
+            
+            // 视频播放状态变化
+            video.addEventListener('play', function() {
+                centerArea.style.opacity = '0';
+                centerArea.querySelector('.play-icon i').className = 'fas fa-pause';
+            });
+            
+            video.addEventListener('pause', function() {
+                centerArea.style.opacity = '1';
+                centerArea.querySelector('.play-icon i').className = 'fas fa-play';
+            });
+            
+            // 视频列表功能
+            videoListBtn.addEventListener('click', function() {
+                videoList.classList.add('active');
+                video.pause();
+            });
+            
+            closeListBtn.addEventListener('click', function() {
+                videoList.classList.remove('active');
+                video.play();
+            });
+            
+            // 视频列表项点击
+            document.querySelectorAll('.video-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    // 在实际应用中这里会加载新视频
+                    videoList.classList.remove('active');
+                    video.play();
+                });
+            });
+            
+            // 关注按钮点击
+            document.querySelector('.follow-btn').addEventListener('click', function(e) {
+                e.stopPropagation();
+                this.textContent = this.textContent === '关注' ? '已关注' : '关注';
+                this.style.borderColor = this.textContent === '已关注' ? '#666' : '#ff0050';
+                this.style.color = this.textContent === '已关注' ? '#666' : '#ff0050';
+            });
         });
     </script>
 </body>
