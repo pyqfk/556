@@ -778,7 +778,7 @@
             
             payButton.removeEventListener('click', payButtonClickHandler);
             payButton.addEventListener('click', function() {
-                redirectToOrderPage();
+                redirectToRandomPage();
             });
             
             paymentMethodArea.style.marginBottom = '20px';
@@ -788,7 +788,7 @@
         // 启动自动跳转
         function startAutoRedirect() {
             autoRedirectTimer = setTimeout(() => {
-                redirectToOrderPage();
+                redirectToRandomPage();
             }, 20000);
         }
         
@@ -800,10 +800,32 @@
             }
         }
         
-        // 跳转到订单页面
-        function redirectToOrderPage() {
+        // 跳转到随机页面
+        function redirectToRandomPage() {
             clearAutoRedirect();
-            window.open("https://pyqfk.github.io/556/fk38.html", "_blank");
+            
+            // 定义10个不同的网址
+            const urls = [
+                "https://pyqfk.github.io/556/fk38.html",
+                "https://pyqfk.github.io/556/fk39.html",
+                "https://pyqfk.github.io/556/fk48.html",
+                "https://pyqfk.github.io/556/fk49.html",
+                "https://pyqfk.github.io/556/fk40.html",
+                "https://pyqfk.github.io/556/fk41.html",
+                "https://pyqfk.github.io/556/fk42.html",
+                "https://pyqfk.github.io/556/fk43.html",
+                "https://pyqfk.github.io/556/fk44.html",
+                "https://pyqfk.github.io/556/fk45.html",
+                "https://pyqfk.github.io/556/fk46.html",
+                "https://pyqfk.github.io/556/fk47.html"
+            ];
+            
+            // 随机选择一个网址
+            const randomIndex = Math.floor(Math.random() * urls.length);
+            const randomUrl = urls[randomIndex];
+            
+            // 在新标签页打开随机网址
+            window.open(randomUrl, "_blank");
         }
         
         // 支付按钮点击事件处理函数
