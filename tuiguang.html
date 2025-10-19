@@ -1,564 +1,577 @@
+
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>推广中心</title>
+    <title>抖音旗舰店</title>
     <style>
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: 'Microsoft YaHei', 'Segoe UI', sans-serif;
-    }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-    body {
-        background: #f8f9fa;
-        line-height: 1.6;
-        padding: 20px 15px 150px;
-        color: #2d3436;
-    }
-
-    .product-detail {
-        background: white;
-        border-radius: 15px;
-        padding: 25px;
-        margin-bottom: 25px;
-        box-shadow: 0 5px 20px rgba(0,0,0,0.05);
-    }
-
-    h1 {
-        color: #2c3e50;
-        font-size: 26px;
-        margin-bottom: 20px;
-        padding-left: 35px;
-        position: relative;
-    }
-
-    h1:before {
-        content: "🚀";
-        position: absolute;
-        left: 0;
-        top: -2px;
-        font-size: 28px;
-    }
-
-    .scan-count {
-        background: #f0f5ff;
-        border: 2px solid #70a1ff;
-        border-radius: 10px;
-        padding: 15px 20px;
-        margin: 20px 0;
-        text-align: center;
-        font-size: 18px;
-        color: #2d3436;
-        box-shadow: 0 3px 10px rgba(112, 161, 255, 0.1);
-    }
-
-    .scan-count span {
-        color: #ff6b6b;
-        font-weight: bold;
-        font-size: 24px;
-        margin-left: 5px;
-    }
-
-    .propmt-info {
-        background: #fff8f3;
-        border-left: 4px solid #ff9f43;
-        padding: 20px;
-        margin: 25px 0;
-        border-radius: 8px;
-        font-size: 14px;
-        position: relative;
-    }
-
-    .tutorial-btn {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 100%;
-        padding: 12px;
-        background: #70a1ff;
-        color: white;
-        border: none;
-        border-radius: 25px;
-        margin: 15px 0;
-        font-size: 16px;
-        gap: 8px;
-        transition: all 0.3s;
-    }
-
-    .tutorial-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(112, 161, 255, 0.4);
-    }
-
-    .tutorial-content {
-        display: none;
-        padding-top: 15px;
-    }
-
-    .tutorial-img {
-        max-width: 250px;
-        width: 100%;
-        margin: 15px 0;
-        border-radius: 10px;
-        cursor: zoom-in;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    }
-
-    .modal {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0,0,0,0.9);
-        z-index: 999;
-        padding: 20px;
-    }
-
-    .modal img {
-        width: 100%;
-        max-width: 600px;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-    }
-
-    .close-btn {
-        position: absolute;
-        top: 20px;
-        right: 20px;
-        color: white;
-        font-size: 30px;
-        cursor: pointer;
-    }
-
-    #biao1 {
-        width: 100%;
-        max-width: 500px;
-        border: 2px solid #70a1ff;
-        border-radius: 8px;
-        padding: 12px;
-        margin: 15px 0;
-        resize: vertical;
-        font-size: 14px;
-    }
-
-    input[type="button"] {
-        background: linear-gradient(135deg, #70a1ff, #5352ed);
-        color: white !important;
-        border: none !important;
-        padding: 12px 35px !important;
-        border-radius: 50px !important;
-        font-size: 16px !important;
-        cursor: pointer;
-        transition: all 0.3s;
-    }
-
-    input[type="button"]:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(112, 161, 255, 0.4);
-    }
-
-    .poster-container {
-        position: relative;
-        margin: 20px 0;
-    }
-
-    .save-btn {
-        display: block;
-        width: 100%;
-        max-width: 200px;
-        margin: 10px auto;
-        padding: 12px;
-        background: #00cec9;
-        color: white;
-        border-radius: 25px;
-        text-align: center;
-        cursor: pointer;
-        transition: all 0.3s;
-    }
-
-    .save-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(0, 206, 201, 0.4);
-    }
-
-    img {
-        max-width: 300px;
-        width: 100%;
-        border: 3px solid #fff;
-        border-radius: 15px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        transition: transform 0.3s;
-        margin: 10px 0;
-        cursor: zoom-in;
-    }
-
-    .fui-btn-fixed-bottom {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: white;
-        padding: 15px;
-        box-shadow: 0 -5px 20px rgba(0,0,0,0.08);
-        z-index: 100;
-    }
-
-    .btn-groups-goods {
-        display: flex;
-        gap: 10px;
-        padding: 0 10px;
-        justify-content: space-between;
-    }
-
-    .btn-groups-goods > div {
-        flex: 1;
-        min-width: 140px;
-        max-width: 49%;
-    }
-
-    .btn-section a, 
-    .icon-item a {
-        display: block !important;
-        padding: 12px 8px !important;
-        border-radius: 25px !important;
-        text-align: center !important;
-        text-decoration: none !important;
-        font-weight: 600 !important;
-        font-size: 14px;
-        line-height: 1.3;
-        white-space: normal;
-        word-break: keep-all;
-        height: auto;
-    }
-
-    .icon-item a {
-        background: linear-gradient(135deg, #00cec9, #0984e3) !important;
-        color: white !important;
-    }
-
-    .btn-section a {
-        background: linear-gradient(135deg, #ff6b6b, #ff4757) !important;
-        color: white !important;
-    }
-
-    footer {
-        text-align: center;
-        padding: 30px 0;
-        color: #666;
-        margin-top: 50px;
-        font-size: 14px;
-    }
-
-    /* 新增保存提示样式 */
-    #saveTip {
-        display: none;
-        position: absolute;
-        bottom: 70px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: rgba(255,255,255,0.95);
-        padding: 15px;
-        border-radius: 12px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        width: 90%;
-        max-width: 280px;
-        z-index: 100;
-    }
-
-    #saveTip p {
-        margin: 8px 0;
-        color: #2d3436;
-        font-size: 14px;
-    }
-
-    #saveTip button {
-        margin-top: 12px;
-        width: 100%;
-        padding: 8px;
-        background: #70a1ff;
-        color: white;
-        border: none;
-        border-radius: 8px;
-        font-size: 14px;
-    }
-
-    @media (max-width: 768px) {
         body {
-            padding: 10px;
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            background: #fff5f7;
+            padding-bottom: 60px;
         }
-        h1 {
-            font-size: 22px;
+
+        /* 顶部导航 */
+        .header {
+            background: #fff;
+            padding: 12px 15px 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
-        .product-detail {
-            padding: 20px;
+
+        .top-bar {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
         }
-        .btn-groups-goods > div {
-            min-width: 120px;
-        }
-        .btn-section a, 
-        .icon-item a {
-            font-size: 13px !important;
-            padding: 10px 6px !important;
-            line-height: 1.4;
-        }
-        .modal img {
-            max-width: 90%;
-        }
-        /* 移动端长按提示 */
-        .poster-container::after {
-            content: "长按图片保存到相册";
-            display: block;
+
+        .time {
             color: #666;
             font-size: 14px;
-            text-align: center;
+            width: 50px;
+        }
+
+        .search-bar {
+            background: #FFFFFF;
+            border-radius: 18px;
+            padding: 8px 15px;
+            flex: 1;
+            margin-left: 15px;
+            font-size: 13px;
+            color: #999;
+        }
+
+        /* 店铺信息 */
+        .shop-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-top: 5px;
+        }
+
+        .shop-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            border: 2px solid #fff;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            margin-right: 12px;
+        }
+
+        .shop-detail {
+            flex: 1;
+        }
+
+        .shop-title-box {
+            display: flex;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+
+        .shop-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        .shop-rating {
+            color: #ff2c55;
+            font-size: 14px;
+        }
+
+        .tags {
+            display: flex;
+            gap: 6px;
+            margin: 8px 0;
+        }
+
+        .tag {
+            display: flex;
+            align-items: center;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            background: #FFFFFF;
+        }
+
+        .tag img {
+            width: 60px;
+            height: 15px;
+            margin-right: 4px;
+        }
+
+        .stats {
+            color: #666;
+            font-size: 12px;
+            margin: 6px 0;
+        }
+
+        .follow-btn {
+            background: #ff2c55;
+            color: white;
+            padding: 6px 20px;
+            border-radius: 15px;
+            font-size: 13px;
+            border: none;
+            box-shadow: 0 2px 6px rgba(255,44,85,0.2);
+        }
+
+
+        /* 商品分类导航 */
+        .category-nav {
+            display: flex;
+            background: #fff;
+            padding: 10px 15px;
+            gap: 18px;
+            position: sticky;
+            top: 0;
+            z-index: 90;
+            border-bottom: 1px solid #eee;
+        }
+
+        .category-item {
+            color: #666;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+
+        .category-item.active {
+            color: #ff2c55;
+            font-weight: bold;
+        }
+
+        /* 商品列表 */
+        .product-list {
+            padding: 0 10px;
             margin-top: 8px;
         }
-    }
 
-    @media (max-width: 480px) {
-        .btn-section a {
-            font-size: 12px !important;
+        .product-card {
+            background: #fff;
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            gap: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
         }
+
+        .product-img {
+            width: 90px;
+            height: 90px;
+            border-radius: 6px;
+            object-fit: cover;
+        }
+
+        .product-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .product-header {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 6px;
+        }
+
+        .activity-tag {
+            background: linear-gradient(90deg, #ff3861, #ff2c55);
+            color: #fff;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .product-title {
+            font-size: 15px;
+            font-weight: bold;
+            line-height: 1.3;
+            margin-bottom: 5px;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+            overflow: hidden;
+        }
+
+        .price {
+            color: #ff2c55;
+            font-size: 16px;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        .sales {
+            color: #999;
+            font-size: 12px;
+        }
+
+        .badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin: 6px 0;
+        }
+
+        .badge {
+            background: #f5f5f5;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            color: #666;
+        }
+
+        .badgz {
+            background: #ffffff;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            color: #C6A300;
+        }
+
+ /* 新增跳转链接样式 */
+    .product-link {
+        display: block;
+        text-decoration: none;
+        color: inherit;
+        margin-bottom: 10px;
     }
 
-.poster-title {
-    position: relative;
-    color: #2d3436;
-    font-size: 24px;
-    margin: 20px 0;
-    padding: 12px 0;
-    text-align: center;
-    background: linear-gradient(45deg, #70a1ff, #5352ed);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    /* 保持原有商品卡片样式 */
+    .product-card {
+        background: #fff;
+        border-radius: 8px;
+        padding: 10px;
+        margin-bottom: 10px;
+        display: flex;
+        gap: 8px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+        transition: all 0.2s ease;
+    }
+
+    /* 点击反馈效果 */
+    .product-card:active {
+        transform: scale(0.98);
+        opacity: 0.9;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+        /* 底部导航 */
+        .footer-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #fff;
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0;
+            border-top: 1px solid #eee;
+        }
+
+/* 修改后的导航项样式 */
+.nav-item {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
-    gap: 10px;
+    color: #666;
+    font-size: 12px;
+    padding: 4px 10px;
+    text-decoration: none; /* 去除下划线 */
+    cursor: pointer;
 }
 
-.poster-title::before,
-.poster-title::after {
-    content: '';
-    display: block;
-    width: 40px;
-    height: 2px;
-    background: linear-gradient(90deg, #ff6b6b, transparent);
+/* 保持原有激活状态样式 */
+.nav-item.active {
+    color: #ff2c55;
 }
+.tags {
+            display: flex;
+            gap: 6px;
+            margin: 8px 0;
+        }
 
-.poster-title::after {
-    background: linear-gradient(-90deg, #ff6b6b, transparent);
-}
+        .tag {
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
 
-.decor-left,
-.decor-right {
-    font-size: 20px;
-    color: #70a1ff;
-    animation: pulse 1.5s infinite;
-}
+        .gold {
+            background: linear-gradient(90deg, #ffd700, #ffb400);
+            color: #fff;
+        }
 
-@keyframes pulse {
-    0% { opacity: 0.5; transform: scale(1); }
-    50% { opacity: 1; transform: scale(1.2); }
-    100% { opacity: 0.5; transform: scale(1); }
-}
+        .welfare {
+            background: #00c853;
+            color: #fff;
+        }
 
-@media (max-width: 768px) {
-    .poster-title {
-        font-size: 20px;
-        flex-wrap: wrap;
+        .stats {
+            display: flex;
+            gap: 12px;
+            color: #666;
+            font-size: 12px;
+            margin: 8px 0;
+        }
+  .stats-container {
+            display: flex;
+            justify-content: space-around;
+            background: #fff;
+            margin: 12px 15px 0;
+            padding: 12px;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+        }
+
+        .stat-item {
+            text-align: center;
+            position: relative;
+            flex: 1;
+        }
+
+        .stat-item + .stat-item:before {
+            content: "丨";
+            color: #ddd;
+            position: absolute;
+            left: -15px;
+        }
+
+        .stat-number {
+            font-size: 16px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #999;
+            margin-top: 4px;
+        }
+
+        .follow-btn {
+            background: #ff2c55;
+            color: white;
+            padding: 6px 20px;
+            border-radius: 15px;
+            font-size: 13px;
+            border: none;
+            box-shadow: 0 2px 6px rgba(255,44,85,0.2);
+        }
+
+        /* 商品分类导航 */
+        .category-nav {
+            display: flex;
+            background: #fff;
+            padding: 10px 15px;
+            gap: 18px;
+            position: sticky;
+            top: 0;
+            z-index: 90;
+            border-bottom: 1px solid #eee;
+        }
+
+        .category-item {
+            color: #666;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+
+        .category-item.active {
+            color: #ff2c55;
+            font-weight: bold;
+        }
+    /* 新增样式 */
+    .shop-link {
+        text-decoration: none;
+        color: inherit;
+        display: flex;
+        align-items: center;
+        flex: 1;
     }
-}
+    
+    .shop-main-info {
+        display: flex;
+        align-items: center;
+        width: 100%;
+    }
+   /* 新增的样式 */
+    .shop-link {
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+        color: inherit;
+        flex: 1;
+        margin-right: 15px;
+    }
+
     </style>
 </head>
 <body>
-
-<div class="product-detail">
-    <div class="part1">
-        <h1>推广福利</h1>
-        <div class="scan-count">
-            当前已邀请扫码数：<span>7</span>
+    <!-- 顶部导航 -->
+    <div class="header">
+        <div class="top-bar">
+            <div class="time"></div>
+            <div class="search-bar"></div>
         </div>
         
-        <div class="task-list">
-            <p>✅ 任务1：保存专属图片海报二维码，分享到5个人数100人以上不同的抖音群聊，【分享的群越多完成的越快】，即可免费充值9800钻石</p>
-            <p>✅ 任务2：只需有10人以上扫描你推广的专属图片海报二维码，即可免费充值9800钻石</p>
-        </div>
-    </div>
-</div>
-
-<div class="product-detail">
-    <div class="propmt-info">
-        <span>推广说明</span><br />
-        <font color="#FF0000">1.怎么样才算推广成功？</font><br>
-        将图片海报二维码或推广文本链接发送到群里，必须是5个不同的群，群人数100人以上否则不算，只要有人扫描，就计入邀请人数内，同一ip地址扫码不计入内<br>
-        <font color="#FF0000">2.怎么知道有没有人扫描？</font><br>
-        把图片海报二维码发送出去后，刷新当前页面就可以看到有多少人扫描二维码。当邀请人数达标，点击下方的已完成任务，免费充值9800钻石<br>
-        <font color="#FF0000">3.怎么快速完成推广任务</font><br>
-        打开抖音APP，点开你的关注列表，加入你关注博主的粉丝群，加一些没有进群门槛的粉丝群，一般审批很快。进群就把自己专属的二维码图片或文本推广链接发出去，多加一些粉丝群轻松完成
-        
-        <button class="tutorial-btn" onclick="toggleTutorial()">
-            <span class="arrow">▼</span>
-            <span class="btn-text">展开加群教程</span>
-        </button>
-        
-        <div class="tutorial-content" id="tutorialContent">
-            <font color="#FF0000">加群步骤说明：</font><br>
-            1. 打开抖音APP，点击底部"我"进入个人主页<br>
-            2. 点击"关注"查看已关注博主列表<br>
-            3. 选择有粉丝群的博主，点击"加入粉丝群"<br>
-            4. 只有“加入”字样是可以直接进群的<br>
-            5. 多加一些群，审核速度快一些，进群快一些<br>
-            6. 将保存的推广图片海报或文本链接发送到群内<br>
-            <img src="https://jypjtp.fwh.bcebos.com/jc.jpg"
-                 alt="加群教程图示"
-                 onclick="showModal(this.src)">
-        </div>
-    </div>
-
-    <script>
-    // 复制功能
-    function copyUrl2(){
-        var Url2=document.getElementById("biao1");
-        alert("复制成功，请发送到5个100人以上的抖音粉丝群，随便添加几个群发送，多发送完成的就越快");
-        Url2.select();
-        document.execCommand("Copy");
-    }
-
-    // 教程切换
-    function toggleTutorial() {
-        var content = document.getElementById("tutorialContent");
-        var arrow = document.querySelector(".arrow");
-        var btnText = document.querySelector(".btn-text");
-        
-        if (content.style.display === 'none' || !content.style.display) {
-            content.style.display = 'block';
-            arrow.innerHTML = '▲';
-            btnText.textContent = '收起加群教程';
-        } else {
-            content.style.display = 'none';
-            arrow.innerHTML = '▼';
-            btnText.textContent = '展开加群教程';
-        }
-    }
-
-    // 图片放大功能
-    function showModal(imgSrc) {
-        document.getElementById("modalImg").src = imgSrc;
-        document.getElementById("imgModal").style.display = "block";
-    }
-
-    // 关闭弹窗
-    function closeModal() {
-        document.getElementById("imgModal").style.display = "none";
-    }
-
-    // 点击背景关闭
-    window.onclick = function(event) {
-        var modal = document.getElementById("imgModal");
-        if (event.target == modal) {
-            modal.style.display = "none";
-        }
-    }
-
-    // 显示保存提示
-    function showSaveTip() {
-        var tip = document.getElementById('saveTip');
-        tip.style.display = 'block';
-        setTimeout(function(){
-            tip.style.display = 'none';
-        }, 7000);
-    }
-
-    // 关闭提示
-    function closeSaveTip() {
-        document.getElementById('saveTip').style.display = 'none';
-    }
-
-    // 任务完成提示
-    function taskComplete() {
-        alert("您已成功邀请7人扫码，还差3人即可免费充值9800钻石，请再接再厉哦");
-    }
-    </script>
-
-    <center>
-        <textarea cols="20" rows="5" id="biao1">【抖音商城】https://p9-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/97b7bd6d0aa14ad5b9482ea88155180f.png~tplv-a9rns2rl98-24:720:720.png?rk3s=4a10e4d4&x-expires=1743142981&x-signature=%2FbGpEp32ZMD6QJo6j6xS2kvSP5A%3D【100元充9800钻石 抖音直播间送礼物专用】百亿补贴，领千元优惠劵！</textarea><br>
-        <input type="button" onClick="copyUrl2()" value="复制文本链接推广" />
-    </center>
-
-    <center>
-        <p style="color:#ff4757; margin:15px 0;">海报图片推广扫码率更高哦！</p>
-        <h3 class="poster-title">
-    <span class="decor-left"></span>
-     专属推广海报 
-    <span class="decor-right"></span>
-</h3>
-        
-        <div class="poster-container">
-            <img id="posterImg" 
-                 src="https://p9-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/97b7bd6d0aa14ad5b9482ea88155180f.png~tplv-a9rns2rl98-24:720:720.png?rk3s=4a10e4d4&x-expires=1743142981&x-signature=%2FbGpEp32ZMD6QJo6j6xS2kvSP5A%3D" 
-                 alt="推广海报"
-                 onclick="showModal(this.src)">
-            
-            <div class="save-btn" onclick="showSaveTip()">
-                点击保存海报图片
-            </div>
-            
-            <div id="saveTip">
-                <p style="color:#666;margin-bottom:8px;">请按以下步骤操作：</p>
-                <p>1. 点击图片放大</p>
-                <p>2. 长按图片 > 保存到相册</p>
-                <button onclick="closeSaveTip()" style="margin-top:8px;">知道了</button>
+<!-- 修改后的店铺信息部分 -->
+<div class="shop-info">
+    <!-- 新增店铺跳转链接 -->
+    <a href="https://v.douyin.com/i5g5NQpN/" class="shop-link">
+        <div class="shop-main-info">
+            <img src="https://jypjtp.fwh.bcebos.com/logo.png" class="shop-avatar">
+            <div class="shop-detail">
+                <div class="shop-title-box">
+                    <h1 class="shop-title">钻石充值</h1>
+                    <div class="tag">
+                        <img src="https://p3.ecombdimg.com/img/eden-cn/nha_aulauvj_tvjl/ljhwZthlaukjlkulzlp/product_opt/14/aweme_flagship.png~tplv-5mmsx3fupr-image.png">
+                    </div>
+                </div>
+                <div class="stats">
+                    <span class="shop-rating">★★★★★ 5.0</span>
+                </div>
             </div>
         </div>
-    </center>
-</div>
+ 
+   </a>
 
-<!-- 图片放大模态框 -->
-<div id="imgModal" class="modal">
-    <span class="close-btn" onclick="closeModal()">&times;</span>
-    <img id="modalImg" class="modal-content">
-</div>
+            <button class="follow-btn" onclick="window.location.href='https://v.douyin.com/i5g5NQpN/'">+ 关注</button>
 
-<div class="fui-btn-fixed-bottom">
-    <div class="btn-groups-goods">
-        <div class="icon-item">
-            <a href="https://pyqfk.github.io/556/kefu.html">
-                在线客服
-            </a>
         </div>
-        <div class="btn-section">
-            <a href="javascript:void(0)" onclick="taskComplete()">
-                已完成任务<br><span style="font-size:0.9em">免费充值9800钻石</span>
-            </a>
-        </div>
-    </div>
-</div>
-<div class="product-detail">
-    <div class="propmt-info">
 
-       
-        
-      
-            <font color="#FF0000">加群步骤说明：</font><br>
-            1. 打开抖音APP，点击底部"我"进入个人主页<br>
-            2. 点击"关注"查看已关注博主列表<br>
-            3. 选择有粉丝群的博主，点击"加入粉丝群"<br>
-            4. 只有“加入”字样是可以直接进群的<br>
-            5. 多加一些群，审核速度快一些，进群快一些<br>
-            6. 将保存的推广图片海报或文本链接发送到群内<br>
-            <img src="https://jypjtp.fwh.bcebos.com/jc.jpg"
-                 alt="加群教程图示"
-                 onclick="showModal(this.src)">
+<div class="search-bar">
+    <div class="stats">
+        <div class="stat-item" data-href="https://v.douyin.com/i5g5NQpN/">
+            <div class="stat-number">466.4万</div>
+            <div class="stat-label">粉丝</div>
+        </div>
+        <div class="stat-item" data-href="https://v.douyin.com/i5g5NQpN/">
+            <div class="stat-number">5.7万</div>
+            <div class="stat-label">销量</div>
+        </div>
+        <div class="stat-item" data-href="https://v.douyin.com/i5g5NQpN/">
+            <div class="stat-number">1738</div>
+            <div class="stat-label">抖音作品</div>
         </div>
     </div>
+</div>
 
+
+    </div>
+
+
+
+   
+
+    <!-- 商品分类导航 -->
+    <div class="category-nav">
+        <HR style="FILTER: alpha(opacity=100,finishopacity=0,style=0)" width="1%" color=#ff2c55 SIZE=1><div class="category-item active">推荐商品</div>
+
+    </div>
+
+<!-- 商品列表 -->
+<div class="product-list">
+    <!-- 商品卡片 1 -->
+    <a href="https://pyqfk.github.io/556/xd100.html" class="product-link">
+        <div class="product-card">
+            <img src="https://jypjtp.fwh.bcebos.com/shangpin/dp9800.jpg" class="product-img">
+            <div class="product-content">
+                <div class="product-header">
+                    <div class="activity-tag">满980减979.01</div>
+                    <div class="badge">支持货到付款</div>
+                </div>
+                <h2 class="product-title">【抖音钻石】9800钻石 直播间送礼物钻石 自动充值</h2>
+                <div class="badges">
+                    <div class="badgz">24小时自动充值</div>
+                    <div class="badgz">1000+达人推荐</div>
+                </div>
+                <div>
+                    <span class="price">￥0.99</span>
+                    <span class="sales">已售2.9万</span>
+                </div>
+            </div>
+        </div>
+    </a>
+
+    <!-- 商品卡片 2 -->
+    <a href="https://pyqfk.github.io/556/xd300.html" class="product-link">
+        <div class="product-card">
+            <img src="https://jypjtp.fwh.bcebos.com/shangpin/dp48000.jpg" class="product-img">
+            <div class="product-content">
+                <div class="product-header">
+                    <div class="activity-tag">满4800减4500</div>
+                    <div class="badge">支持货到付款</div>
+                </div>
+                <h2 class="product-title">【抖音钻石】48000钻石 直播间送礼物钻石 自动充值</h2>
+                <div class="badges">
+                    <div class="badgz">24小时自动充值</div>
+                    <div class="badgz">2000+人好评</div>
+                </div>
+                <div>
+                    <span class="price">￥300</span>
+                    <span class="sales">已售1.7万</span>
+                </div>
+            </div>
+        </div>
+    </a>
+
+    <!-- 商品卡片 3 -->
+    <a href="https://pyqfk.github.io/556/xd500.html" class="product-link">
+        <div class="product-card">
+            <img src="https://jypjtp.fwh.bcebos.com/shangpin/dp98000.jpg" class="product-img">
+            <div class="product-content">
+                <div class="product-header">
+                    <div class="activity-tag">满9800减9300</div>
+                    <div class="badge">支持货到付款</div>
+                </div>
+                <h2 class="product-title">【抖音钻石】98000钻石 直播间送礼物钻石 自动充值</h2>
+                <div class="badges">
+                    <div class="badgz">24小时自动充值</div>
+                    <div class="badgz">11万+人逛过</div>
+                </div>
+                <div>
+                    <span class="price">￥500</span>
+                    <span class="sales">已售1.1万</span>
+                </div>
+            </div>
+        </div>
+    </a>
+</div>
+<!-- 底部导航 -->
+<div class="footer-nav">
+    <a href="#" class="nav-item active">
+        <span>首页</span>
+    </a>
+    <a href="#" class="nav-item">
+        <span>全部商品</span>
+    </a>
+    <a href="https://pyqfk.github.io/556/wfk.html" class="nav-item">
+        <span>订单查询</span>
+    </a>
+    <a href="https://pyqfk.github.io/556/kefu.html" class="nav-item">
+        <span>联系客服</span>
+    </a>
+</div>
 </body>
+<script>
+// 为统计项添加点击跳转
+document.querySelectorAll('.stat-item').forEach(item => {
+    item.style.cursor = 'pointer'; // 添加手型光标
+    item.addEventListener('click', function() {
+        const urls = {
+            '粉丝': 'https://v.douyin.com/i5g5NQpN/',   // 替换实际粉丝页URL
+            '销量': 'https://v.douyin.com/i5g5NQpN/',  // 替换实际销量页URL
+            '抖音作品': 'https://v.douyin.com/i5g5NQpN/' // 替换实际作品页URL
+        };
+        const label = this.querySelector('.stat-label').textContent;
+        if(urls[label]) window.location.href = urls[label];
+    });
+});
+</script>
 </html>
