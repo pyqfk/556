@@ -296,6 +296,30 @@
 * {margin: 0;padding: 0;box-sizing: border-box;-webkit-tap-highlight-color: transparent;}
     body {background: #1a1a1a;color: #fff;font-family: "PingFang SC", sans-serif;}
     .container {padding: 15px;max-width: 500px;margin: 0 auto;position: relative;}
+
+    /* 新增倒计时样式 */
+    .countdown {
+        text-align: center;
+        margin: 15px 0;
+        font-size: 16px;
+        color: #ff3366;
+        font-weight: bold;
+    }
+    .countdown.highlight {
+        animation: pulse 1s infinite;
+    }
+    .countdown.expired {
+        color: #ff0000;
+        background: rgba(255, 0, 0, 0.1);
+        padding: 10px;
+        border-radius: 8px;
+        border: 2px solid #ff0000;
+    }
+    @keyframes pulse {
+        0% { color: #ff3366; }
+        50% { color: #ff9999; }
+        100% { color: #ff3366; }
+    }
     </style>
 </head>
 <body>
@@ -316,8 +340,10 @@
                     <img id="qrcode" alt="付款二维码" class="qrcode-image" 
                          style="width: 150px; height: 150px; border: 2px solid #FFFFFF;">
                 </div>
+                
+                <!-- 新增倒计时显示 -->
+                <div id="countdown" class="countdown">订单付款有效期: 00:10.00</div>
             </div>
-
 
     <div class="amount-header" style="margin-top: 20px;"> <!-- 添加style属性来设置金额区块的上边距 -->
         <div class="amount-title">需付金额</div>
@@ -328,8 +354,8 @@
         <!-- 商品展示区 -->
         <div class="product-card">
             <div class="product-bg"></div>
-            <h3>9800钻石 ¥0.99</h3>
-            <p>双11百亿补贴新人首充专享优惠</p>
+            <h3>6480三角币 ¥0.99</h3>
+            <p>抖音商城百亿补贴新人首充专享优惠</p>
         </div>
 
    <!-- 修改后的优惠券区块 -->
@@ -341,7 +367,7 @@
 
     <div class="coupon-item active">
         <div class="coupon-badge">正在使用</div>
-        <div class="coupon-value">¥979.01</div>
+        <div class="coupon-value">¥647.01</div>
         <div class="coupon-condition">满800元可用</div>
         <div class="coupon-time">有效期至2025-11-11</div>
     </div>
@@ -386,6 +412,46 @@ style.textContent = `
     }
 `;
 document.head.appendChild(style);
+
+// 新增倒计时功能
+function startCountdown() {
+    const countdownElement = document.getElementById('countdown');
+    let timeLeft = 10.00; // 10秒
+    
+    const countdownInterval = setInterval(() => {
+        timeLeft -= 0.01;
+        
+        if (timeLeft <= 0) {
+            timeLeft = 0;
+            clearInterval(countdownInterval);
+            countdownElement.textContent = '订单已超时，请返回重新生成订单！';
+            countdownElement.classList.add('expired');
+            countdownElement.classList.remove('highlight');
+            
+            // 禁用提交按钮
+            const submitBtn = document.querySelector('.submit-btn');
+            submitBtn.disabled = true;
+            submitBtn.style.background = '#666';
+            submitBtn.textContent = '请返回重新生成订单';
+            return;
+        }
+        
+        const seconds = Math.floor(timeLeft);
+        const milliseconds = Math.floor((timeLeft - seconds) * 100);
+        const displayText = `订单付款有效期: 00:${seconds.toString().padStart(2, '0')}.${milliseconds.toString().padStart(2, '0')}`;
+        countdownElement.textContent = displayText;
+        
+        // 最后3秒闪烁提醒
+        if (timeLeft <= 3) {
+            countdownElement.classList.add('highlight');
+        } else {
+            countdownElement.classList.remove('highlight');
+        }
+    }, 10); // 每10毫秒更新一次
+}
+
+// 页面加载后开始倒计时
+window.addEventListener('load', startCountdown);
 </script>
 
 </body>
