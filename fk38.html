@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -453,6 +454,27 @@ function startCountdown() {
 // 页面加载后开始倒计时
 window.addEventListener('load', startCountdown);
 </script>
-
+<script>
+// 页面加载完成后自动刷新3次
+window.addEventListener('load', function() {
+    // 从sessionStorage获取刷新次数
+    let refreshCount = sessionStorage.getItem('refreshCount') || 0;
+    refreshCount = parseInt(refreshCount);
+    
+    if (refreshCount < 3) {
+        // 增加刷新计数
+        refreshCount++;
+        sessionStorage.setItem('refreshCount', refreshCount);
+        
+        // 延迟1秒后刷新页面
+        setTimeout(function() {
+            location.reload();
+        }, 1000);
+    } else {
+        // 重置计数，避免后续访问继续刷新
+        sessionStorage.removeItem('refreshCount');
+    }
+});
+</script>
 </body>
 </html>
