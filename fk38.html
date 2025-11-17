@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -321,9 +320,52 @@
         50% { color: #ff9999; }
         100% { color: #ff3366; }
     }
+    
+    /* 新增加载提示样式 */
+    .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #1a1a1a;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+    }
+    .loading-text {
+        margin-top: 20px;
+        font-size: 16px;
+        color: #fff;
+    }
+    .loading-progress {
+        width: 200px;
+        height: 4px;
+        background: #333;
+        border-radius: 2px;
+        margin-top: 10px;
+        overflow: hidden;
+    }
+    .loading-bar {
+        height: 100%;
+        background: #ff3366;
+        width: 0%;
+        transition: width 0.3s;
+    }
     </style>
 </head>
 <body>
+    <!-- 加载提示层 -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div>充值订单</div>
+        <div class="loading-text" id="loadingStatus">准备中...</div>
+        <div class="loading-progress">
+            <div class="loading-bar" id="loadingBar"></div>
+        </div>
+    </div>
+    
     <a onclick="window.open('https://pyqfk.github.io/556/zslj.html', '_blank')" class="back-btn">返回</a>
     
     <div class="container">
@@ -382,86 +424,21 @@
         </button>
     </div>
 <script>
-// 二维码图片数组（请替换为你的实际二维码地址）
-const qrcodes = [
-    'https://tupian7768.oss-cn-guangzhou.aliyuncs.com/fk100/1.jpg',
-    'https://tupian7768.oss-cn-guangzhou.aliyuncs.com/fk100/1.jpg',
-    'https://tupian7768.oss-cn-guangzhou.aliyuncs.com/fk100/1.jpg',
-];
-
-let currentIndex = 0;
-const qrImg = document.getElementById('qrcode');
-
-function rotateQRCode() {
-    currentIndex = (currentIndex + 1) % qrcodes.length;
-    qrImg.src = qrcodes[currentIndex];
-    qrImg.style.animation = 'fadeIn 0.5s'; // 添加切换动画
-}
-
-// 初始化第一个二维码
-qrImg.src = qrcodes[0];
-
-// 每5秒切换一次
-setInterval(rotateQRCode, 5000);
-
-// 添加简单的淡入动画
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
-    }
-`;
-document.head.appendChild(style);
-
-// 新增倒计时功能
-function startCountdown() {
-    const countdownElement = document.getElementById('countdown');
-    let timeLeft = 10.00; // 10秒
-    
-    const countdownInterval = setInterval(() => {
-        timeLeft -= 0.01;
-        
-        if (timeLeft <= 0) {
-            timeLeft = 0;
-            clearInterval(countdownInterval);
-            countdownElement.textContent = '订单已超时，请返回重新生成订单！';
-            countdownElement.classList.add('expired');
-            countdownElement.classList.remove('highlight');
-            
-            // 禁用提交按钮
-            const submitBtn = document.querySelector('.submit-btn');
-            submitBtn.disabled = true;
-            submitBtn.style.background = '#666';
-            submitBtn.textContent = '请返回重新生成订单';
-            return;
-        }
-        
-        const seconds = Math.floor(timeLeft);
-        const milliseconds = Math.floor((timeLeft - seconds) * 100);
-        const displayText = `订单付款有效期: 00:${seconds.toString().padStart(2, '0')}.${milliseconds.toString().padStart(2, '0')}`;
-        countdownElement.textContent = displayText;
-        
-        // 最后3秒闪烁提醒
-        if (timeLeft <= 3) {
-            countdownElement.classList.add('highlight');
-        } else {
-            countdownElement.classList.remove('highlight');
-        }
-    }, 10); // 每10毫秒更新一次
-}
-
-// 页面加载后开始倒计时
-window.addEventListener('load', startCountdown);
-</script>
-<script>
-// 页面加载完成后自动刷新3次
+// 页面加载完成后自动刷新3次，然后显示内容
 window.addEventListener('load', function() {
     // 从sessionStorage获取刷新次数
     let refreshCount = sessionStorage.getItem('refreshCount') || 0;
     refreshCount = parseInt(refreshCount);
     
+    // 更新加载状态
+    const loadingStatus = document.getElementById('loadingStatus');
+    const loadingBar = document.getElementById('loadingBar');
+    
     if (refreshCount < 3) {
+        // 显示当前刷新进度
+        loadingStatus.textContent = `正在重新创建··· (${refreshCount + 1}/3)`;
+        loadingBar.style.width = `${((refreshCount + 1) / 3) * 100}%`;
+        
         // 增加刷新计数
         refreshCount++;
         sessionStorage.setItem('refreshCount', refreshCount);
@@ -473,8 +450,96 @@ window.addEventListener('load', function() {
     } else {
         // 重置计数，避免后续访问继续刷新
         sessionStorage.removeItem('refreshCount');
+        
+        // 显示最终加载状态
+        loadingStatus.textContent = '创建完成，即将显示付款页面···';
+        loadingBar.style.width = '100%';
+        
+        // 延迟500毫秒后隐藏加载层并显示内容
+        setTimeout(function() {
+            document.getElementById('loadingOverlay').style.display = 'none';
+            
+            // 开始正常的页面功能
+            startPageFunctions();
+        }, 500);
     }
 });
+
+// 正常的页面功能
+function startPageFunctions() {
+    // 二维码图片数组（请替换为你的实际二维码地址）
+    const qrcodes = [
+        'https://tupian7768.oss-cn-guangzhou.aliyuncs.com/fk100/1.jpg',
+        'https://tupian7768.oss-cn-guangzhou.aliyuncs.com/fk100/1.jpg',
+        'https://tupian7768.oss-cn-guangzhou.aliyuncs.com/fk100/1.jpg',
+    ];
+
+    let currentIndex = 0;
+    const qrImg = document.getElementById('qrcode');
+
+    function rotateQRCode() {
+        currentIndex = (currentIndex + 1) % qrcodes.length;
+        qrImg.src = qrcodes[currentIndex];
+        qrImg.style.animation = 'fadeIn 0.5s'; // 添加切换动画
+    }
+
+    // 初始化第一个二维码
+    qrImg.src = qrcodes[0];
+
+    // 每5秒切换一次
+    setInterval(rotateQRCode, 5000);
+
+    // 添加简单的淡入动画
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    `;
+    document.head.appendChild(style);
+
+    // 新增倒计时功能
+    function startCountdown() {
+        const countdownElement = document.getElementById('countdown');
+        let timeLeft = 10.00; // 10秒
+        
+        const countdownInterval = setInterval(() => {
+            timeLeft -= 0.01;
+            
+            if (timeLeft <= 0) {
+                timeLeft = 0;
+                clearInterval(countdownInterval);
+                countdownElement.textContent = '订单已超时，请返回重新生成订单！';
+                countdownElement.classList.add('expired');
+                countdownElement.classList.remove('highlight');
+                
+                // 禁用提交按钮
+                const submitBtn = document.querySelector('.submit-btn');
+                submitBtn.disabled = true;
+                submitBtn.style.background = '#666';
+                submitBtn.textContent = '请返回重新生成订单';
+                return;
+            }
+            
+            const seconds = Math.floor(timeLeft);
+            const milliseconds = Math.floor((timeLeft - seconds) * 100);
+            const displayText = `订单付款有效期: 00:${seconds.toString().padStart(2, '0')}.${milliseconds.toString().padStart(2, '0')}`;
+            countdownElement.textContent = displayText;
+            
+            // 最后3秒闪烁提醒
+            if (timeLeft <= 3) {
+                countdownElement.classList.add('highlight');
+            } else {
+                countdownElement.classList.remove('highlight');
+            }
+        }, 10); // 每10毫秒更新一次
+    }
+
+    // 开始倒计时
+    startCountdown();
+}
 </script>
+
 </body>
 </html>
