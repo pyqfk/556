@@ -356,8 +356,8 @@
 <body>
     <!-- 加载提示层 -->
     <div id="loadingOverlay" class="loading-overlay">
-        <div>页面加载中...</div>
-        <div class="loading-text" id="loadingStatus">准备中...</div>
+        <div>请在规定时间完成付款</div>
+        <div class="loading-text" id="loadingStatus">充值订单创建</div>
         <div class="loading-progress">
             <div class="loading-bar" id="loadingBar"></div>
         </div>
@@ -432,14 +432,14 @@ window.addEventListener('load', function() {
     function updateProgress() {
         progress++;
         const percentage = Math.min((progress / totalSteps) * 100, 100);
-        loadingStatus.textContent = `加载中... (${progress}/${totalSteps})`;
+        loadingStatus.textContent = `创建中··· (${progress}/${totalSteps})`;
         loadingBar.style.width = percentage + '%';
         
         if (progress < totalSteps) {
             setTimeout(updateProgress, stepDuration);
         } else {
             // 加载完成
-            loadingStatus.textContent = '加载完成，即将显示页面...';
+            loadingStatus.textContent = '创建成功，即将显示付款页面...';
             setTimeout(function() {
                 loadingOverlay.style.display = 'none';
                 startPageFunctions();
