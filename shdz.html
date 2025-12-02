@@ -261,49 +261,51 @@
             width: 100px;
         }
         
+        /* 优化标签样式，使其在移动端更小且对齐整齐 */
         .tags {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 8px;
             margin-top: 15px;
         }
         
         .tag {
             background-color: #f0f4f8;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 16px;
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 14px;
             color: #555;
+            white-space: nowrap;
         }
         
-        /* 修改统计项布局为网格 */
+        /* 优化统计项布局为网格 */
         .stats-container {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
+            gap: 12px;
             margin-top: 15px;
         }
         
         .stat-item {
             background-color: #f8f9fa;
-            padding: 15px;
-            border-radius: 12px;
+            padding: 12px;
+            border-radius: 10px;
             text-align: center;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            min-height: 80px;
+            min-height: 70px;
         }
         
         .stat-value {
-            font-size: 24px;
+            font-size: 20px;
             font-weight: bold;
             color: #333;
-            margin-bottom: 8px;
+            margin-bottom: 5px;
         }
         
         .stat-label {
-            font-size: 16px;
+            font-size: 14px;
             color: #666;
         }
         
@@ -318,22 +320,22 @@
         .progress-label {
             display: flex;
             justify-content: space-between;
-            font-size: 18px;
+            font-size: 16px;
             margin-bottom: 8px;
             color: #333;
         }
         
         .progress-bar {
-            height: 10px;
+            height: 8px;
             background-color: #e9ecef;
-            border-radius: 5px;
+            border-radius: 4px;
             overflow: hidden;
         }
         
         .progress-fill {
             height: 100%;
             background: linear-gradient(90deg, #4dabf7, #339af0);
-            border-radius: 5px;
+            border-radius: 4px;
         }
         
         .join-btn-container {
@@ -519,14 +521,33 @@
                 font-size: 16px;
             }
             
+            /* 移动端标签样式优化 */
+            .tags {
+                gap: 6px;
+            }
+            
             .tag {
-                font-size: 14px;
-                padding: 6px 12px;
+                font-size: 12px;
+                padding: 5px 10px;
+                border-radius: 14px;
             }
             
             /* 移动端统计项改为单列 */
             .stats-container {
                 grid-template-columns: 1fr;
+            }
+            
+            .stat-item {
+                min-height: 60px;
+                padding: 10px;
+            }
+            
+            .stat-value {
+                font-size: 18px;
+            }
+            
+            .stat-label {
+                font-size: 13px;
             }
             
             .join-btn-container {
@@ -592,9 +613,15 @@
                 font-size: 14px;
             }
             
+            /* 超小屏幕标签进一步优化 */
+            .tags {
+                gap: 4px;
+            }
+            
             .tag {
-                font-size: 12px;
-                padding: 5px 10px;
+                font-size: 10px;
+                padding: 4px 8px;
+                border-radius: 12px;
             }
             
             .join-btn {
