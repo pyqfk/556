@@ -952,10 +952,10 @@
             imageModal.classList.remove('active');
         });
         
-        // 点击模态框任意位置最小化
+        // 修复点击空白处最小化功能
         imageModal.addEventListener('click', function(e) {
             // 只有当点击的是模态框背景（不是图片或按钮）时才最小化
-            if (e.target === imageModal || e.target === modalImage) {
+            if (e.target === imageModal) {
                 minimizeImage();
             }
         });
