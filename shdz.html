@@ -124,6 +124,11 @@
             cursor: grabbing;
         }
         
+        .modal-image.minimized {
+            transform: scale(0.5) !important;
+            transition: transform 0.5s ease;
+        }
+        
         .close-modal {
             position: absolute;
             top: 20px;
@@ -448,6 +453,25 @@
             border-radius: 4px;
             z-index: 10;
         }
+        
+        .minimize-hint {
+            position: absolute;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 8px 16px;
+            border-radius: 20px;
+            z-index: 10;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .minimize-hint.show {
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
@@ -663,12 +687,16 @@
             <div class="loading">图片加载中...</div>
             <img class="modal-image" src="https://jypjtp.fwh.bcebos.com/tutu.png" alt="群背景图" id="modalImage">
             <div class="image-info" id="imageInfo">100%</div>
+            <div class="minimize-hint" id="minimizeHint">点击任意位置最小化图片</div>
             <button class="close-modal" id="closeModal">
                 <i class="fas fa-times"></i>
             </button>
             <div class="zoom-controls">
                 <button class="zoom-btn" id="zoomOut">
                     <i class="fas fa-search-minus"></i>
+                </button>
+                <button class="zoom-btn" id="shrink50">
+                    <i class="fas fa-compress-alt"></i>
                 </button>
                 <button class="zoom-btn" id="resetZoom">
                     <i class="fas fa-sync-alt"></i>
@@ -683,10 +711,6 @@
     <script>
         // 申请加群功能
         document.getElementById('joinBtn').addEventListener('click', function() {
-            // 在实际应用中，这里应该打开指定网址
-            // window.open('https://example.com', '_blank');
-            
-            // 这里我们显示一个成功提示
             document.getElementById('successMessage').classList.add('active');
         });
         
@@ -700,18 +724,26 @@
         const closeModal = document.getElementById('closeModal');
         const modalImage = document.getElementById('modalImage');
         const imageInfo = document.getElementById('imageInfo');
+        const minimizeHint = document.getElementById('minimizeHint');
         const zoomInBtn = document.getElementById('zoomIn');
         const zoomOutBtn = document.getElementById('zoomOut');
+        const shrink50Btn = document.getElementById('shrink50');
         const resetZoomBtn = document.getElementById('resetZoom');
         
         let scale = 1;
         let isDragging = false;
         let startX, startY, translateX = 0, translateY = 0;
+        let isMinimized = false;
         
         // 更新图片变换
         function updateImageTransform() {
-            modalImage.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
-            imageInfo.textContent = `${Math.round(scale * 100)}%`;
+            if (isMinimized) {
+                modalImage.style.transform = `translate(${translateX}px, ${translateY}px) scale(0.5)`;
+                imageInfo.textContent = '50%';
+            } else {
+                modalImage.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+                imageInfo.textContent = `${Math.round(scale * 100)}%`;
+            }
         }
         
         // 重置缩放和平移
@@ -719,19 +751,43 @@
             scale = 1;
             translateX = 0;
             translateY = 0;
+            isMinimized = false;
+            modalImage.classList.remove('minimized');
             updateImageTransform();
         }
         
         // 放大图片
         function zoomIn() {
+            isMinimized = false;
+            modalImage.classList.remove('minimized');
             scale = Math.min(scale + 0.2, 3);
             updateImageTransform();
         }
         
         // 缩小图片
         function zoomOut() {
+            isMinimized = false;
+            modalImage.classList.remove('minimized');
             scale = Math.max(scale - 0.2, 0.5);
             updateImageTransform();
+        }
+        
+        // 缩小50%
+        function shrink50() {
+            isMinimized = true;
+            modalImage.classList.add('minimized');
+            updateImageTransform();
+            
+            // 显示提示
+            minimizeHint.classList.add('show');
+            setTimeout(() => {
+                minimizeHint.classList.remove('show');
+            }, 2000);
+        }
+        
+        // 最小化图片（关闭模态框）
+        function minimizeImage() {
+            imageModal.classList.remove('active');
         }
         
         // 打开模态框
@@ -754,10 +810,11 @@
             imageModal.classList.remove('active');
         });
         
-        // 点击模态框外部也可以关闭
+        // 点击模态框任意位置最小化
         imageModal.addEventListener('click', function(e) {
-            if (e.target === imageModal) {
-                imageModal.classList.remove('active');
+            // 只有当点击的是模态框背景（不是图片或按钮）时才最小化
+            if (e.target === imageModal || e.target === modalImage) {
+                minimizeImage();
             }
         });
         
@@ -769,9 +826,25 @@
         });
         
         // 缩放控制
-        zoomInBtn.addEventListener('click', zoomIn);
-        zoomOutBtn.addEventListener('click', zoomOut);
-        resetZoomBtn.addEventListener('click', resetImage);
+        zoomInBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            zoomIn();
+        });
+        
+        zoomOutBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            zoomOut();
+        });
+        
+        shrink50Btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            shrink50();
+        });
+        
+        resetZoomBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            resetImage();
+        });
         
         // 鼠标滚轮缩放
         imageModal.addEventListener('wheel', function(e) {
