@@ -16,29 +16,33 @@
         body {
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             min-height: 100vh;
-            padding: 20px;
+            padding: 0;
+            overflow-x: hidden;
         }
         
         .container {
-            width: 100%;
-            max-width: 500px;
-            margin: 0 auto;
+            width: 100vw;
+            height: 100vh;
+            margin: 0;
             background-color: white;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border-radius: 0;
+            box-shadow: none;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
         
         .card-header {
             position: relative;
-            height: 180px;
+            height: 40vh;
             background: url('https://jypjtp.fwh.bcebos.com/tutu.png') center/cover no-repeat;
-            border-radius: 20px 20px 0 0;
+            border-radius: 0;
             cursor: pointer;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
+            flex-shrink: 0;
         }
         
         .card-header:hover {
@@ -53,17 +57,17 @@
             width: 100%;
             height: 100%;
             background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.5) 100%);
-            border-radius: 20px 20px 0 0;
+            border-radius: 0;
         }
         
         .zoom-icon {
             position: absolute;
-            top: 10px;
-            right: 10px;
+            top: 20px;
+            right: 20px;
             background: rgba(0, 0, 0, 0.5);
             color: white;
-            width: 30px;
-            height: 30px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -132,10 +136,10 @@
             background: rgba(255, 255, 255, 0.2);
             color: white;
             border: none;
-            width: 40px;
-            height: 40px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
-            font-size: 20px;
+            font-size: 24px;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -150,13 +154,13 @@
         
         .zoom-controls {
             position: absolute;
-            bottom: 20px;
+            bottom: 30px;
             left: 50%;
             transform: translateX(-50%);
             display: flex;
             background: rgba(0, 0, 0, 0.5);
-            border-radius: 20px;
-            padding: 5px;
+            border-radius: 25px;
+            padding: 8px;
             z-index: 10;
         }
         
@@ -164,13 +168,13 @@
             background: none;
             border: none;
             color: white;
-            width: 40px;
-            height: 40px;
+            width: 45px;
+            height: 45px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 18px;
+            font-size: 20px;
             cursor: pointer;
             transition: background 0.3s;
         }
@@ -182,27 +186,27 @@
         .group-info-card {
             display: flex;
             align-items: center;
-            padding: 20px;
+            padding: 30px;
             border-bottom: 1px solid #f0f0f0;
-            border-radius: 20px 20px 0 0;
             background: white;
+            flex-shrink: 0;
         }
         
         .group-avatar {
-            width: 80px;
-            height: 80px;
-            border-radius: 20px;
+            width: 100px;
+            height: 100px;
+            border-radius: 25px;
             background: linear-gradient(135deg, #ff6b35, #f7931e);
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-right: 15px;
-            font-size: 28px;
+            margin-right: 20px;
+            font-size: 36px;
             color: white;
             position: relative;
             z-index: 1;
-            border: 3px solid white;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            border: 4px solid white;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
         
         .group-info {
@@ -211,125 +215,128 @@
         }
         
         .group-name {
-            font-size: 20px;
+            font-size: 28px;
             font-weight: bold;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
         }
         
         .group-id {
-            font-size: 14px;
+            font-size: 18px;
             color: #666;
         }
         
         .card-body {
-            padding: 20px;
+            padding: 30px;
+            flex: 1;
+            overflow-y: auto;
         }
         
         .section {
-            margin-bottom: 20px;
+            margin-bottom: 30px;
         }
         
         .section-title {
-            font-size: 16px;
+            font-size: 22px;
             font-weight: bold;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             color: #333;
             display: flex;
             align-items: center;
         }
         
         .section-title i {
-            margin-right: 8px;
+            margin-right: 12px;
             color: #4dabf7;
         }
         
         .group-detail {
             display: flex;
             align-items: center;
-            margin-bottom: 8px;
-            font-size: 14px;
+            margin-bottom: 12px;
+            font-size: 18px;
         }
         
         .detail-label {
             color: #666;
-            width: 80px;
+            width: 100px;
         }
         
         .tags {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 10px;
+            gap: 10px;
+            margin-top: 15px;
         }
         
         .tag {
             background-color: #f0f4f8;
-            padding: 5px 12px;
-            border-radius: 15px;
-            font-size: 12px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 16px;
             color: #555;
         }
         
         .stats-container {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 10px;
+            gap: 15px;
+            margin-top: 15px;
         }
         
         .stat-item {
             flex: 1;
             min-width: 45%;
             background-color: #f8f9fa;
-            padding: 10px;
-            border-radius: 8px;
+            padding: 15px;
+            border-radius: 12px;
             text-align: center;
         }
         
         .stat-value {
-            font-size: 18px;
+            font-size: 24px;
             font-weight: bold;
             color: #333;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
         }
         
         .stat-label {
-            font-size: 12px;
+            font-size: 16px;
             color: #666;
         }
         
         .progress-bars {
-            margin-top: 15px;
+            margin-top: 20px;
         }
         
         .progress-item {
-            margin-bottom: 12px;
+            margin-bottom: 15px;
         }
         
         .progress-label {
             display: flex;
             justify-content: space-between;
-            font-size: 14px;
-            margin-bottom: 5px;
+            font-size: 18px;
+            margin-bottom: 8px;
             color: #333;
         }
         
         .progress-bar {
-            height: 6px;
+            height: 10px;
             background-color: #e9ecef;
-            border-radius: 3px;
+            border-radius: 5px;
             overflow: hidden;
         }
         
         .progress-fill {
             height: 100%;
             background: linear-gradient(90deg, #4dabf7, #339af0);
-            border-radius: 3px;
+            border-radius: 5px;
         }
         
         .join-btn-container {
-            padding: 20px;
+            padding: 30px;
             padding-top: 0;
+            flex-shrink: 0;
         }
         
         .join-btn {
@@ -338,21 +345,21 @@
             background: linear-gradient(90deg, #4dabf7, #339af0);
             color: white;
             border: none;
-            padding: 15px;
-            font-size: 16px;
+            padding: 20px;
+            font-size: 20px;
             font-weight: bold;
-            border-radius: 10px;
+            border-radius: 12px;
             cursor: pointer;
             transition: all 0.3s;
             text-align: center;
             text-decoration: none;
-            box-shadow: 0 4px 12px rgba(51, 154, 240, 0.4);
+            box-shadow: 0 4px 15px rgba(51, 154, 240, 0.4);
         }
         
         .join-btn:hover {
             background: linear-gradient(90deg, #339af0, #228be6);
             transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(51, 154, 240, 0.5);
+            box-shadow: 0 6px 20px rgba(51, 154, 240, 0.5);
         }
         
         .join-btn:active {
@@ -382,14 +389,14 @@
         
         .message-box {
             background-color: white;
-            padding: 25px;
-            border-radius: 12px;
+            padding: 30px;
+            border-radius: 15px;
             text-align: center;
-            max-width: 300px;
+            max-width: 400px;
             width: 90%;
             transform: scale(0.8);
             transition: transform 0.3s;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
         }
         
         .success-message.active .message-box {
@@ -397,30 +404,31 @@
         }
         
         .message-box i {
-            font-size: 40px;
+            font-size: 50px;
             color: #4dabf7;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
         
         .message-box h3 {
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             color: #333;
+            font-size: 24px;
         }
         
         .message-box p {
             color: #666;
-            margin-bottom: 20px;
-            font-size: 14px;
+            margin-bottom: 25px;
+            font-size: 18px;
         }
         
         .close-btn {
             background-color: #4dabf7;
             color: white;
             border: none;
-            padding: 8px 20px;
-            border-radius: 5px;
+            padding: 12px 30px;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 18px;
         }
         
         .loading {
@@ -429,7 +437,7 @@
             left: 50%;
             transform: translate(-50%, -50%);
             color: white;
-            font-size: 18px;
+            font-size: 24px;
         }
         
         .image-info {
@@ -437,23 +445,23 @@
             bottom: 20px;
             right: 20px;
             color: rgba(255, 255, 255, 0.7);
-            font-size: 14px;
+            font-size: 18px;
             background: rgba(0, 0, 0, 0.5);
-            padding: 5px 10px;
-            border-radius: 4px;
+            padding: 8px 15px;
+            border-radius: 6px;
             z-index: 10;
         }
         
         .minimize-hint {
             position: absolute;
-            bottom: 80px;
+            bottom: 100px;
             left: 50%;
             transform: translateX(-50%);
             color: rgba(255, 255, 255, 0.7);
-            font-size: 14px;
+            font-size: 18px;
             background: rgba(0, 0, 0, 0.5);
-            padding: 8px 16px;
-            border-radius: 20px;
+            padding: 12px 20px;
+            border-radius: 25px;
             z-index: 10;
             opacity: 0;
             transition: opacity 0.3s;
@@ -464,27 +472,93 @@
         }
         
         /* 移动端优化 */
-        @media (max-width: 480px) {
-            body {
-                padding: 10px;
-            }
-            
+        @media (max-width: 768px) {
             .container {
-                border-radius: 15px;
+                height: 100vh;
             }
             
             .card-header {
-                height: 150px;
-                border-radius: 15px 15px 0 0;
+                height: 30vh;
             }
             
-            .card-header::before {
-                border-radius: 15px 15px 0 0;
+            .group-info-card {
+                padding: 20px;
+            }
+            
+            .group-avatar {
+                width: 80px;
+                height: 80px;
+                font-size: 28px;
+                margin-right: 15px;
+            }
+            
+            .group-name {
+                font-size: 24px;
+            }
+            
+            .group-id {
+                font-size: 16px;
+            }
+            
+            .card-body {
+                padding: 20px;
+            }
+            
+            .section {
+                margin-bottom: 20px;
+            }
+            
+            .section-title {
+                font-size: 20px;
+            }
+            
+            .group-detail {
+                font-size: 16px;
+            }
+            
+            .tag {
+                font-size: 14px;
+                padding: 6px 12px;
+            }
+            
+            .stat-item {
+                min-width: 100%;
+            }
+            
+            .join-btn-container {
+                padding: 20px;
+                padding-top: 0;
+            }
+            
+            .join-btn {
+                padding: 15px;
+                font-size: 18px;
+            }
+            
+            .zoom-controls {
+                bottom: 20px;
+            }
+            
+            .close-modal {
+                top: 15px;
+                right: 15px;
+                width: 45px;
+                height: 45px;
+            }
+            
+            .image-info {
+                bottom: 15px;
+                right: 15px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .card-header {
+                height: 25vh;
             }
             
             .group-info-card {
                 padding: 15px;
-                border-radius: 15px 15px 0 0;
             }
             
             .group-avatar {
@@ -495,67 +569,49 @@
             }
             
             .group-name {
-                font-size: 18px;
+                font-size: 20px;
+            }
+            
+            .group-id {
+                font-size: 14px;
             }
             
             .card-body {
                 padding: 15px;
             }
             
-            .section {
-                margin-bottom: 15px;
+            .section-title {
+                font-size: 18px;
             }
             
-            .stat-item {
-                min-width: 100%;
+            .group-detail {
+                font-size: 14px;
             }
             
-            .join-btn-container {
-                padding: 15px;
-                padding-top: 0;
+            .tag {
+                font-size: 12px;
+                padding: 5px 10px;
+            }
+            
+            .join-btn {
+                padding: 12px;
+                font-size: 16px;
             }
             
             .zoom-controls {
-                bottom: 10px;
+                bottom: 15px;
             }
             
             .close-modal {
                 top: 10px;
                 right: 10px;
+                width: 40px;
+                height: 40px;
             }
             
             .image-info {
                 bottom: 10px;
                 right: 10px;
-            }
-        }
-        
-        @media (max-width: 360px) {
-            .card-header {
-                height: 120px;
-            }
-            
-            .group-avatar {
-                width: 50px;
-                height: 50px;
-                font-size: 20px;
-            }
-            
-            .group-name {
-                font-size: 16px;
-            }
-            
-            .group-id {
-                font-size: 12px;
-            }
-            
-            .section-title {
-                font-size: 15px;
-            }
-            
-            .join-btn {
-                padding: 12px;
-                font-size: 15px;
             }
         }
     </style>
