@@ -16,15 +16,13 @@
         body {
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px 20px 100px;
+            padding: 20px;
         }
         
         .container {
             width: 100%;
-            max-width: 400px;
+            max-width: 500px;
+            margin: 0 auto;
             background-color: white;
             border-radius: 20px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
@@ -33,9 +31,7 @@
         
         .card-header {
             position: relative;
-            height: 30vh; /* 占页面高度的30% */
-            min-height: 120px;
-            max-height: 200px;
+            height: 180px;
             background: url('https://jypjtp.fwh.bcebos.com/tutu.png') center/cover no-repeat;
             border-radius: 20px 20px 0 0;
             cursor: pointer;
@@ -332,14 +328,8 @@
         }
         
         .join-btn-container {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100%;
-            max-width: 400px;
-            padding: 0 20px;
-            z-index: 100;
+            padding: 20px;
+            padding-top: 0;
         }
         
         .join-btn {
@@ -471,6 +461,102 @@
         
         .minimize-hint.show {
             opacity: 1;
+        }
+        
+        /* 移动端优化 */
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                border-radius: 15px;
+            }
+            
+            .card-header {
+                height: 150px;
+                border-radius: 15px 15px 0 0;
+            }
+            
+            .card-header::before {
+                border-radius: 15px 15px 0 0;
+            }
+            
+            .group-info-card {
+                padding: 15px;
+                border-radius: 15px 15px 0 0;
+            }
+            
+            .group-avatar {
+                width: 60px;
+                height: 60px;
+                font-size: 24px;
+                margin-right: 12px;
+            }
+            
+            .group-name {
+                font-size: 18px;
+            }
+            
+            .card-body {
+                padding: 15px;
+            }
+            
+            .section {
+                margin-bottom: 15px;
+            }
+            
+            .stat-item {
+                min-width: 100%;
+            }
+            
+            .join-btn-container {
+                padding: 15px;
+                padding-top: 0;
+            }
+            
+            .zoom-controls {
+                bottom: 10px;
+            }
+            
+            .close-modal {
+                top: 10px;
+                right: 10px;
+            }
+            
+            .image-info {
+                bottom: 10px;
+                right: 10px;
+            }
+        }
+        
+        @media (max-width: 360px) {
+            .card-header {
+                height: 120px;
+            }
+            
+            .group-avatar {
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
+            }
+            
+            .group-name {
+                font-size: 16px;
+            }
+            
+            .group-id {
+                font-size: 12px;
+            }
+            
+            .section-title {
+                font-size: 15px;
+            }
+            
+            .join-btn {
+                padding: 12px;
+                font-size: 15px;
+            }
         }
     </style>
 </head>
@@ -667,10 +753,10 @@
                 </div>
             </div>
         </div>
-    </div>
-    
-    <div class="join-btn-container">
-        <button class="join-btn" id="joinBtn">申请加群</button>
+        
+        <div class="join-btn-container">
+            <button class="join-btn" id="joinBtn">申请加群</button>
+        </div>
     </div>
     
     <div class="success-message" id="successMessage">
