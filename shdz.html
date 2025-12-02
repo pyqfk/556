@@ -379,71 +379,6 @@
             transform: translateY(0);
         }
         
-        .success-message {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s;
-        }
-        
-        .success-message.active {
-            opacity: 1;
-            visibility: visible;
-        }
-        
-        .message-box {
-            background-color: white;
-            padding: 30px;
-            border-radius: 15px;
-            text-align: center;
-            max-width: 400px;
-            width: 90%;
-            transform: scale(0.8);
-            transition: transform 0.3s;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
-        }
-        
-        .success-message.active .message-box {
-            transform: scale(1);
-        }
-        
-        .message-box i {
-            font-size: 50px;
-            color: #4dabf7;
-            margin-bottom: 20px;
-        }
-        
-        .message-box h3 {
-            margin-bottom: 15px;
-            color: #333;
-            font-size: 24px;
-        }
-        
-        .message-box p {
-            color: #666;
-            margin-bottom: 25px;
-            font-size: 18px;
-        }
-        
-        .close-btn {
-            background-color: #4dabf7;
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 18px;
-        }
-        
         .loading {
             position: absolute;
             top: 50%;
@@ -671,7 +606,7 @@
         <div class="group-info-card">
             <div class="group-avatar">CF</div>
             <div class="group-info">
-                <div class="group-name">穿越火线手游交流群1</div>
+                <div class="group-name">梦溪福利群</div>
                 <div class="group-id">1976人 · 群号: 526867253</div>
             </div>
         </div>
@@ -777,16 +712,7 @@
         
         <!-- 底部悬浮按钮容器 -->
         <div class="floating-join-btn-container">
-            <button class="join-btn" id="joinBtn">申请加群</button>
-        </div>
-    </div>
-    
-    <div class="success-message" id="successMessage">
-        <div class="message-box">
-            <i class="fas fa-check-circle"></i>
-            <h3>申请已发送</h3>
-            <p>请等待管理员审核，审核通过后即可加入群聊</p>
-            <button class="close-btn" id="closeBtn">确定</button>
+            <a href="https://jq.qq.com/?_wv=1027&k=5Z2J5Y7" class="join-btn" id="joinBtn" target="_blank">申请加群</a>
         </div>
     </div>
     
@@ -817,15 +743,6 @@
     </div>
 
     <script>
-        // 申请加群功能
-        document.getElementById('joinBtn').addEventListener('click', function() {
-            document.getElementById('successMessage').classList.add('active');
-        });
-        
-        document.getElementById('closeBtn').addEventListener('click', function() {
-            document.getElementById('successMessage').classList.remove('active');
-        });
-        
         // 背景图放大功能
         const headerImage = document.getElementById('headerImage');
         const imageModal = document.getElementById('imageModal');
@@ -969,7 +886,7 @@
             isDragging = true;
             modalImage.classList.add('grabbing');
             startX = e.clientX - translateX;
-            startY = e.clientY - translateY;
+            startY = e.clientY - startY;
         });
         
         document.addEventListener('mousemove', function(e) {
@@ -989,7 +906,7 @@
         modalImage.addEventListener('touchstart', function(e) {
             isDragging = true;
             startX = e.touches[0].clientX - translateX;
-            startY = e.touches[0].clientY - translateY;
+            startY = e.touches[0].clientY - startY;
         });
         
         document.addEventListener('touchmove', function(e) {
