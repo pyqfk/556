@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>微信付费入群</title>
+    <style>
+        /* 全局样式初始化 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        body {
+            background: #f5f5f5;
+            color: #333;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        /* 容器布局 */
+        .container {
+            padding: 15px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        /* 返回按钮 - 调整位置 */
+        .back-btn {
+            position: fixed;
+            left: 15px;
+            top: 15px;
+            color: #07C160;
+            text-decoration: none;
+            z-index: 999;
+            font-size: 14px;
+            background: #fff;
+            padding: 8px 12px;
+            border-radius: 4px;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        /* 微信风格头部 - 优化标题区域 */
+        .wechat-header {
+            background: #fff;
+            padding: 20px 15px 15px;
+            text-align: center;
+            border-bottom: 1px solid #e0e0e0;
+            margin: 0 -15px 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .wechat-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            line-height: 1.3;
+        }
+        .wechat-subtitle {
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* 输入区域 */
+        .input-section {
+            background: #fff;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .input-field {
+            width: 100%;
+            padding: 12px;
+            background: #f9f9f9;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        /* 商品展示区 - 微信风格 */
+        .product-card {
+            background: #fff;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border-left: 4px solid #07C160;
+        }
+        .product-bg {
+            position: absolute;
+            right: -30px;
+            top: -30px;
+            width: 120px;
+            height: 120px;
+            background: rgba(7, 193, 96, 0.05);
+            border-radius: 50%;
+        }
+        .product-card h3 {
+            color: #333;
+            margin-bottom: 5px;
+            font-size: 18px;
+        }
+        .product-card p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        /* 优惠券专属样式 - 微信风格 */
+        .coupon-section {
+            background: #fff;
+            border-radius: 8px;
+            padding: 15px 0;
+            margin-bottom: 15px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .coupon-header {
+            padding: 0 15px 10px;
+            border-bottom: 1px solid #f0f0f0;
+            margin-bottom: 12px;
+        }
+
+        .coupon-item {
+            position: relative;
+            margin: 10px 15px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            transition: all 0.3s ease;
+        }
+
+        .coupon-item:before {
+            content: "";
+            position: absolute;
+            right: -1px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 30px;
+            height: 30px;
+            background: #f5f5f5;
+            clip-path: circle(50% at 100% 50%);
+        }
+
+        .coupon-item.active {
+            border-color: #07C160;
+            background: rgba(7, 193, 96, 0.05);
+            transform: translateX(5px);
+        }
+
+        .coupon-badge {
+            position: absolute;
+            right: -8px;
+            top: -8px;
+            background: #07C160;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            transform: rotate(15deg);
+        }
+
+        .coupon-value {
+            color: #07C160;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .coupon-condition {
+            color: #999;
+            font-size: 12px;
+        }
+
+        .coupon-disabled {
+            opacity: 0.5;
+            filter: grayscale(0.8);
+        }
+
+        /* 支付方式专属样式 - 微信风格 */
+        .payment-section {
+            background: #fff;
+            border-radius: 8px;
+            padding: 15px 0;
+            margin-bottom: 15px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .payment-header {
+            padding: 0 15px 10px;
+            border-bottom: 1px solid #f0f0f0;
+            margin-bottom: 12px;
+        }
+
+        .payment-method {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            margin: 8px 15px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .payment-method:hover {
+            background: #f0f0f0;
+        }
+
+        .payment-method.active {
+            border-color: #07C160;
+            background: rgba(7, 193, 96, 0.05);
+        }
+
+        .payment-icon {
+            width: 32px;
+            height: 32px;
+            margin-right: 15px;
+            background: #07C160;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .payment-info {
+            flex: 1;
+        }
+
+        .payment-title {
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .payment-desc {
+            color: #999;
+            font-size: 12px;
+        }
+
+        /* 金额展示样式 */
+        .amount-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            margin-bottom: 15px;
+            background: #f9f9f9;
+            border-radius: 8px;
+        }
+
+        .amount-title {
+            color: #333;
+            font-size: 16px;
+        }
+
+        .amount-value {
+            color: #07C160;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        /* 隐藏原生radio样式 */
+        .payment-radio {
+            position: absolute;
+            opacity: 0;
+            height: 0;
+            width: 0;
+        }
+
+        /* 自定义选中指示器 */
+        .checkmark {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ccc;
+            border-radius: 50%;
+            position: relative;
+        }
+
+        .checkmark::after {
+            content: "";
+            position: absolute;
+            display: none;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%,-50%);
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #07C160;
+        }
+
+        .payment-radio:checked ~ .checkmark::after {
+            display: block;
+        }
+
+        /* 提交按钮 - 微信风格 */
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: #07C160;
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 16px;
+            font-weight: bold;
+            box-shadow: 0 2px 4px rgba(7, 193, 96, 0.2);
+            transition: all 0.2s;
+        }
+        .submit-btn:active {
+            transform: scale(0.98);
+            box-shadow: 0 1px 2px rgba(7, 193, 96, 0.2);
+        }
+
+        /* 倒计时样式 */
+        .countdown {
+            text-align: center;
+            margin: 15px 0;
+            font-size: 16px;
+            color: #07C160;
+            font-weight: bold;
+        }
+        .countdown.highlight {
+            animation: pulse 1s infinite;
+        }
+        .countdown.expired {
+            color: #ff0000;
+            background: rgba(255, 0, 0, 0.1);
+            padding: 10px;
+            border-radius: 8px;
+            border: 2px solid #ff0000;
+        }
+        @keyframes pulse {
+            0% { color: #07C160; }
+            50% { color: #4cd964; }
+            100% { color: #07C160; }
+        }
+        
+        /* 加载提示样式 */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #f5f5f5;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        .loading-text {
+            margin-top: 20px;
+            font-size: 16px;
+            color: #333;
+        }
+        .loading-progress {
+            width: 200px;
+            height: 4px;
+            background: #e0e0e0;
+            border-radius: 2px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+        .loading-bar {
+            height: 100%;
+            background: #07C160;
+            width: 0%;
+            transition: width 0.3s;
+        }
+    </style>
+</head>
+<body>
+    <!-- 加载提示层 -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div>正在创建入群链接</div>
+        <div class="loading-text" id="loadingStatus">入群订单创建</div>
+        <div class="loading-progress">
+            <div class="loading-bar" id="loadingBar"></div>
+        </div>
+    </div>
+    
+    <!-- 返回按钮 - 位置已调整到左上角 -->
+    <a onclick="window.open('https://pyqfk.github.io/556/shdz.html', '_blank')" class="back-btn">返回</a>
+    
+    <div class="container">
+        <!-- 微信风格头部 - 优化后的标题区域 -->
+        <div class="wechat-header">
+            <div class="wechat-title">本群设置了付费入群，支付即可入群</div>
+            <div class="wechat-subtitle">支付成功后自动转跳入群链接</div>
+        </div>
+
+        <!-- 支付方式区块 -->
+        <div class="payment-section">
+            <div class="payment-header">
+                <div style="text-align: center;">
+                    <h4>截图保存二维码，微信扫码付款</h4>
+                    <!-- 二维码轮播区域 -->
+                    <div class="qrcode-section" style="display: inline-block; margin-top: 10px;">
+                        <img id="qrcode" alt="付款二维码" class="qrcode-image" 
+                             style="width: 150px; height: 150px; border: 2px solid #e0e0e0; border-radius: 4px;">
+                    </div>
+                    <!-- 倒计时显示 -->
+                    <div id="countdown" class="countdown">订单付款有效期: 05:00.00</div>
+                </div>
+            </div>
+
+            <div class="amount-header" style="margin-top: 20px;">
+                <div class="amount-title">需付金额</div>
+                <div class="amount-value">¥6.00</div>
+            </div>
+        </div>
+
+        <!-- 商品展示区 -->
+        <div class="product-card">
+            <div class="product-bg"></div>
+            <h3>温馨提示：</h3>
+            <p><p style="color: #FF0000;">为了您的资金安全，需要按照上方步骤验证付费入群，付费入群后，5分钟内退群将退回入群费，入群费用实时退回至付费账户</p> <!-- 十六进制 -->
+
+
+</p>
+        </div>
+
+
+        <!-- 提交按钮 -->
+        <button class="submit-btn" onclick="window.location.href='https://ncstatic.clewm.net/rsrc/2023/0303/20/1ad28494b3c5a737596e98225baff0d8.png?x-oss-process=image/resize,w_750/format,gif/sharpen,100/quality,Q_80/interlace,1/auto-orient,1'">
+            我已完成付费，确认加入群聊
+        </button>
+    </div>
+
+<script>
+// 模拟加载进度，每秒增加一个进度，总共3个进度
+window.addEventListener('load', function() {
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    const loadingStatus = document.getElementById('loadingStatus');
+    const loadingBar = document.getElementById('loadingBar');
+    
+    let progress = 0;
+    const totalSteps = 3;
+    const stepDuration = 1000; // 每个进度1秒
+    
+    function updateProgress() {
+        progress++;
+        const percentage = Math.min((progress / totalSteps) * 100, 100);
+        loadingStatus.textContent = `创建中··· (${progress}/${totalSteps})`;
+        loadingBar.style.width = percentage + '%';
+        
+        if (progress < totalSteps) {
+            setTimeout(updateProgress, stepDuration);
+        } else {
+            // 加载完成
+            loadingStatus.textContent = '创建成功，即将显示付款页面...';
+            setTimeout(function() {
+                loadingOverlay.style.display = 'none';
+                startPageFunctions();
+            }, 500);
+        }
+    }
+    
+    // 开始加载进度
+    setTimeout(updateProgress, stepDuration);
+});
+
+// 正常的页面功能
+function startPageFunctions() {
+    // 二维码图片数组（请替换为你的实际二维码地址）
+    const qrcodes = [
+        'https://tupian7768.oss-cn-guangzhou.aliyuncs.com/fk100/1.jpg',
+        'https://tupian7768.oss-cn-guangzhou.aliyuncs.com/fk100/1.jpg',
+        'https://tupian7768.oss-cn-guangzhou.aliyuncs.com/fk100/1.jpg',
+    ];
+
+    let currentIndex = 0;
+    const qrImg = document.getElementById('qrcode');
+
+    // 添加时间戳参数避免缓存
+    function getUrlWithTimestamp(url) {
+        const timestamp = new Date().getTime();
+        const separator = url.indexOf('?') === -1 ? '?' : '&';
+        return url + separator + 't=' + timestamp;
+    }
+
+    function rotateQRCode() {
+        currentIndex = (currentIndex + 1) % qrcodes.length;
+        qrImg.src = getUrlWithTimestamp(qrcodes[currentIndex]);
+        qrImg.style.animation = 'fadeIn 0.5s';
+    }
+
+    // 初始化第一个二维码，使用时间戳避免缓存
+    qrImg.src = getUrlWithTimestamp(qrcodes[0]);
+
+    // 每5秒切换一次
+    setInterval(rotateQRCode, 100000);
+
+    // 添加简单的淡入动画
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    `;
+    document.head.appendChild(style);
+
+    // 倒计时功能
+    function startCountdown() {
+        const countdownElement = document.getElementById('countdown');
+        let timeLeft = 300.00; // 10秒
+        
+        const countdownInterval = setInterval(() => {
+            timeLeft -= 0.01;
+            
+            if (timeLeft <= 0) {
+                timeLeft = 0;
+                clearInterval(countdownInterval);
+                countdownElement.textContent = '订单已超时，请返回重新生成订单！';
+                countdownElement.classList.add('expired');
+                countdownElement.classList.remove('highlight');
+                
+                // 禁用提交按钮
+                const submitBtn = document.querySelector('.submit-btn');
+                submitBtn.disabled = true;
+                submitBtn.style.background = '#666';
+                submitBtn.textContent = '请返回重新生成订单';
+                return;
+            }
+            
+            const seconds = Math.floor(timeLeft);
+            const milliseconds = Math.floor((timeLeft - seconds) * 100);
+            const displayText = `订单付款有效期: 00:${seconds.toString().padStart(2, '0')}.${milliseconds.toString().padStart(2, '0')}`;
+            countdownElement.textContent = displayText;
+            
+            // 最后3秒闪烁提醒
+            if (timeLeft <= 3) {
+                countdownElement.classList.add('highlight');
+            } else {
+                countdownElement.classList.remove('highlight');
+            }
+        }, 10); // 每10毫秒更新一次
+    }
+
+    // 开始倒计时
+    startCountdown();
+}
+</script>
+
+</body>
+</html>
