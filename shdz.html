@@ -276,20 +276,23 @@
             color: #555;
         }
         
+        /* 修改统计项布局为网格 */
         .stats-container {
-            display: flex;
-            flex-wrap: wrap;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
             gap: 15px;
             margin-top: 15px;
         }
         
         .stat-item {
-            flex: 1;
-            min-width: 45%;
             background-color: #f8f9fa;
             padding: 15px;
             border-radius: 12px;
             text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: 80px;
         }
         
         .stat-value {
@@ -521,8 +524,9 @@
                 padding: 6px 12px;
             }
             
-            .stat-item {
-                min-width: 100%;
+            /* 移动端统计项改为单列 */
+            .stats-container {
+                grid-template-columns: 1fr;
             }
             
             .join-btn-container {
@@ -729,85 +733,6 @@
                     </div>
                 </div>
             </div>
-            
-            <div class="section">
-                <div class="section-title">
-                    <i class="fas fa-trophy"></i>
-                    王者战绩分布
-                </div>
-                
-                <div class="progress-bars">
-                    <div class="progress-item">
-                        <div class="progress-label">
-                            <span>青铜</span>
-                            <span>11%</span>
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: 11%"></div>
-                        </div>
-                    </div>
-                    
-                    <div class="progress-item">
-                        <div class="progress-label">
-                            <span>白银</span>
-                            <span>10%</span>
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: 10%"></div>
-                        </div>
-                    </div>
-                    
-                    <div class="progress-item">
-                        <div class="progress-label">
-                            <span>黄金</span>
-                            <span>17%</span>
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: 17%"></div>
-                        </div>
-                    </div>
-                    
-                    <div class="progress-item">
-                        <div class="progress-label">
-                            <span>铂金</span>
-                            <span>12%</span>
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: 12%"></div>
-                        </div>
-                    </div>
-                    
-                    <div class="progress-item">
-                        <div class="progress-label">
-                            <span>钻石</span>
-                            <span>15%</span>
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: 15%"></div>
-                        </div>
-                    </div>
-                    
-                    <div class="progress-item">
-                        <div class="progress-label">
-                            <span>星耀</span>
-                            <span>10%</span>
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: 10%"></div>
-                        </div>
-                    </div>
-                    
-                    <div class="progress-item">
-                        <div class="progress-label">
-                            <span>王者</span>
-                            <span>25%</span>
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: 25%"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
         
         <div class="join-btn-container">
@@ -952,10 +877,10 @@
             imageModal.classList.remove('active');
         });
         
-        // 修复点击空白处最小化功能
+        // 点击模态框任意位置最小化
         imageModal.addEventListener('click', function(e) {
             // 只有当点击的是模态框背景（不是图片或按钮）时才最小化
-            if (e.target === imageModal) {
+            if (e.target === imageModal || e.target === modalImage) {
                 minimizeImage();
             }
         });
