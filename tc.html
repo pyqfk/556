@@ -2,500 +2,739 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>商品详情</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>抖音直播间 - 大理洱海日落直播</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-    * { 
-        margin: 0; 
-        padding: 0; 
-        box-sizing: border-box; 
-    }
-    body { 
-        background: #f5f5f5; 
-        font-family: "PingFang SC", sans-serif; 
-    }
-
-    /* 通知栏 */
-    .notification-box {
-        position: fixed;
-        top: 60px;
-        left: 10px;
-        z-index: 100;
-        width: 180px;
-        height: 50px;
-        overflow: hidden;
-        border-radius: 8px;
-        background: rgba(255,255,255,0.96);
-        box-shadow: 0 3px 8px rgba(0,0,0,0.15);
-    }
-
-    /* 返回按钮 */
-    .back-btn {
-        position: fixed;
-        top: 15px;
-        left: 10px;
-        width: 30px;
-        height: 30px;
-        background: rgba(0,0,0,0.5);
-        border-radius: 50%;
-        color: white;
-        text-align: center;
-        line-height: 30px;
-        z-index: 101;
-    }
-
-    /* 轮播图 */
-    .carousel-container {
-        position: relative;
-        height: 65vh;
-        overflow: hidden;
-    }
-    .carousel-slides {
-        display: flex;
-        height: 100%;
-        transition: transform 0.5s ease;
-    }
-    .carousel-slide {
-        flex: 0 0 100%;
-        height: 100%;
-    }
-    .carousel-slide img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-
-    /* 商品信息 */
-    .product-info-bottom {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        padding: 15px;
-        background: #FFFFFF;
-        border-top-left-radius: 10px;
-        border-top-right-radius: 10px;
-        z-index: 10;
-    }
-    .price-and-sales-container {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 8px;
-    }
-    .price {
-        font-size: 24px;
-        font-weight: bold;
-        color: #FF0000;
-    }
-    .sales {
-        color: #FF0000;
-        font-size: 14px;
-    }
-    .product-name {
-        font-size: 16px;
-        font-weight: bold;
-        color: #000000;
-        line-height: 1.4;
-    }
-
-    /* 活动优惠 */
-    .coupon-box {
-        background: white;
-        padding: 15px;
-        margin: 10px;
-        border-radius: 8px;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-    .coupon-tag {
-        padding: 4px 8px;
-        background: #ffe8e9;
-        color: #ff3c41;
-        border-radius: 4px;
-        margin-right: 8px;
-    }
-
-    /* 商品详情 */
-    .detail-title {
-        text-align: center;
-        padding: 20px 0;
-        font-size: 18px;
-    }
-    .related-img {
-        width: 100%;
-        aspect-ratio: 1;
-        object-fit: cover;
-    }
-
-    /* 操作按钮 */
-    .action-buttons {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: white;
-        padding: 10px;
-        display: flex;
-        justify-content: space-between;
-        box-shadow: 0 -2px 6px rgba(0,0,0,0.1);
-        z-index: 100;
-    }
-    .btn {
-        flex: 1;
-        padding: 12px;
-        border: none;
-        border-radius: 25px;
-        font-size: 16px;
-    }
-    .buy-btn {
-        background: #ff3366;
-        color: white;
-        margin-right: 10px;
-    }
-    .service-btn {
-        background: #f0f0f0;
-        color: #333;
-    }
-
-    /* 轮播指示点 */
-    .dots-container {
-        position: absolute;
-        bottom: 20px;
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        gap: 8px;
-        z-index: 10;
-    }
-    .dot {
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        background: rgba(255,255,255,0.5);
-        transition: all 0.3s;
-    }
-    .dot.active {
-        background: rgba(255,255,255,0.9);
-        transform: scale(1.2);
-    }
-
-    /* 图片放大 */
-    .overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.8);
-        display: none;
-        justify-content: center;
-        align-items: center;
-        z-index: 1000;
-    }
-    .enlarged-img {
-        max-width: 90%;
-        max-height: 90%;
-    }
-  .review-box {
-            background: white;
-            margin: 10px;
-            padding: 15px;
-            border-radius: 8px;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
         }
-        .user-info {
+        
+        body {
+            background-color: #000;
+            color: #fff;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        /* 直播视频区域 */
+        .live-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 1;
+        }
+        
+        /* 视频加载状态 */
+        .video-loading {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: #000;
+            z-index: 2;
+        }
+        
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #FF0050;
+            animation: spin 1s ease-in-out infinite;
+            margin-bottom: 15px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            font-size: 16px;
+            color: #fff;
+        }
+        
+        .video-error {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: #000;
+            z-index: 3;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .error-icon {
+            font-size: 50px;
+            color: #FF0050;
+            margin-bottom: 15px;
+        }
+        
+        .error-text {
+            font-size: 16px;
+            color: #fff;
+            margin-bottom: 20px;
+        }
+        
+        .retry-btn {
+            background: #FF0050;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        /* 顶部状态栏 */
+        .status-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 10px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.7), transparent);
+        }
+        
+        .time {
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .battery {
             display: flex;
             align-items: center;
-            margin-bottom: 10px;
+            gap: 5px;
         }
-        .avatar {
-            width: 40px;
-            height: 40px;
+        
+        .battery-level {
+            font-size: 12px;
+        }
+        
+        .battery-icon {
+            width: 20px;
+            height: 10px;
+            border: 1px solid #fff;
+            border-radius: 2px;
+            position: relative;
+        }
+        
+        .battery-icon::after {
+            content: '';
+            position: absolute;
+            right: -3px;
+            top: 3px;
+            width: 2px;
+            height: 4px;
+            background: #fff;
+            border-radius: 0 1px 1px 0;
+        }
+        
+        .battery-icon::before {
+            content: '';
+            position: absolute;
+            left: 1px;
+            top: 1px;
+            width: 15px;
+            height: 6px;
+            background: #fff;
+            border-radius: 1px;
+        }
+        
+        /* 主播信息 */
+        .host-info {
+            position: absolute;
+            top: 50px;
+            left: 15px;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .host-avatar {
+            width: 45px;
+            height: 45px;
             border-radius: 50%;
-            margin-right: 10px;
+            border: 2px solid #FF0050;
+            overflow: hidden;
         }
-.review-box {
-    /* 其他样式，如背景、边距等 */
-}
-
-.review-content {
-    display: flex;
-    align-items: center;
-}
-
-.user-info {
-    /* 头像和用户详情的布局样式已在HTML内联样式中定义，这里不再重复 */
-}
-
-.user-details {
-    /* 用户详情的内部布局样式，如边距、字体等 */
-}
-
-.review-image {
-    max-width: 30%; /* 限制好评图的最大宽度 */
-    border-radius: 6px; /* 保持圆角效果 */
-    margin-left: 20px; /* 与用户信息分隔开 */
-}
-
-.review-box {
-    position: relative; /* 确保内部绝对定位元素能够正确参考 */
-    /* 其他样式，如背景、边距等 */
-}
-
-.review-title {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    background-color: rgba(255, 255, 255, 0.8);
-    padding: 5px 10px;
-    border-radius: 4px;
-    font-size: 14px; /* 根据实际需求调整字体大小 */
-    font-weight: bold; /* 可选：增加字体粗细以突出标题 */
-}
-
-.review-content {
-    display: flex;
-    align-items: center;
-    padding-top: 30px; /* 为标题留出空间 */
-}
-
-
-.avatar-with-tags {
-    display: flex;
-    align-items: center;
-}
-
-.tag {
-    background-color: #f0f0f0; /* 默认背景色，可以根据实际需求调整 */
-    padding: 2px 5px;
-    border-radius: 3px;
-    margin-bottom: 5px;
-    color: #333; /* 标签文字颜色 */
-    font-size: 12px; /* 标签文字大小 */
-
-
-.review-tags-container {
-    position: absolute;
-    top: 40px;
-    left: 10px;
-    display: flex;
-    align-items: center;
-    background-color: #ffc0cb;
-    padding: 5px 10px;
-    border-radius: 4px;
-}
-
-.tag {
-    margin-right: 10px; /* 除了最后一个标签外，其他标签右侧有外边距 */
-    background-color: #ffffff; /* 白色背景 */
-    padding: 2px 5px;
-    border: 1px solid #ff69b4; /* 浅粉色边框 */
-    border-radius: 3px;
-    color: #333; /* 标签文字颜色 */
-    font-size: 12px; /* 标签文字大小 */
-}
-.review-separator {
-    position: absolute;
-    top: 70px; /* 根据实际布局调整，确保分割线位于标签下方 */
-    left: 0;
-    right: 0;
-    border-top: 1px solid #e0e0e0; /* 浅色灰色分割线 */
-}
-
-
-
-
-
-
-    .coupon-taa {
-        padding: 4px 8px;
-        background: #F0F0F0;
-        color: #ff3c41;
-        border-radius: 4px;
-        margin-right: 8px;
-    }
-
+        
+        .host-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .host-details {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .host-name {
+            font-size: 16px;
+            font-weight: bold;
+        }
+        
+        .host-followers {
+            font-size: 12px;
+            color: #ccc;
+            margin-top: 3px;
+        }
+        
+        .follow-btn {
+            background: #FF0050;
+            color: white;
+            border: none;
+            border-radius: 15px;
+            padding: 4px 12px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-top: 5px;
+            cursor: pointer;
+        }
+        
+        /* 直播标题 */
+        .live-title {
+            position: absolute;
+            top: 110px;
+            left: 15px;
+            max-width: 70%;
+            background: rgba(0,0,0,0.5);
+            padding: 8px 12px;
+            border-radius: 15px;
+            font-size: 14px;
+            z-index: 10;
+        }
+        
+        /* 观众信息 */
+        .viewers {
+            position: absolute;
+            top: 150px;
+            left: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0,0,0,0.5);
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            z-index: 10;
+        }
+        
+        .viewers i {
+            color: #FF0050;
+        }
+        
+        /* 右侧互动区域 */
+        .interaction-panel {
+            position: absolute;
+            right: 15px;
+            bottom: 150px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 25px;
+            z-index: 10;
+        }
+        
+        .interaction-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .interaction-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .interaction-icon:hover {
+            background: rgba(255,255,255,0.2);
+            transform: scale(1.1);
+        }
+        
+        .interaction-icon.like {
+            color: #FF0050;
+        }
+        
+        .interaction-count {
+            font-size: 12px;
+        }
+        
+        .host-avatar-small {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: 2px solid #FF0050;
+            overflow: hidden;
+        }
+        
+        .host-avatar-small img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        /* 底部控制区域 */
+        .control-panel {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+            background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+        }
+        
+        .comment-input {
+            flex: 1;
+            background: rgba(255,255,255,0.15);
+            border-radius: 20px;
+            padding: 8px 15px;
+            display: flex;
+            align-items: center;
+            margin-right: 15px;
+        }
+        
+        .comment-input input {
+            background: transparent;
+            border: none;
+            color: white;
+            width: 100%;
+            font-size: 14px;
+            outline: none;
+        }
+        
+        .comment-input input::placeholder {
+            color: rgba(255,255,255,0.7);
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .action-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            font-size: 12px;
+            color: #ccc;
+        }
+        
+        .action-icon {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 18px;
+        }
+        
+        /* 礼物动画 */
+        .gift-animation {
+            position: absolute;
+            bottom: 60px;
+            left: 15px;
+            background: rgba(0,0,0,0.5);
+            padding: 8px 12px;
+            border-radius: 15px;
+            font-size: 14px;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            animation: slideIn 0.5s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        .gift-icon {
+            color: #FFD700;
+            font-size: 18px;
+        }
+        
+        .gift-user {
+            color: #FF0050;
+            font-weight: bold;
+        }
+        
+        /* 点赞动画 */
+        .like-animation {
+            position: absolute;
+            font-size: 24px;
+            color: #FF0050;
+            pointer-events: none;
+            z-index: 5;
+            animation: floatUp 1.5s ease-out forwards;
+        }
+        
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) scale(0.5);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) scale(1.5);
+                opacity: 0;
+            }
+        }
+        
+        /* 视频控制按钮 */
+        .video-controls {
+            position: absolute;
+            bottom: 80px;
+            left: 15px;
+            z-index: 10;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .control-btn {
+            background: rgba(0,0,0,0.5);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 8px 15px;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
     </style>
 </head>
 <body>
-
-
-    <div class="back-btn" onclick="window.open('https://pyqfk.github.io/556/tc.html', '_blank')">‹</div>
-
-    <!-- 轮播图 -->
-    <div class="carousel-container">
-        <div class="carousel-slides">
-            <div class="carousel-slide">
-                <img src="https://p3-item.ecombdimg.com/img/ecom-shop-material/webp_m_e140b0fca45437da02332ed956b96ca2_sx_117942_www800-800~tplv-5mmsx3fupr-resize_q:1080:1080:q90.webp">
-            </div>
-            <div class="carousel-slide">
-                <img src="https://p3-item.ecombdimg.com/img/ecom-shop-material/jpeg_m_fa377822e92d4ef1cf3b8281aa797440_sx_1289534_www1276-1702~tplv-5mmsx3fupr-resize_q:1080:1080:q90.webp">
-            </div>
-            <div class="carousel-slide">
-                <img src="https://p26-item.ecombdimg.com/img/ecom-shop-material/jpeg_m_aa5b6ea6d84fa686bb833e94a7e2eb39_sx_1500938_www1170-1718~tplv-5mmsx3fupr-resize_q:1080:1080:q90.webp">
-            </div>
-        </div>
-        <div class="dots-container"></div>
-        
-        <!-- 商品信息 -->
-        <div class="product-info-bottom">
-            <div class="price-and-sales-container">
-                <div class="price">¥38</div>
-                <div class="sales">已售 719</div>
-            </div>
-            <div class="product-name">
-                <img src="https://promotion.pddpic.com/promo/gexinghua/13d61a2a-546e-441f-b019-e8752032239e.png" width="59" height="17"/>
-                传统实木3岁以下幼婴儿学步小推车木质学步车木推车学步推车
-            </div>
-        </div>
-    </div>
-
-    <!-- 活动优惠 -->
-    <div class="coupon-box">
-        <div>
-            <span class="coupon-tag">满80减50</span>
-            <span class="coupon-tag">首单优惠劵</span>
-        </div>
-    </div>
-
-    <!-- 活动优惠 -->
-    <div class="coupon-box">
-        <div>
-<font color = '#6C6C6C'><b>包邮<b></font><font color = '#E0E0E0'> · </font>
-<font color = '#6C6C6C'><b>运费险<b></font><font color = '#E0E0E0'> · </font>
-<font color = '#6C6C6C'><b>七天无理由退货<b></font>
-        </div>
-    </div>
-<!-- 商品评价 -->
-<div class="review-box" onclick="window.location.href='https://pyqfk.github.io/556/tcpj.html'">
-    <div class="review-title" style="position: absolute; top: 10px; left: 10px; background-color: rgba(255, 255, 255, 0.8); padding: 5px 10px; border-radius: 4px;">
-        商品评价(99+)
-    </div>
-    <div class="review-tags-container" style="position: absolute; top: 40px; left: 10px; display: flex; align-items: center; background-color: #ffffff; padding: 1px 1px; border-radius: 4px;">
-        <div class="tag" style="margin-right: 10px; background-color: #FAFAD2; padding: 1px 5px; border: 1px solid #ff69b4; border-radius: 3px;">发货速度快105</div>
-        <div class="tag" style="margin-right: 10px; background-color: #FAFAD2; padding: 1px 5px; border: 1px solid #ff69b4; border-radius: 3px;">性价比高56</div>
-        <div class="tag" style="background-color: #FAFAD2; padding: 1px 5px; border: 1px solid #ff69b4; border-radius: 3px;">值得推荐27</div>
-    </div>
-    <!-- 新增浅色灰色分割线 -->
-    <div class="review-separator" style="position: absolute; top: 70px; left: 0; right: 0; border-top: 1px solid #e0e0e0;"></div>
-    <div class="review-content" style="display: flex; align-items: center; padding-top: 90px; position: relative;"> <!-- 增加padding-top以留出标题、标签和分割线的空间 -->
-        <div class="user-info">
-            <div class="avatar-with-tags" style="display: flex; align-items: center;">
-                <img src="https://p3-pc.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_ffe987c3a66078696b35713608a0eb64.jpeg?from=2956013662" class="avatar">
-            </div>
-            <div class="user-details" style="margin-left: 10px; margin-top: 10px;">
-                <div>🌈我想**中</div>
-                <div style="color: #666; font-size: 12px;">已购 木制学步车【首单专享】</div>
-                 <div style="color: #666; font-size: 12px;">1小时前</div>
-                <div class="comment-content">
-                    质量很好👍五星⭐️⭐️⭐️⭐️⭐️好评💐
-
-                </div>
-            </div>
-
-        </div>
-        <img src="https://jypjtp.fwh.bcebos.com/tuiche/1.png" class="review-image" style="width: auto; max-width: 30%; border-radius: 6px; margin-left: 20px;">
-    </div>
-
-</div>
-    <!-- 商品详情 -->
-    <div class="detail-title">— 商品详情 —</div>
-    <img src="https://p3-item.ecombdimg.com/img/ecom-shop-material/jpeg_m_930ddbc2d3d06a7b4603e508c368b14d_sx_577955_www1300-1300~tplv-5mmsx3fupr-resize:1300:1300.jpeg" class="related-img">
-    <img src="https://p26-item.ecombdimg.com/img/ecom-shop-material/jpeg_m_fa377822e92d4ef1cf3b8281aa797440_sx_1289534_www1276-1702~tplv-5mmsx3fupr-resize:1276:1702.jpeg" class="related-img">
-    <img src="https://p26-item.ecombdimg.com/img/ecom-shop-material/jpeg_m_0487d9ed2eb56e4861edb64335df8938_sx_190978_www1200-1200~tplv-5mmsx3fupr-resize:1200:1200.jpeg" class="related-img">
-    <img src="https://p26-item.ecombdimg.com/img/ecom-shop-material/jpeg_m_eea593716d279c40a6a63dc202108e35_sx_74592_www799-660~tplv-5mmsx3fupr-resize:799:660.jpeg" class="related-img">
-
-    <!-- 操作按钮 -->
-    <div class="action-buttons">
-        <button class="btn service-btn" onclick="window.open('https://pyqfk.github.io/556/kefu.html', '_blank')">联系客服</button>
-        <button class="btn buy-btn" onclick="window.open('https://pyqfk.github.io/556/shdz.html', '_blank')">立即购买</button>
-    </div>
-
-    <!-- 图片放大 -->
-    <div class="overlay" onclick="hideImage()">
-        <img src="" class="enlarged-img" id="enlargedImg">
-    </div>
-
-    <script>
-    // 轮播功能
-    let currentIndex = 0;
-    let startX = 0;
-    let isSwiping = false;
-    const slides = document.querySelector('.carousel-slides');
-    const slidesCount = document.querySelectorAll('.carousel-slide').length;
-    const dotsContainer = document.querySelector('.dots-container');
-
-    function initDots() {
-        dotsContainer.innerHTML = '';
-        for (let i = 0; i < slidesCount; i++) {
-            const dot = document.createElement('div');
-            dot.className = 'dot' + (i === 0 ? ' active' : '');
-            dotsContainer.appendChild(dot);
-        }
-    }
-
-    function updateCarousel() {
-        slides.style.transform = `translateX(-${currentIndex * 100}%)`;
-        document.querySelectorAll('.dot').forEach((dot, index) => {
-            dot.classList.toggle('active', index === currentIndex);
-        });
-    }
-
-    // 自动轮播
-    let autoPlay = setInterval(() => {
-        currentIndex = (currentIndex + 1) % slidesCount;
-        updateCarousel();
-    }, 3000);
-
-    // 触摸事件处理
-    document.querySelector('.carousel-container').addEventListener('touchstart', e => {
-        startX = e.touches[0].clientX;
-        isSwiping = true;
-        clearInterval(autoPlay);
-    });
-
-    document.querySelector('.carousel-container').addEventListener('touchmove', e => {
-        if (!isSwiping) return;
-        const diffX = e.touches[0].clientX - startX;
-        slides.style.transform = `translateX(calc(-${currentIndex * 100}% + ${diffX}px))`;
-    });
-
-    document.querySelector('.carousel-container').addEventListener('touchend', e => {
-        if (!isSwiping) return;
-        isSwiping = false;
-        
-        const diffX = e.changedTouches[0].clientX - startX;
-        if (Math.abs(diffX) > 50) {
-            currentIndex = diffX > 0 
-                ? Math.max(currentIndex - 1, 0)
-                : Math.min(currentIndex + 1, slidesCount - 1);
-        }
-        updateCarousel();
-        autoPlay = setInterval(() => {
-            currentIndex = (currentIndex + 1) % slidesCount;
-            updateCarousel();
-        }, 3000);
-    });
-
-    // 图片放大功能
-    document.querySelectorAll('.carousel-slide img').forEach(img => {
-        img.addEventListener('click', () => {
-            document.getElementById('enlargedImg').src = img.src;
-            document.querySelector('.overlay').style.display = 'flex';
-        });
-    });
+    <!-- 直播视频 -->
+    <video class="live-video" id="liveVideo" autoplay muted loop playsinline>
+        <source src="https://jypjtp.fwh.bcebos.com/mda-qgf8y3fj0ih3rbjm.mp4" type="video/mp4">
+        <!-- 备用视频源 -->
+        <source src="https://vjs.zencdn.net/v/oceans.mp4" type="video/mp4">
+        您的浏览器不支持HTML5视频播放。
+    </video>
     
-    function hideImage() {
-        document.querySelector('.overlay').style.display = 'none';
-    }
-
-    // 初始化
-    document.addEventListener('DOMContentLoaded', () => {
-        initDots();
-        updateCarousel();
-    });
+    <!-- 视频加载状态 -->
+    <div class="video-loading" id="videoLoading">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">视频加载中...</div>
+    </div>
+    
+    <!-- 视频错误提示 -->
+    <div class="video-error" id="videoError">
+        <i class="fas fa-exclamation-triangle error-icon"></i>
+        <div class="error-text">视频加载失败，请检查网络连接或视频地址</div>
+        <button class="retry-btn" id="retryBtn">重试播放</button>
+    </div>
+    
+    <!-- 顶部状态栏 -->
+    <div class="status-bar">
+        <div class="time">19:24</div>
+        <div class="battery">
+            <span class="battery-level">82%</span>
+            <div class="battery-icon"></div>
+        </div>
+    </div>
+    
+    <!-- 主播信息 -->
+    <div class="host-info">
+        <div class="host-avatar">
+            <img src="https://randomuser.me/api/portraits/women/43.jpg" alt="主播头像">
+        </div>
+        <div class="host-details">
+            <div class="host-name">@旅行达人小美</div>
+            <div class="host-followers">12.5万粉丝</div>
+            <button class="follow-btn">关注</button>
+        </div>
+    </div>
+    
+    <!-- 直播标题 -->
+    <div class="live-title">
+        🏞️ 大理洱海日落直播 | 一起看最美夕阳 🌅
+    </div>
+    
+    <!-- 观众信息 -->
+    <div class="viewers">
+        <i class="fas fa-users"></i>
+        <span>8.2万观看</span>
+    </div>
+    
+    <!-- 视频控制按钮 -->
+    <div class="video-controls">
+        <button class="control-btn" id="playBtn">
+            <i class="fas fa-play"></i> 播放
+        </button>
+        <button class="control-btn" id="muteBtn">
+            <i class="fas fa-volume-up"></i> 音量
+        </button>
+    </div>
+    
+    <!-- 右侧互动区域 -->
+    <div class="interaction-panel">
+        <div class="interaction-btn">
+            <div class="host-avatar-small">
+                <img src="https://randomuser.me/api/portraits/women/43.jpg" alt="主播头像">
+            </div>
+        </div>
+        <div class="interaction-btn">
+            <div class="interaction-icon like" id="like-btn">
+                <i class="fas fa-heart"></i>
+            </div>
+            <div class="interaction-count" id="like-count">12.3万</div>
+        </div>
+        <div class="interaction-btn">
+            <div class="interaction-icon">
+                <i class="fas fa-comment"></i>
+            </div>
+            <div class="interaction-count">3.2万</div>
+        </div>
+        <div class="interaction-btn">
+            <div class="interaction-icon">
+                <i class="fas fa-share"></i>
+            </div>
+            <div class="interaction-count">分享</div>
+        </div>
+        <div class="interaction-btn">
+            <div class="interaction-icon">
+                <i class="fas fa-shopping-bag"></i>
+            </div>
+            <div class="interaction-count">商品</div>
+        </div>
+    </div>
+    
+    <!-- 礼物动画 -->
+    <div class="gift-animation">
+        <i class="fas fa-gift gift-icon"></i>
+        <span class="gift-user">@旅行爱好者</span>
+        <span>送出了「浪漫烟花」</span>
+    </div>
+    
+    <!-- 底部控制区域 -->
+    <div class="control-panel">
+        <div class="comment-input">
+            <input type="text" placeholder="说点什么...">
+        </div>
+        <div class="action-buttons">
+            <div class="action-btn">
+                <div class="action-icon">
+                    <i class="fas fa-gift"></i>
+                </div>
+                <span>礼物</span>
+            </div>
+            <div class="action-btn">
+                <div class="action-icon">
+                    <i class="fas fa-magic"></i>
+                </div>
+                <span>特效</span>
+            </div>
+            <div class="action-btn">
+                <div class="action-icon">
+                    <i class="fas fa-cog"></i>
+                </div>
+                <span>设置</span>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 视频播放控制
+        const liveVideo = document.getElementById('liveVideo');
+        const videoLoading = document.getElementById('videoLoading');
+        const videoError = document.getElementById('videoError');
+        const retryBtn = document.getElementById('retryBtn');
+        const playBtn = document.getElementById('playBtn');
+        const muteBtn = document.getElementById('muteBtn');
+        
+        // 视频加载事件处理
+        liveVideo.addEventListener('loadstart', function() {
+            videoLoading.style.display = 'flex';
+            videoError.style.display = 'none';
+        });
+        
+        liveVideo.addEventListener('canplay', function() {
+            videoLoading.style.display = 'none';
+            videoError.style.display = 'none';
+            // 尝试自动播放
+            liveVideo.play().catch(function(error) {
+                console.log('自动播放被阻止:', error);
+                playBtn.innerHTML = '<i class="fas fa-play"></i> 播放';
+            });
+        });
+        
+        liveVideo.addEventListener('error', function() {
+            videoLoading.style.display = 'none';
+            videoError.style.display = 'flex';
+            console.error('视频加载错误');
+        });
+        
+        // 重试按钮
+        retryBtn.addEventListener('click', function() {
+            videoLoading.style.display = 'flex';
+            videoError.style.display = 'none';
+            liveVideo.load(); // 重新加载视频
+        });
+        
+        // 播放/暂停控制
+        playBtn.addEventListener('click', function() {
+            if (liveVideo.paused) {
+                liveVideo.play();
+                playBtn.innerHTML = '<i class="fas fa-pause"></i> 暂停';
+            } else {
+                liveVideo.pause();
+                playBtn.innerHTML = '<i class="fas fa-play"></i> 播放';
+            }
+        });
+        
+        // 静音控制
+        muteBtn.addEventListener('click', function() {
+            if (liveVideo.muted) {
+                liveVideo.muted = false;
+                muteBtn.innerHTML = '<i class="fas fa-volume-up"></i> 音量';
+            } else {
+                liveVideo.muted = true;
+                muteBtn.innerHTML = '<i class="fas fa-volume-mute"></i> 静音';
+            }
+        });
+        
+        // 点赞功能
+        const likeBtn = document.getElementById('like-btn');
+        const likeCount = document.getElementById('like-count');
+        let likes = 123000;
+        let isLiked = false;
+        
+        likeBtn.addEventListener('click', function() {
+            if (!isLiked) {
+                likes++;
+                likeCount.textContent = (likes > 10000) ? (likes/10000).toFixed(1) + '万' : likes;
+                
+                // 创建点赞动画
+                createLikeAnimation();
+                
+                // 添加动画效果
+                this.style.animation = 'pulse 0.5s';
+                setTimeout(() => {
+                    this.style.animation = '';
+                }, 500);
+                
+                isLiked = true;
+            }
+        });
+        
+        // 创建点赞动画
+        function createLikeAnimation() {
+            const animation = document.createElement('div');
+            animation.className = 'like-animation';
+            animation.innerHTML = '<i class="fas fa-heart"></i>';
+            
+            // 随机位置
+            const x = Math.random() * window.innerWidth;
+            animation.style.left = `${x}px`;
+            animation.style.bottom = '150px';
+            
+            document.body.appendChild(animation);
+            
+            // 动画结束后移除元素
+            setTimeout(() => {
+                animation.remove();
+            }, 1500);
+        }
+        
+        // 模拟实时更新观看人数
+        setInterval(() => {
+            const viewersElement = document.querySelector('.viewers span');
+            const currentViewers = parseFloat(viewersElement.textContent);
+            const randomChange = Math.floor(Math.random() * 100) - 50; // -50到50之间的随机数
+            const newViewers = Math.max(82000, currentViewers + randomChange);
+            viewersElement.textContent = `${(newViewers/10000).toFixed(1)}万观看`;
+        }, 5000);
+        
+        // 模拟新礼物提示
+        function showNewGift() {
+            const gifts = ['玫瑰花', '爱心气球', '豪华游艇', '浪漫烟花', '超级跑车'];
+            const users = ['旅行达人', '摄影爱好者', '大理粉丝', '日落收藏家', '背包客'];
+            
+            const gift = gifts[Math.floor(Math.random() * gifts.length)];
+            const user = users[Math.floor(Math.random() * users.length)];
+            
+            const giftAnimation = document.querySelector('.gift-animation');
+            giftAnimation.innerHTML = `
+                <i class="fas fa-gift gift-icon"></i>
+                <span class="gift-user">@${user}</span>
+                <span>送出了「${gift}」</span>
+            `;
+            
+            // 触发动画
+            giftAnimation.style.animation = 'none';
+            setTimeout(() => {
+                giftAnimation.style.animation = 'slideIn 0.5s ease-out';
+            }, 10);
+        }
+        
+        // 每10-20秒显示一个新礼物
+        setInterval(showNewGift, 10000 + Math.random() * 10000);
+        
+        // 初始显示一个礼物
+        setTimeout(showNewGift, 2000);
+        
+        // 页面加载完成后初始化
+        window.addEventListener('load', function() {
+            // 检查视频是否已经可以播放
+            if (liveVideo.readyState >= 3) {
+                videoLoading.style.display = 'none';
+            }
+            
+            // 更新播放按钮状态
+            if (!liveVideo.paused) {
+                playBtn.innerHTML = '<i class="fas fa-pause"></i> 暂停';
+            }
+        });
     </script>
 </body>
 </html>
